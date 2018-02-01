@@ -70,9 +70,12 @@ public class UserInterface {
 	}
 
 
+
+
+
 	public static void main(String[]args) {
         UserInterface test = new UserInterface();
-        System.out.println("Test");
+        test.start();
     }
 
 }

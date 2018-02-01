@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 public class Job {
 	
@@ -11,6 +12,8 @@ public class Job {
 	 * Length of this job in days
 	 */
 	private int myJobLength;
+
+	private GregorianCalendar myDate = new GregorianCalendar();
 	
 	private ArrayList<Volunteer> myVolunteers = new ArrayList<Volunteer>();
 	
@@ -40,6 +43,15 @@ public class Job {
 	
 	protected int getJobLength() {
 		return myJobLength;
+	}
+
+
+	protected GregorianCalendar getDate() {
+		return myDate;
+	}
+
+	protected void setDate(GregorianCalendar theDate) {
+		myDate = theDate;
 	}
 
 }
