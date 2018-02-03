@@ -19,29 +19,32 @@ public class Volunteer extends User {
 
     public boolean isSameDayConflict(Job theJobFromList, Job theApplyingJob) {
         boolean conflict = false;
-        conflict = theJobFromList.getStartDate().get(Calendar.DATE) == theApplyingJob.getStartDate().get(Calendar.DATE) || conflict;
+        conflict = theJobFromList.getStartDate().get(Calendar.DATE)
+                == theApplyingJob.getStartDate().get(Calendar.DATE)
+                || conflict;
         System.out.println(conflict);
         return conflict;
     }
 
     public boolean isEndDayConflict(Job theJobFromList, Job theApplyingJob) {
         boolean conflict = false;
-        conflict = theJobFromList.getEndDate().get(Calendar.DATE) == theApplyingJob.getStartDate().get(Calendar.DATE) || conflict;
+        conflict = theJobFromList.getEndDate().get(Calendar.DATE)
+                == theApplyingJob.getStartDate().get(Calendar.DATE)
+                || conflict;
         System.out.println(conflict);
         return conflict;
     }
 
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
-        boolean is_there_any_conflict = myCurrentJobs.stream()
+        boolean is_there_conflict = myCurrentJobs.stream()
                 .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
                                        || isEndDayConflict(aJobFromList, theApplyingJob));
-        if (is_there_any_conflict) {
-//            System.out.println(theApplyingJob.getJobTitle() + " was not added due to conflict");
-        } else {
+        boolean is_job_added = false;
+        if (!is_there_conflict) {
             myCurrentJobs.add(theApplyingJob);
-//            System.out.println("Added " + theApplyingJob.getJobTitle() + " to my pending jobs.");
+            is_job_added = true;
         }
-        return is_there_any_conflict;
+        return is_job_added;
     }
 
 
@@ -53,32 +56,32 @@ public class Volunteer extends User {
 
 
 	public static void main(String[]args) {
-        Volunteer test = new Volunteer("Volunteer Test");
-
+//        Volunteer test = new Volunteer("Volunteer Test");
+//
 //        GregorianCalendar testDate = new GregorianCalendar();
 //        testDate.set(2018, 02, 22);
 //
 //        System.out.println(testDate.get(Calendar.YEAR));
 //        System.out.println(testDate.get(Calendar.MONTH));
 //        System.out.println(testDate.get(Calendar.DATE));
-
-        test.myCurrentJobs.forEach(System.out::println);
-
-        Job job_test1 = new Job("Job Test1");
-        job_test1.setStartDate(new GregorianCalendar(2018,01,01));
-        job_test1.setEndDate(new GregorianCalendar(2018,01,01));
-        Job job_test2 = new Job("Job Test2");
-        job_test2.setStartDate(new GregorianCalendar(2018,01,02));
-        job_test2.setEndDate(new GregorianCalendar(2018,01,03));
-        Job job_test3 = new Job("Job Test3");
-        job_test3.setStartDate(new GregorianCalendar(2018,01,03));
-        job_test3.setEndDate(new GregorianCalendar(2018,01,03));
-
-
-        test.addToCurrentJobs(job_test2);
-        test.addToCurrentJobs(job_test3);
-
-
-        test.myCurrentJobs.forEach(job -> System.out.println(job.getJobTitle()));
+//
+//        test.myCurrentJobs.forEach(System.out::println);
+//
+//        Job job_test1 = new Job("Job Test1");
+//        job_test1.setStartDate(new GregorianCalendar(2018,01,01));
+//        job_test1.setEndDate(new GregorianCalendar(2018,01,01));
+//        Job job_test2 = new Job("Job Test2");
+//        job_test2.setStartDate(new GregorianCalendar(2018,01,02));
+//        job_test2.setEndDate(new GregorianCalendar(2018,01,03));
+//        Job job_test3 = new Job("Job Test3");
+//        job_test3.setStartDate(new GregorianCalendar(2018,01,03));
+//        job_test3.setEndDate(new GregorianCalendar(2018,01,03));
+//
+//
+//        test.addToCurrentJobs(job_test2);
+//        test.addToCurrentJobs(job_test3);
+//
+//
+//        test.myCurrentJobs.forEach(job -> System.out.println(job.getJobTitle()));
     }
 }

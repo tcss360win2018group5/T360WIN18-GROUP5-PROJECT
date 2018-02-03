@@ -49,9 +49,9 @@ public class VolunteerTest_A {
     }
 
     @Test
-    public void addToCurrentJobs_VolunteerNoJobsYet_false() {
+    public void addToCurrentJobs_VolunteerNoJobsYet_true() {
         Volunteer volunteer_no_jobs = new Volunteer("Volunteer With No Jobs");
-        assertFalse(volunteer_no_jobs.addToCurrentJobs(job_start_0101_end_0101));
+        assertTrue(volunteer_no_jobs.addToCurrentJobs(job_start_0101_end_0101));
     }
 
     @Test
@@ -66,10 +66,10 @@ public class VolunteerTest_A {
     }
 
     @Test
-    public void addToCurrentJobs_VolunteerJobsDoesNotExtendToConflictJob_false() {
+    public void addToCurrentJobs_VolunteerJobsDoesNotExtendToConflictJob_true() {
         Volunteer volunteer_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
         volunteer_no_conflict_jobs.addToCurrentJobs(job_start_0101_end_0101);
-        assertFalse(volunteer_no_conflict_jobs.addToCurrentJobs(job_start_0103_end_0103));
+        assertTrue(volunteer_no_conflict_jobs.addToCurrentJobs(job_start_0103_end_0103));
     }
 
 
@@ -85,10 +85,10 @@ public class VolunteerTest_A {
     }
 
     @Test
-    public void addToCurrentJobs_VolunteerWithSameJob_true() {
+    public void addToCurrentJobs_VolunteerWithSameJob_false() {
         Volunteer volunteer_with_same_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
         volunteer_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0102);
-        assertTrue(volunteer_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0103));
+        assertFalse(volunteer_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0103));
     }
 
     @Test
@@ -103,9 +103,9 @@ public class VolunteerTest_A {
     }
 
     @Test
-    public void addToCurrentJobs_VolunteerWithSameDayAsEndDay_true() {
+    public void addToCurrentJobs_VolunteerWithSameDayAsEndDay_false() {
         Volunteer volunteer_with_end_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
         volunteer_with_end_day_conflict.addToCurrentJobs(job_start_0102_end_0103);
-        assertTrue(volunteer_with_end_day_conflict.addToCurrentJobs(job_start_0103_end_0103));
+        assertFalse(volunteer_with_end_day_conflict.addToCurrentJobs(job_start_0103_end_0103));
     }
 }
