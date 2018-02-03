@@ -18,21 +18,13 @@ public class Volunteer extends User {
 
 
     public boolean isSameDayConflict(Job theJobFromList, Job theApplyingJob) {
-        boolean conflict = false;
-        conflict = theJobFromList.getStartDate().get(Calendar.DATE)
-                == theApplyingJob.getStartDate().get(Calendar.DATE)
-                || conflict;
-        System.out.println(conflict);
-        return conflict;
+        return theJobFromList.getStartDate().get(Calendar.DATE)
+                == theApplyingJob.getStartDate().get(Calendar.DATE);
     }
 
     public boolean isEndDayConflict(Job theJobFromList, Job theApplyingJob) {
-        boolean conflict = false;
-        conflict = theJobFromList.getEndDate().get(Calendar.DATE)
-                == theApplyingJob.getStartDate().get(Calendar.DATE)
-                || conflict;
-        System.out.println(conflict);
-        return conflict;
+        return theJobFromList.getEndDate().get(Calendar.DATE)
+                == theApplyingJob.getStartDate().get(Calendar.DATE);
     }
 
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
