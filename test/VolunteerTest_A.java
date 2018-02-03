@@ -40,42 +40,42 @@ public class VolunteerTest_A {
 
     @Test
     /*
-    Rule 1.a.ii
+    Rule 1.a.i
     Volunteer has no jobs already signed up for
      */
     public void isSameDayConflict_VolunteerNoJobsYet_false() {
-        Volunteer volunter_no_jobs = new Volunteer("Volunteer With No Jobs");
-        assertFalse(volunter_no_jobs.isSameDayConflict(new Job("Pointless Job"), job_start_0101_end_0101));
+        Volunteer volunteer_no_jobs = new Volunteer("Volunteer With No Jobs");
+        assertFalse(volunteer_no_jobs.isSameDayConflict(new Job("Pointless Job"), job_start_0101_end_0101));
     }
 
     @Test
     public void addToCurrentJobs_VolunteerNoJobsYet_false() {
-        Volunteer volunter_no_jobs = new Volunteer("Volunteer With No Jobs");
-        assertFalse(volunter_no_jobs.addToCurrentJobs(job_start_0101_end_0101));
+        Volunteer volunteer_no_jobs = new Volunteer("Volunteer With No Jobs");
+        assertFalse(volunteer_no_jobs.addToCurrentJobs(job_start_0101_end_0101));
     }
 
     @Test
     /*
-    Rule 1.a.iii
+    Rule 1.a.ii
     Volunteer has jobs already signed up for,
     this job does not extend across any days as jobs already signed up for
      */
     public void isEndDayConflict_VolunteerJobsDoesNotExtendToConflictJob_false() {
-        Volunteer volunter_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
-        assertFalse(volunter_no_conflict_jobs.isEndDayConflict(job_start_0101_end_0101, job_start_0103_end_0103));
+        Volunteer volunteer_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
+        assertFalse(volunteer_no_conflict_jobs.isEndDayConflict(job_start_0101_end_0101, job_start_0103_end_0103));
     }
 
     @Test
     public void addToCurrentJobs_VolunteerJobsDoesNotExtendToConflictJob_false() {
-        Volunteer volunter_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
-        volunter_no_conflict_jobs.addToCurrentJobs(job_start_0101_end_0101);
-        assertFalse(volunter_no_conflict_jobs.addToCurrentJobs(job_start_0103_end_0103));
+        Volunteer volunteer_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
+        volunteer_no_conflict_jobs.addToCurrentJobs(job_start_0101_end_0101);
+        assertFalse(volunteer_no_conflict_jobs.addToCurrentJobs(job_start_0103_end_0103));
     }
 
 
     @Test
     /*
-    Rule 1.a.iv
+    Rule 1.a.iii
     Volunteer has jobs already signed up for,
     this job starts the same day as the end of some job already signed up for
      */
@@ -86,14 +86,14 @@ public class VolunteerTest_A {
 
     @Test
     public void addToCurrentJobs_VolunteerWithSameJob_true() {
-        Volunteer volunter_with_same_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
-        volunter_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0102);
-        assertTrue(volunter_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0103));
+        Volunteer volunteer_with_same_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        volunteer_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0102);
+        assertTrue(volunteer_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0103));
     }
 
     @Test
     /*
-    Rule 1.a.v
+    Rule 1.a.iv
     Volunteer has jobs already signed up for,
     this job ends the same day as the start of some job already signed up for
      */
@@ -104,8 +104,8 @@ public class VolunteerTest_A {
 
     @Test
     public void addToCurrentJobs_VolunteerWithSameDayAsEndDay_true() {
-        Volunteer volunter_with_end_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
-        volunter_with_end_day_conflict.addToCurrentJobs(job_start_0102_end_0103);
-        assertTrue(volunter_with_end_day_conflict.addToCurrentJobs(job_start_0103_end_0103));
+        Volunteer volunteer_with_end_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        volunteer_with_end_day_conflict.addToCurrentJobs(job_start_0102_end_0103);
+        assertTrue(volunteer_with_end_day_conflict.addToCurrentJobs(job_start_0103_end_0103));
     }
 }

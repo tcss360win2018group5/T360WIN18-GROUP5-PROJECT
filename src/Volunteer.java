@@ -31,7 +31,6 @@ public class Volunteer extends User {
         return conflict;
     }
 
-//
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
         boolean is_there_any_conflict = myCurrentJobs.stream()
                 .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
