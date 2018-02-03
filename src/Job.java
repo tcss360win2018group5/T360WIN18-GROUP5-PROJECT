@@ -13,15 +13,17 @@ public class Job {
 	 */
 	private int myJobLength;
 
-	private GregorianCalendar myDate = new GregorianCalendar();
-	
+
 	private ArrayList<Volunteer> myVolunteers = new ArrayList<Volunteer>();
 	
 	/*
 	 *  Variables for start and end dates
 	 */
-	// Go here
-	
+	private GregorianCalendar myStartDate = new GregorianCalendar();
+
+	private GregorianCalendar myEndDate = new GregorianCalendar();
+
+
 	protected Job(final String theJobTitle) {
 		myJobTitle = theJobTitle;
 		
@@ -35,8 +37,8 @@ public class Job {
 		myVolunteers.add(theVolunteer);
 		System.out.println("Added " + theVolunteer + " to " + myJobTitle);
 	}
-	
-	
+
+
 	protected String getJobTitle() {
 		return myJobTitle;
 	}
@@ -46,12 +48,19 @@ public class Job {
 	}
 
 
-	protected GregorianCalendar getDate() {
-		return myDate;
+	protected GregorianCalendar getStartDate() {
+		return myStartDate;
 	}
 
-	protected void setDate(GregorianCalendar theDate) {
-		myDate = theDate;
+	protected void setStartDate(GregorianCalendar theDate) {
+		myStartDate = theDate;
 	}
 
+	protected GregorianCalendar getEndDate() {
+		return myEndDate;
+	}
+
+	protected void setEndDate(GregorianCalendar theDate) {
+		myEndDate = theDate;
+	}
 }

@@ -3,7 +3,6 @@ import static org.junit.Assert.*;
 
 import java.util.GregorianCalendar;
 
-
 /*
 Test for
 
@@ -15,27 +14,28 @@ Test for
  */
 public class VolunteerTest_A {
 
-    private Job job0101;
-    private Job job0101_conflict;
-
-    private Job job0102;
-    private Job job0103;
-
-    private Volunteer volunter_test;
+    private Job job_start_0101_end_0101;
+    private Job job_start_0102_end_0102;
+    private Job job_start_0102_end_0103;
+    private Job job_start_0103_end_0103;
 
     @Before
     public void setUp() {
-        job0101 = new Job("Job 0101");
-        job0101.setDate(new GregorianCalendar(2018,01,01));
-        job0101_conflict = new Job("Job 0101 Conflict");
-        job0101_conflict.setDate(new GregorianCalendar(2018,01,01));
+        job_start_0101_end_0101 = new Job("Job Start 0101 End 0101");
+        job_start_0101_end_0101.setStartDate(new GregorianCalendar(2018,01,01));
+        job_start_0101_end_0101.setEndDate(new GregorianCalendar(2018,01,01));
 
-        job0102 = new Job("Job 0102");
-        job0102.setDate(new GregorianCalendar(2018,01,02));
-        job0103 = new Job("Job 0103");
-        job0103.setDate(new GregorianCalendar(2018,01,03));
+        job_start_0102_end_0102 = new Job("Job Start 0102 End 0102");
+        job_start_0102_end_0102.setStartDate(new GregorianCalendar(2018,01,02));
+        job_start_0102_end_0102.setEndDate(new GregorianCalendar(2018,01,02));
 
-        volunter_test = new Volunteer("Volunteer Test");
+        job_start_0102_end_0103 = new Job("Job Start 0102 End 0103");
+        job_start_0102_end_0103.setStartDate(new GregorianCalendar(2018,01,02));
+        job_start_0102_end_0103.setEndDate(new GregorianCalendar(2018,01,03));
+
+        job_start_0103_end_0103 = new Job("Job Start 0103 End 0103");
+        job_start_0103_end_0103.setStartDate(new GregorianCalendar(2018,01,03));
+        job_start_0103_end_0103.setEndDate(new GregorianCalendar(2018,01,03));
     }
 
     @Test
@@ -43,8 +43,15 @@ public class VolunteerTest_A {
     Rule 1.a.ii
     Volunteer has no jobs already signed up for
      */
-    public void testApplyWithNoSignedJobs() {
-        volunter_test.applyToJob(job0101);
+    public void isSameDayConflict_VolunteerNoJobsYet_false() {
+        Volunteer volunter_no_jobs = new Volunteer("Volunteer With No Jobs");
+        assertFalse(volunter_no_jobs.isSameDayConflict(new Job("Pointless Job"), job_start_0101_end_0101));
+    }
+
+    @Test
+    public void addToCurrentJobs_VolunteerNoJobsYet_false() {
+        Volunteer volunter_no_jobs = new Volunteer("Volunteer With No Jobs");
+        assertFalse(volunter_no_jobs.addToCurrentJobs(job_start_0101_end_0101));
     }
 
     @Test
@@ -53,10 +60,18 @@ public class VolunteerTest_A {
     Volunteer has jobs already signed up for,
     this job does not extend across any days as jobs already signed up for
      */
-    public void testApplyToJobNotOverlap() {
-        volunter_test.applyToJob(job0101);
-        volunter_test.applyToJob(job0103);
+    public void isEndDayConflict_VolunteerJobsDoesNotExtendToConflictJob_false() {
+        Volunteer volunter_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
+        assertFalse(volunter_no_conflict_jobs.isEndDayConflict(job_start_0101_end_0101, job_start_0103_end_0103));
     }
+
+    @Test
+    public void addToCurrentJobs_VolunteerJobsDoesNotExtendToConflictJob_false() {
+        Volunteer volunter_no_conflict_jobs = new Volunteer("Volunteer With No Conflict");
+        volunter_no_conflict_jobs.addToCurrentJobs(job_start_0101_end_0101);
+        assertFalse(volunter_no_conflict_jobs.addToCurrentJobs(job_start_0103_end_0103));
+    }
+
 
     @Test
     /*
@@ -64,14 +79,16 @@ public class VolunteerTest_A {
     Volunteer has jobs already signed up for,
     this job starts the same day as the end of some job already signed up for
      */
-    public void testApplyJobSameDayJobConflict() {
-        volunter_test.applyToJob(job0101);
-        try {
-            volunter_test.applyToJob(job0101_conflict);
-        }
-        catch (RuntimeException e) {
-            fail("Caught Job Conflict");
-        }
+    public void isSameDayConflict_VolunteerWithSameJob_true() {
+        Volunteer volunter_with_same_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        assertTrue(volunter_with_same_day_conflict.isSameDayConflict(job_start_0102_end_0102, job_start_0102_end_0103));
+    }
+
+    @Test
+    public void addToCurrentJobs_VolunteerWithSameJob_true() {
+        Volunteer volunter_with_same_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        volunter_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0102);
+        assertTrue(volunter_with_same_day_conflict.addToCurrentJobs(job_start_0102_end_0103));
     }
 
     @Test
@@ -80,14 +97,15 @@ public class VolunteerTest_A {
     Volunteer has jobs already signed up for,
     this job ends the same day as the start of some job already signed up for
      */
-    public void testApplyJobEndSameDayConflict() {
-        volunter_test.applyToJob(job0101);
-        try {
-            volunter_test.applyToJob(job0101_conflict);
-        }
-        catch (RuntimeException e) {
-            fail("Caught Job Conflict");
-        }
+    public void isEndDayConflict_VolunteerWithSameDayAsEndDay_true() {
+        Volunteer volunter_with_end_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        assertTrue(volunter_with_end_day_conflict.isEndDayConflict(job_start_0102_end_0103, job_start_0103_end_0103));
     }
 
+    @Test
+    public void addToCurrentJobs_VolunteerWithSameDayAsEndDay_true() {
+        Volunteer volunter_with_end_day_conflict = new Volunteer("Volunteer With Same Day Conflict");
+        volunter_with_end_day_conflict.addToCurrentJobs(job_start_0102_end_0103);
+        assertTrue(volunter_with_end_day_conflict.addToCurrentJobs(job_start_0103_end_0103));
+    }
 }

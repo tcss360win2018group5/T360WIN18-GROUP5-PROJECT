@@ -15,30 +15,41 @@ public class Volunteer extends User {
 	protected Volunteer(String theName) {
 		super(theName, PRIORITY_LEVEL);
 	}
-	
-	private void addToCurrentJobs(final Job theJob) {
-		myCurrentJobs.add(theJob);
-		System.out.println("Added " + theJob.getJobTitle() + " to my pending jobs.");
-	}
+
+
+    public boolean isSameDayConflict(Job theJobFromList, Job theApplyingJob) {
+        boolean conflict = false;
+        conflict = theJobFromList.getStartDate().get(Calendar.DATE) == theApplyingJob.getStartDate().get(Calendar.DATE) || conflict;
+        System.out.println(conflict);
+        return conflict;
+    }
+
+    public boolean isEndDayConflict(Job theJobFromList, Job theApplyingJob) {
+        boolean conflict = false;
+        conflict = theJobFromList.getEndDate().get(Calendar.DATE) == theApplyingJob.getStartDate().get(Calendar.DATE) || conflict;
+        System.out.println(conflict);
+        return conflict;
+    }
+
+//
+	public boolean addToCurrentJobs(final Job theApplyingJob) {
+        boolean is_there_any_conflict = myCurrentJobs.stream()
+                .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
+                                       || isEndDayConflict(aJobFromList, theApplyingJob));
+        if (is_there_any_conflict) {
+//            System.out.println(theApplyingJob.getJobTitle() + " was not added due to conflict");
+        } else {
+            myCurrentJobs.add(theApplyingJob);
+//            System.out.println("Added " + theApplyingJob.getJobTitle() + " to my pending jobs.");
+        }
+        return is_there_any_conflict;
+    }
 
 
 	protected ArrayList getCurrentJobs() {
 		return myCurrentJobs;
 	}
 
-
-    protected void applyToJob(Job theJob) {
-        ArrayList<Job> compareJobs = getCurrentJobs();
-
-        compareJobs.forEach(job -> {
-            // Check current job date on list to job date
-            if (job.getDate().get(Calendar.DATE) == theJob.getDate().get(Calendar.DATE)) {
-                throw new RuntimeException("This job starts the same day as the end of some job already signed up for\n");
-            }
-        });
-
-        addToCurrentJobs(theJob);
-    }
 
 
 
@@ -55,16 +66,19 @@ public class Volunteer extends User {
         test.myCurrentJobs.forEach(System.out::println);
 
         Job job_test1 = new Job("Job Test1");
-        job_test1.setDate(new GregorianCalendar(2018,01,01));
+        job_test1.setStartDate(new GregorianCalendar(2018,01,01));
+        job_test1.setEndDate(new GregorianCalendar(2018,01,01));
         Job job_test2 = new Job("Job Test2");
-        job_test2.setDate(new GregorianCalendar(2018,01,02));
-        Job job_test3 = new Job("Job Test2");
-        job_test3.setDate(new GregorianCalendar(2018,01,02));
+        job_test2.setStartDate(new GregorianCalendar(2018,01,02));
+        job_test2.setEndDate(new GregorianCalendar(2018,01,03));
+        Job job_test3 = new Job("Job Test3");
+        job_test3.setStartDate(new GregorianCalendar(2018,01,03));
+        job_test3.setEndDate(new GregorianCalendar(2018,01,03));
 
-        test.applyToJob(job_test1);
-        test.applyToJob(job_test2);
-//        test.addToCurrentJobs(job_test3);
-//        test.applyToJob(job_test3);
+
+        test.addToCurrentJobs(job_test2);
+        test.addToCurrentJobs(job_test3);
+
 
         test.myCurrentJobs.forEach(job -> System.out.println(job.getJobTitle()));
     }

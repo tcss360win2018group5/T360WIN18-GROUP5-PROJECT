@@ -19,6 +19,9 @@ public class JobCoordinator {
 	protected static ArrayList<Job> getJobs() {
 		return myJobList;
 	}
-	
 
+
+	protected void applyToJob(Job theJob) {
+
+	}
 }
