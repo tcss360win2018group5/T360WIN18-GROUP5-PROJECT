@@ -10,12 +10,12 @@ public class JobCoordinator {
     private final ArrayList<Job> myPendingJobList;
     private final ArrayList<Job> myFinishedJobList;
     
-    private static GregorianCalendar myCurrentDate = new GregorianCalendar();
+    private final GregorianCalendar myCurrentDate;
     
     public JobCoordinator() {
         myPendingJobList = new ArrayList<Job>();
         myFinishedJobList = new ArrayList<Job>();
-        
+        myCurrentDate = new GregorianCalendar();
     }
     /**
      * Adds a job to my list of jobs
@@ -26,8 +26,7 @@ public class JobCoordinator {
             // warning, job already exists
         } else if (theJob.getJobLength() > MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
-        } else if (getDifferenceInDays(JobCoordinator.myCurrentDate,
-                                                              theJob.getStartDate()) 
+        } else if (getDifferenceInDays(this.myCurrentDate, theJob.getStartDate()) 
                         > MAXIMUM_DAYS_FROM_TODAY) {
             // warning, job is further than 75 days away
         } else {
@@ -36,7 +35,7 @@ public class JobCoordinator {
     }
     
     public void addFinishedJob(final Job theJob) {
-        if (JobCoordinator.myCurrentDate.compareTo(theJob.getEndDate()) < 0) {
+        if (this.myCurrentDate.compareTo(theJob.getEndDate()) < 0) {
             // impossible for job to be finished, warning
         } else {
             myFinishedJobList.add(theJob);
@@ -63,6 +62,10 @@ public class JobCoordinator {
         return (ArrayList<Job>) myFinishedJobList.clone();
     }
     
+    public GregorianCalendar getCurrentDate() {
+        return (GregorianCalendar) this.myCurrentDate.clone();
+    }
+    
     
     // testers
     // can only potentially add a job if there are less than 20 pending jobss
@@ -75,7 +78,7 @@ public class JobCoordinator {
     private int getDifferenceInDays(GregorianCalendar theFirstDate, 
                                           GregorianCalendar theSecondDate) {
         long milliTime = theFirstDate.getTimeInMillis() - theSecondDate.getTimeInMillis();
-        TimeUnit.MILLISECONDS.convert(milliTime, TimeUnit.DAYS);
-        return (int) milliTime;
+        long convertedTime = TimeUnit.DAYS.convert(milliTime, TimeUnit.MILLISECONDS);
+        return (int) convertedTime;
     }   
 }
