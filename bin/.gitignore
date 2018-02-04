@@ -1,5 +1,9 @@
-/util/
+/Job.class
+/JobCoordinator.class
 /Main.class
-/test/
-/CalendarCalculator.class
+/ParkManager.class
 /SystemCoordinator.class
+/Tester.class
+/User.class
+/UserInterface.class
+/Volunteer.class
