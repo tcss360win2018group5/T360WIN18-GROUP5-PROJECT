@@ -14,7 +14,7 @@ public class ParkManager extends User {
         boolean is_there_conflict = false;
         boolean is_job_added = false;
         
-        
+        // all other checks done when job is being submitted
         if (this.hasPreviouslySubmittedJob(theSubmittedJob)) {
             is_there_conflict = true;
         }
