@@ -1,9 +1,2 @@
-/Job.class
-/JobCoordinator.class
-/Main.class
-/ParkManager.class
-/SystemCoordinator.class
-/Tester.class
-/User.class
-/UserInterface.class
-/Volunteer.class
+/model/
+/test/

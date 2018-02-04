@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Scanner;
 
 public class UserInterface {
@@ -13,7 +15,9 @@ public class UserInterface {
 	private static final String DIRECTIONS = "Commands: Y (yes) | N (no) | B (back) | X (exit)";
 
 	private final SystemCoordinator mySystemCoordinator;
+	
 	private final JobCoordinator myJobCoordinator;
+	
 	/**
 	 * Scanner to read user input from console.
 	 */
@@ -48,25 +52,16 @@ public class UserInterface {
 			userInput = myScanner.next();
 			userInput = userInput.toLowerCase();
 
-			if (userInput.equals(YES)) 
-			{
+			if (userInput.equals(YES)) {
 				System.out.println("Pressed Y");
-			} 
-			else if (userInput.equals(NO)) 
-			{
+			} else if (userInput.equals(NO)) {
 				System.out.println("Pressed N");
-			} 
-			else if (userInput.equals(BACK)) 
-			{
+			} else if (userInput.equals(BACK)) {
 				System.out.println("Pressed B");
-			} 
-			else if (userInput.equals(EXIT)) 
-			{
+			} else if (userInput.equals(EXIT)) {
 				System.out.println("Thank you. Goodbye.");
 				System.exit(0);
-			} 
-			else 
-			{
+			} else {
 				System.out.println("Invalid command.");
 			}
 

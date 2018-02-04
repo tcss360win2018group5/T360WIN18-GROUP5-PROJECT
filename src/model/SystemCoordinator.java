@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 
 public class SystemCoordinator {
@@ -7,7 +9,7 @@ public class SystemCoordinator {
 	    myUsers = new ArrayList<String>();
 	}
 	
-	protected boolean signIn(String theUsername) {
+	public boolean signIn(String theUsername) {
 		boolean isUser = false;
 		for (String s: this.myUsers) {
 			if (s.equals(theUsername)) {
@@ -18,7 +20,7 @@ public class SystemCoordinator {
 	}
 	
 	@SuppressWarnings("unchecked")
-    protected ArrayList<String> getUsers() {
+    public ArrayList<String> getUsers() {
 	    return (ArrayList<String>) myUsers.clone();
 	}
 }
