@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 public class SystemCoordinator {
 	
 	//Should be some kind of date
-	private int currentDate;
+	private static GregorianCalendar myCurrentDate = new GregorianCalendar();
 	
 	private static ArrayList<String> myUsers = new ArrayList<String>();
 	
@@ -15,6 +16,10 @@ public class SystemCoordinator {
 			}
 		}
 		return isUser;
+	}
+	
+	public static GregorianCalendar getCurrentDate() {
+	    return myCurrentDate;
 	}
 
 }

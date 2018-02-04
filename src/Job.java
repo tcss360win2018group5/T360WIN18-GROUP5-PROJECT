@@ -12,7 +12,8 @@ public class Job {
 	 * Length of this job in days
 	 */
 	private int myJobLength;
-
+	
+	private int myMaxVolunteers;
 
 	private ArrayList<Volunteer> myVolunteers = new ArrayList<Volunteer>();
 	
@@ -24,43 +25,58 @@ public class Job {
 	private GregorianCalendar myEndDate = new GregorianCalendar();
 
 
-	protected Job(final String theJobTitle) {
+	public Job(final String theJobTitle) {
 		myJobTitle = theJobTitle;
 		
 	}
-	
+
+   
+    // mutators
 	/**
 	 * Adds a volunteer to this job and let's the user know they were added.
 	 * @param theVolunteer to be added to this job.
 	 */
-	protected void addVolunteer(final Volunteer theVolunteer) {
+	public void addVolunteer(final Volunteer theVolunteer) {
+	    if (myVolunteers.contains(theVolunteer)) {
+	        // volunteer already applied
+	    } else if (myVolunteers.size() >= this.myMaxVolunteers) {
+	        // no more space to apply
+	        // also need to add check for role-specific applying later
+	    } else if (!theVolunteer.addToCurrentJobs(this)) {
+	        // if there exists conflicts with volunteer's current jobs
+	        // volunteer automatically gets added to job if there doesnt exist conflicts
+	    }
 		myVolunteers.add(theVolunteer);
 		System.out.println("Added " + theVolunteer + " to " + myJobTitle);
 	}
 
+	public void setStartDate(GregorianCalendar theDate) {
+	    this.myStartDate = theDate;
+	}
 
-	protected String getJobTitle() {
-		return myJobTitle;
+	public void setEndDate(GregorianCalendar theDate) {
+	    this.myEndDate = theDate;
 	}
 	
-	protected int getJobLength() {
-		return myJobLength;
+	public void setMaxVolunteers(int theMaxVolunteers) {
+	    this.myMaxVolunteers = theMaxVolunteers;
 	}
+	
+	// queries
+    public String getJobTitle() {
+        return this.myJobTitle;
+    }
+    
+    public int getJobLength() {
+        return this.myJobLength;
+    }
 
 
-	protected GregorianCalendar getStartDate() {
-		return myStartDate;
-	}
+    public GregorianCalendar getStartDate() {
+        return (GregorianCalendar) this.myStartDate.clone();
+    }
 
-	protected void setStartDate(GregorianCalendar theDate) {
-		myStartDate = theDate;
-	}
-
-	protected GregorianCalendar getEndDate() {
-		return myEndDate;
-	}
-
-	protected void setEndDate(GregorianCalendar theDate) {
-		myEndDate = theDate;
-	}
+    public GregorianCalendar getEndDate() {  
+        return (GregorianCalendar) this.myEndDate.clone();
+    }
 }
