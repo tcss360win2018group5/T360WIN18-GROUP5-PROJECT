@@ -14,26 +14,26 @@ import model.JobCoordinator;
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
     public Job globalGenericJob;
-    
+
     @Before
     public void setUp() throws Exception {
         globalJobCoordinator = new JobCoordinator();
         globalGenericJob = new Job("GenericGlobalJob");
     }
 
-    
-    // Testing Park Manager Business Rule A 
+
+    // Testing Park Manager Business Rule 2A
     // There can not be more than the maximum number of pending jobs at a time in the entire system, default of 20
-    
+
     // i) The system has far fewer than the maximum number of pending jobs
     @Test
     public final void canAddJob_LessThanMaximumPendingJobs_ShouldReturnTrue() {
         // add 0 or 1 job so that # current jobs < maximum jobs
         globalJobCoordinator.addPendingJob(globalGenericJob);
-        
+
         assertTrue(globalJobCoordinator.hasSpaceToAddNewJob());
     }
-    
+
     // ii) The system has one fewer than the maximum number of pending jobs
     @Test
     public final void canAddJob__OneLessThanMaximumPendingJobs__ShouldReturnTrue() {
@@ -42,10 +42,10 @@ public class JobCoordinatorTest {
             Job generatedGenericJob = new Job("generatedGenericJob" + i);
             globalJobCoordinator.addPendingJob(generatedGenericJob);
         }
-        
+
         assertTrue(globalJobCoordinator.hasSpaceToAddNewJob());
     }
-    
+
     // iii) The system has exactly the maximum number of pending jobs
     @Test
     public final void canAddJob__ExactlyMaximumPendingJobs__ShouldReturnFalse() {
@@ -54,15 +54,15 @@ public class JobCoordinatorTest {
             Job generatedGenericJob = new Job("generatedGenericJob" + i);
             globalJobCoordinator.addPendingJob(generatedGenericJob);
         }
-        
+
         assertFalse(globalJobCoordinator.hasSpaceToAddNewJob());
     }
-    
-    
+
+
     // Testing Park Manager Business Rule C
     // No job can be specified whose end date is more than the maximum number of days from the current date, default of 75
 
-    
+
     // i) The specified job ends one fewer than the maximum number of days from the current date
     @Test
     public final void addPendingJob_JobEndsOneLessThanMaximumDays__ShouldAddJob() {
@@ -79,21 +79,21 @@ public class JobCoordinatorTest {
         // specify generic job on that day
         globalGenericJob.setStartDate(newCalendarDate);
         globalGenericJob.setEndDate(newCalendarDate);
-        
+
         // attempt to add and test
         globalJobCoordinator.addPendingJob(globalGenericJob);
         assertTrue(globalJobCoordinator.getPendingJobs().contains(globalGenericJob));
     }
-    
+
     // ii) The specified job ends the maximum number of days from the current date
     @Test
     public final void addPendingJob_JobEndsExactlyMaximumDaysAway__ShouldAddJob() {
-        Date currentDate = globalJobCoordinator.getCurrentDate().getTime(); 
-        
+        Date currentDate = globalJobCoordinator.getCurrentDate().getTime();
+
         // create new date 75 days away
         long currentDateDaysPlus75Days = TimeUnit.DAYS.convert(currentDate.getTime(), TimeUnit.MILLISECONDS) + 75;
         long convertedCurrentDatePlus75 = TimeUnit.MILLISECONDS.convert(currentDateDaysPlus75Days, TimeUnit.DAYS);
-        
+
         // create new calendar date to add to generic job
         GregorianCalendar newCalendarDate = new GregorianCalendar();
         newCalendarDate.setTime(new Date(convertedCurrentDatePlus75));
@@ -106,12 +106,12 @@ public class JobCoordinatorTest {
         globalJobCoordinator.addPendingJob(globalGenericJob);
         assertTrue(globalJobCoordinator.getPendingJobs().contains(globalGenericJob));
     }
-    
+
     // iii) The specified job ends one more than the maximum number of days from the current date
     @Test
     public final void addPendingJob_JobEndsOneMoreThanMaximumDays__ShouldNotAddJob() {
         Date currentDate = globalJobCoordinator.getCurrentDate().getTime();
-        
+
         // create new date 76 days away
         long currentDateDaysPlus76Days = TimeUnit.DAYS.convert(currentDate.getTime(), TimeUnit.MILLISECONDS) + 76;
         long convertedCurrentDatePlus76 = TimeUnit.MILLISECONDS.convert(currentDateDaysPlus76Days, TimeUnit.DAYS);

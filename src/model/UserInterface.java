@@ -41,11 +41,11 @@ public class UserInterface {
 		userInput = myScanner.next();
 		
 		//If the user exists
-		if (mySystemCoordinator.signIn(userInput)) {
-			//send them to login
-		} else {
-			//have them create username
-		}
+//		if (mySystemCoordinator.signIn(userInput)) {
+//			//send them to login
+//		} else {
+//			//have them create username
+//		}
 		
 		while (true) {
 			System.out.println(DIRECTIONS);
