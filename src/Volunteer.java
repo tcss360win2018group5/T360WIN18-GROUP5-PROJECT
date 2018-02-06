@@ -62,8 +62,7 @@ public class Volunteer extends User {
 
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
         boolean is_there_conflict = myCurrentJobs.stream()
-                .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
-                                       || isEndDayConflict(aJobFromList, theApplyingJob));
+                .anyMatch(aJobFromList -> isOverlapping(aJobFromList, theApplyingJob));
         boolean is_job_added = false;
         if (!is_there_conflict) {
             myCurrentJobs.add(theApplyingJob);
