@@ -12,6 +12,8 @@ public class UserInterface {
 	
 	private static final String DIRECTIONS = "Commands: Y (yes) | N (no) | B (back) | X (exit)";
 
+	private final SystemCoordinator mySystemCoordinator;
+	private final JobCoordinator myJobCoordinator;
 	/**
 	 * Scanner to read user input from console.
 	 */
@@ -24,6 +26,8 @@ public class UserInterface {
 
 	protected UserInterface() {
 		myScanner = new Scanner(System.in);
+		mySystemCoordinator = new SystemCoordinator();
+		myJobCoordinator = new JobCoordinator();
 	}
 
 	protected void start() {
@@ -33,7 +37,7 @@ public class UserInterface {
 		userInput = myScanner.next();
 		
 		//If the user exists
-		if (SystemCoordinator.signIn(userInput)) {
+		if (mySystemCoordinator.signIn(userInput)) {
 			//send them to login
 		} else {
 			//have them create username

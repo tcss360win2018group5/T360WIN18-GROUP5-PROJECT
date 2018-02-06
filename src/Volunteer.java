@@ -16,19 +16,52 @@ public class Volunteer extends User {
 		super(theName, PRIORITY_LEVEL);
 	}
 
-
+	// deprecated, use isOverlapping
     public boolean isSameDayConflict(Job theJobFromList, Job theApplyingJob) {
         return theJobFromList.getStartDate().get(Calendar.DATE)
                 == theApplyingJob.getStartDate().get(Calendar.DATE);
     }
 
+    // deprecated, use isOverlapping
     public boolean isEndDayConflict(Job theJobFromList, Job theApplyingJob) {
         return theJobFromList.getEndDate().get(Calendar.DATE)
                 == theApplyingJob.getStartDate().get(Calendar.DATE);
     }
+    
+    // for Job 1 and 2 
+    // possible conflict cases:
+    // [1,2][ , ][ , ][ , ] (same day)
+    // [1, ][1,2][ ,2][ , ] (end day conflict)
+    // [ ,2][1,2][1, ][ , ] (end day conflict, mirror case)
+    // [1, ][1,2][1,2][ ,2] (left (relative to 2) overlap conflict
+    // [ ,2][1,2][1,2][1, ] (right (relative to 2) overlap conflict
+    // [ ,2][1,2][ ,2][ , ] (inside conflict)
+    // since we are only using start and end dates as comparison points, we must consider all
+    // types of overlap, especially those not immediately discernable via a quick check of 
+    // same day or end day conflict
+    // there might be some better way of doing this, though
+    
+    public boolean isOverlapping(Job theJobFromList, Job theApplyingJob) {
+        GregorianCalendar listJobStart = theJobFromList.getStartDate();
+        GregorianCalendar listJobEnd = theJobFromList.getEndDate();
+        GregorianCalendar applyingJobStart = theApplyingJob.getStartDate();
+        GregorianCalendar applyingJobEnd = theApplyingJob.getEndDate();
+                        // same day conflict
+        return listJobStart.compareTo(applyingJobStart) == 0
+                        // if listJob starts  on the same day that applyingJob ends
+                        || listJobStart.compareTo(applyingJobEnd) == 0 
+                        // if listJob ends on the same day applyingJob starts
+                        || listJobEnd.compareTo(applyingJobStart) == 0
+                        // if listJob overlaps on the left with applyingJob
+                        || (listJobStart.compareTo(applyingJobStart) < 0 && listJobEnd.compareTo(applyingJobStart) >= 0)
+                        // if listJob overlaps on the right with applyingJob
+                        || (listJobEnd.compareTo(applyingJobEnd) > 0 && listJobStart.compareTo(applyingJobEnd) <= 0)
+                        // if listJob overlaps inside applyingJob
+                        || (listJobStart.compareTo(applyingJobStart) > 0 && (listJobStart.compareTo(applyingJobEnd) < 0));
+    }
 
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
-        boolean is_there_conflict = getCurrentJobs().stream()
+        boolean is_there_conflict = myCurrentJobs.stream()
                 .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
                                        || isEndDayConflict(aJobFromList, theApplyingJob));
         boolean is_job_added = false;
@@ -40,8 +73,9 @@ public class Volunteer extends User {
     }
 
 
-	protected ArrayList<Job> getCurrentJobs() {
-		return myCurrentJobs;
+	@SuppressWarnings("unchecked")
+    protected ArrayList<Job> getCurrentJobs() {
+		return (ArrayList<Job>) this.myCurrentJobs.clone();
 	}
 
 
