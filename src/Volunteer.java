@@ -28,7 +28,7 @@ public class Volunteer extends User {
     }
 
 	public boolean addToCurrentJobs(final Job theApplyingJob) {
-        boolean is_there_conflict = myCurrentJobs.stream()
+        boolean is_there_conflict = getCurrentJobs().stream()
                 .anyMatch(aJobFromList -> isSameDayConflict(aJobFromList, theApplyingJob)
                                        || isEndDayConflict(aJobFromList, theApplyingJob));
         boolean is_job_added = false;
@@ -40,7 +40,7 @@ public class Volunteer extends User {
     }
 
 
-	protected ArrayList getCurrentJobs() {
+	protected ArrayList<Job> getCurrentJobs() {
 		return myCurrentJobs;
 	}
 
