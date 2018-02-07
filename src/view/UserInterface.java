@@ -1,6 +1,9 @@
-package model;
+package view;
 
 import java.util.Scanner;
+
+import model.JobCoordinator;
+import model.SystemCoordinator;
 
 public class UserInterface {
 

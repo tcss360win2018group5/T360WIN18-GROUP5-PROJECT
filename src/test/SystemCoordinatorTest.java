@@ -24,6 +24,11 @@ public class SystemCoordinatorTest {
         globalGenericVolunteerJane = new Volunteer("Jane"); //Makes Jane a volunteer.
         globalGenericParkManagerJoe = new ParkManager("Joe"); //Makes Joe a park manager.
         globalGenericOfficeStaffTammy = new OfficeStaff("Tammy");
+        globalSystemCoordinator.addUser(globalGenericVolunteerJane);
+        globalSystemCoordinator.addUser(globalGenericParkManagerJoe);
+        globalSystemCoordinator.addUser(globalGenericOfficeStaffTammy);
+        
+        
     }
 
 
@@ -31,19 +36,19 @@ public class SystemCoordinatorTest {
     // No User can carry out any other user story until they are identified by the system
     @Test
     public final void signIn_isVolunteer_ShouldReturnTrue() {
-        assertTrue(globalSystemCoordinator.signIn(globalGenericVolunteerJane));
+        assertTrue(globalSystemCoordinator.signIn(globalGenericVolunteerJane.getUsername()));
     }
 
     // No User can carry out any other user story until they are identified by the system
     @Test
     public final void signIn_isParkManager_ShouldReturnTrue() {
-        assertTrue(globalSystemCoordinator.signIn(globalGenericParkManagerJoe));
+        assertTrue(globalSystemCoordinator.signIn(globalGenericParkManagerJoe.getUsername()));
     }
 
     // No User can carry out any other user story until they are identified by the system
     @Test
     public final void signIn_notValidUserType_ShouldReturnFalse() {
-        assertFalse(globalSystemCoordinator.signIn(globalGenericOfficeStaffTammy));
+        assertFalse(globalSystemCoordinator.signIn(globalGenericOfficeStaffTammy.getUsername()));
     }
 
 

@@ -20,25 +20,26 @@ public class SystemCoordinator {
 	//
 	//	}
 
-	public boolean signIn(User theUser) {
+	public boolean signIn(String theUsername) {
 		boolean isUser = false;
-		if (theUser instanceof Volunteer 
-				|| theUser instanceof ParkManager
-				|| theUser instanceof OfficeStaff) {
-			for (User s: myUsers) {
-				if (s.getUsername().equals(theUser.getUsername())) {
-					isUser = true;
-				} else {
-					isUser = false;
-					System.out.println("Not a current user");
-					//sign up instead.
-				}
-			}
-		} else {
-			System.out.println("Invalid type added");
+		
+		for (User u : this.myUsers) {
+		    if (u.getUsername().equals(theUsername)) {
+		        isUser = true;
+		    }
 		}
 		
 		return isUser;
+	}
+	
+	public void addUser(User theUser) {
+       for (User u : this.myUsers) {
+            if (u.getUsername().equals(theUser.getUsername())) {
+                // warning user already exists
+            }
+        }
+       
+	    this.addUser(theUser);
 	}
 
 
