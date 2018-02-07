@@ -1,3 +1,5 @@
+import model.Job;
+import model.Volunteer;
 import org.junit.*;
 import static org.junit.Assert.*;
 
