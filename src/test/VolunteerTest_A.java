@@ -1,3 +1,5 @@
+package test;
+
 import model.Job;
 import model.Volunteer;
 import org.junit.*;

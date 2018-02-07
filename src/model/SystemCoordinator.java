@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class SystemCoordinator {
-	private static ArrayList<User> myUsers;
+	private final ArrayList<User> myUsers;
 
 	public SystemCoordinator() {
 		myUsers = new ArrayList<User>();
