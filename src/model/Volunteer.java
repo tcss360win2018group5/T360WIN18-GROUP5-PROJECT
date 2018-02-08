@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 
 public class Volunteer extends User implements Serializable {
 	/** The priority level for Volunteer type users. */
-	private static final int PRIORITY_LEVEL = 1;
+	private static final int PRIORITY_LEVEL = 2;
 
 	/** The current jobs this Volunteer is signed up for. */
 	private ArrayList<Job> myCurrentJobs = new ArrayList<Job>();
@@ -22,7 +22,7 @@ public class Volunteer extends User implements Serializable {
 		super(theName, PRIORITY_LEVEL);
 	}
 
-	// mutators
+	// mutator's
     /**
      * Adds a current job to the volunteer's list of jobs.
      *

@@ -19,10 +19,20 @@ public class Job implements Serializable {
 	private ArrayList<Volunteer> myVolunteers = new ArrayList<Volunteer>();
 	
 	/** Calendar for start date. */
-	private GregorianCalendar myStartDate = new GregorianCalendar();
+	private GregorianCalendar myStartDate;
 	
     /** Calendar for end date. */
-	private GregorianCalendar myEndDate = new GregorianCalendar();
+	private GregorianCalendar myEndDate;
+
+	private String myJobLocation = "";
+
+	private String myContactName = "";
+
+	private String myContactNumber = "";
+
+	private String myContactEmail = "" ;
+	private int myJobDifficulty = 0;
+
 
 	/**
 	 * Creates a job given the specified information.
@@ -48,7 +58,10 @@ public class Job implements Serializable {
      * @param theJobTitle the title of the job.
      */
     public Job(final String theJobTitle) {
-        this(theJobTitle, -1, -1, null, null);
+        // Need dates that doesn't have null pointers to test the UI
+        this(theJobTitle, -1, -1,
+                new GregorianCalendar(2018,01,01),
+                new GregorianCalendar(2018,01,01));
     } 
     
     /**
@@ -125,7 +138,8 @@ public class Job implements Serializable {
      * @return Calendar object representing the start date.
      */
     public GregorianCalendar getStartDate() {
-        return (GregorianCalendar) this.myStartDate.clone();
+    	// Can't access when it's return as a clone()
+        return (GregorianCalendar) this.myStartDate;
     }
 
     /**
@@ -133,8 +147,9 @@ public class Job implements Serializable {
      * 
      * @return Calendar object representing the end date.
      */
-    public GregorianCalendar getEndDate() {  
-        return (GregorianCalendar) this.myEndDate.clone();
+    public GregorianCalendar getEndDate() {
+		// Can't access when it's return as a clone()
+		return (GregorianCalendar) this.myEndDate;
     }
     
     /**
@@ -171,4 +186,44 @@ public class Job implements Serializable {
     public boolean canAcceptVolunteers() {
         return myVolunteers.size() < this.myMaxVolunteers;
     }
+
+	public String getMyJobLocation() {
+		return myJobLocation;
+	}
+
+	public void setMyJobLocation(String myJobLocation) {
+		this.myJobLocation = myJobLocation;
+	}
+
+	public String getMyContactName() {
+		return myContactName;
+	}
+
+	public void setMyContactName(String myContactName) {
+		this.myContactName = myContactName;
+	}
+
+	public String getMyContactNumber() {
+		return myContactNumber;
+	}
+
+	public void setMyContactNumber(String myContactNumber) {
+		this.myContactNumber = myContactNumber;
+	}
+
+	public String getMyContactEmail() {
+		return myContactEmail;
+	}
+
+	public void setMyContactEmail(String myContactEmail) {
+		this.myContactEmail = myContactEmail;
+	}
+
+	public int getMyJobDifficulty() {
+		return myJobDifficulty;
+	}
+
+	public void setMyJobDifficulty(int myJobDifficulty) {
+		this.myJobDifficulty = myJobDifficulty;
+	}
 }

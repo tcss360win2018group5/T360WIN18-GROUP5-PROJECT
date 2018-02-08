@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class OfficeStaff extends User implements Serializable {
     /** The priority level for this park manager. */
-	private static final int PRIORITY_LEVEL = 2;
+	private static final int PRIORITY_LEVEL = 0;
 	
 	/** The list of submitted jobs for this park manager. */
 	private ArrayList<Job> mySubmittedJobs = new ArrayList<Job>();
