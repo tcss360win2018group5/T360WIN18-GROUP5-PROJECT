@@ -32,6 +32,11 @@ public class Job implements Serializable {
 
 	private String myContactEmail = "" ;
 	private int myJobDifficulty = 0;
+	private String myAddress = "";
+	private String myJobDescription = "";
+	private String myJobRole = "";
+	private String myJobRoleDescription = "";
+	private int myDifficulty = 0;
 
 
 	/**
@@ -226,4 +231,44 @@ public class Job implements Serializable {
 	public void setMyJobDifficulty(int myJobDifficulty) {
 		this.myJobDifficulty = myJobDifficulty;
 	}
+
+    public String getMyAddress() {
+        return myAddress;
+    }
+
+    public void setMyAddress(String myAddress) {
+        this.myAddress = myAddress;
+    }
+
+    public String getMyJobDescription() {
+        return myJobDescription;
+    }
+
+    public void setMyJobDescription(String myJobDescription) {
+        this.myJobDescription = myJobDescription;
+    }
+
+    public String getMyJobRole() {
+        return myJobRole;
+    }
+
+    public void setMyJobRole(String myJobRole) {
+        this.myJobRole = myJobRole;
+    }
+
+    public String getMyJobRoleDescription() {
+        return myJobRoleDescription;
+    }
+
+    public void setMyJobRoleDescription(String myJobRoleDescription) {
+        this.myJobRoleDescription = myJobRoleDescription;
+    }
+
+    public int getMyDifficulty() {
+        return myDifficulty;
+    }
+
+    public void setMyDifficulty(int myDifficulty) {
+        this.myDifficulty = myDifficulty;
+    }
 }
