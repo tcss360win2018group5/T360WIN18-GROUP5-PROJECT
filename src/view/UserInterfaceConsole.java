@@ -92,7 +92,7 @@ public class UserInterfaceConsole {
     /*
     Start the UI method below
      */
-    
+
     public void start() {
 
         String userInput;
