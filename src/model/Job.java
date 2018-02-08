@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-public class Job {
+public class Job implements Serializable {
 	
 	/** String representation of the title for this job. */
 	private String myJobTitle;

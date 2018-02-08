@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SystemCoordinator {
+public class SystemCoordinator implements Serializable {
 	private final ArrayList<User> myUsers;
 
 	public SystemCoordinator() {
@@ -22,7 +23,7 @@ public class SystemCoordinator {
 
 	public boolean signIn(String theUsername) {
 		boolean isUser = false;
-		
+
 		for (User u : this.myUsers) {
 		    if (u.getUsername().equals(theUsername)) {
 		        isUser = true;
@@ -31,7 +32,20 @@ public class SystemCoordinator {
 		
 		return isUser;
 	}
-	
+
+	public int getAccessLevel(String theUsername) {
+	    // Number 99 to return if unsuccessful
+	    int userAccessLevel = 99;
+
+        for (User u : this.myUsers) {
+            if (u.getUsername().equals(theUsername)) {
+                userAccessLevel = u.getAccessLevel();
+            }
+        }
+
+        return userAccessLevel;
+    }
+
 	public void addUser(User theUser) {
        for (User u : this.myUsers) {
             if (u.getUsername().equals(theUser.getUsername())) {
@@ -39,12 +53,19 @@ public class SystemCoordinator {
             }
         }
        
-	    this.addUser(theUser);
+	    myUsers.add(theUser);
 	}
 
 
 	@SuppressWarnings("unchecked")
-	public ArrayList<String> getUsers() {
-		return (ArrayList<String>) myUsers.clone();
+	public ArrayList<User> getUsers() {
+		return (ArrayList<User>) myUsers.clone();
 	}
+
+
+	public static void main(String[]args) {
+        SystemCoordinator sc = new SystemCoordinator();
+        sc.addUser(new Volunteer("test"));
+        sc.getUsers().forEach(System.out::println);
+    }
 }

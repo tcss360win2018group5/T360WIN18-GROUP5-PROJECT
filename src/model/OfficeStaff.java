@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class OfficeStaff extends User {
+public class OfficeStaff extends User implements Serializable {
     /** The priority level for this park manager. */
 	private static final int PRIORITY_LEVEL = 2;
 	

@@ -1,6 +1,8 @@
 package model;
 
-public abstract class User {
+import java.io.Serializable;
+
+public abstract class User implements Serializable {
 	/** The access level of the user. */
 	private int myAccessLevel;
 
@@ -33,5 +35,8 @@ public abstract class User {
 	}
 
 
+	public String toString() {
+		return myUsername;
+	}
 
 }

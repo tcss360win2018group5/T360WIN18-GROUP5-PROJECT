@@ -1,10 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Volunteer extends User {
+public class Volunteer extends User implements Serializable {
 	/** The priority level for Volunteer type users. */
 	private static final int PRIORITY_LEVEL = 1;
 
@@ -114,8 +115,6 @@ public class Volunteer extends User {
                         || (firstJobStart.compareTo(secondJobStart) > 0
                                         && (firstJobStart.compareTo(secondJobEnd) < 0));
 	}
-
-
 
 
 	public static void main(String[]args) {

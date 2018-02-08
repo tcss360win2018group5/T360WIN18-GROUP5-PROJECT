@@ -1,10 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-public class JobCoordinator {
+public class JobCoordinator implements Serializable {
     /** The default maximum number of pending jobs at any given time. */
     private final int MAXIMUM_JOBS = 20;
 

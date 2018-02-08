@@ -1,11 +1,11 @@
 package model;
 
-import view.UserInterface;
+import view.UserInterfaceConsole;
 
 public class Tester {
 
 	public static void main(String[] args) {
-		UserInterface UI = new UserInterface();
+		UserInterfaceConsole UI = new UserInterfaceConsole();
 		
 		UI.start();
 
