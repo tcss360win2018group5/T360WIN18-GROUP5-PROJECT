@@ -89,7 +89,7 @@ public class Job implements Serializable {
 	public void addVolunteer(final Volunteer theVolunteer) {
 	    if (myVolunteers.contains(theVolunteer)) {
 	        // volunteer already applied
-	    } else if (!theVolunteer.addToCurrentJobs(this)) {
+	    } else if (theVolunteer.addToCurrentJobs(this) != 0) {
 	        // if there exists conflicts with volunteer's current jobs
 	        // volunteer automatically gets added to job if there doesnt exist conflicts
 	    }
@@ -196,8 +196,8 @@ public class Job implements Serializable {
 		return myJobLocation;
 	}
 
-	public void setMyJobLocation(String myJobLocation) {
-		this.myJobLocation = myJobLocation;
+	public void setMyJobLocation(String theJobLocation) {
+		this.myJobLocation = theJobLocation;
 	}
 
 	public String getMyContactName() {
@@ -224,9 +224,6 @@ public class Job implements Serializable {
 		this.myContactEmail = myContactEmail;
 	}
 
-	public int getMyJobDifficulty() {
-		return myJobDifficulty;
-	}
 
 	public void setMyJobDifficulty(int myJobDifficulty) {
 		this.myJobDifficulty = myJobDifficulty;
@@ -264,8 +261,16 @@ public class Job implements Serializable {
         this.myJobRoleDescription = myJobRoleDescription;
     }
 
-    public int getMyDifficulty() {
-        return myDifficulty;
+    public String getMyDifficulty() {
+		String retString = "invalid";
+		if (myDifficulty == 0) {
+			retString = "Easy";
+		} else if (myDifficulty == 1) {
+			retString = "Medium";
+		} else if (myDifficulty == 3) {
+			retString = "Hard";
+		}
+		return retString;
     }
 
     public void setMyDifficulty(int myDifficulty) {

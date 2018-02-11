@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SystemCoordinator implements Serializable {
-	private final ArrayList<User> myUsers;
+	public ArrayList<User> myUsers;
 
 	public SystemCoordinator() {
 		myUsers = new ArrayList<User>();
@@ -55,6 +55,16 @@ public class SystemCoordinator implements Serializable {
        
 	    myUsers.add(theUser);
 	}
+	
+//	public void signUserUpForJob(Job theJob, Volunteer theVolunteer) {
+//		for (User u : this.myUsers) {
+//			if (u == theVolunteer) {
+//				Volunteer temp = (Volunteer) theVolunteer;
+//				temp.si
+//			}
+//		}
+//
+//	}
 
 
 	@SuppressWarnings("unchecked")
@@ -62,10 +72,10 @@ public class SystemCoordinator implements Serializable {
 		return (ArrayList<User>) myUsers.clone();
 	}
 
-
-	public static void main(String[]args) {
-        SystemCoordinator sc = new SystemCoordinator();
-        sc.addUser(new Volunteer("test"));
-        sc.getUsers().forEach(System.out::println);
-    }
+//
+//	public static void main(String[]args) {
+//        SystemCoordinator sc = new SystemCoordinator();
+//        sc.addUser(new Volunteer("test"));
+//        sc.getUsers().forEach(System.out::println);
+//    }
 }

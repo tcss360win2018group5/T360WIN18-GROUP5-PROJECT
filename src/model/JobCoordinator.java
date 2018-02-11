@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -25,15 +27,15 @@ public class JobCoordinator implements Serializable {
     private final ArrayList<Job> myFinishedJobList;
 
     /** The current date as a calendar. */
-    private final GregorianCalendar myCurrentDate;
-
+    private GregorianCalendar myCurrentDate;
+    
     /**
      * Creates a new instance with empty job lists and the current date.
      */
     public JobCoordinator() {
         myPendingJobList = new ArrayList<Job>();
         myFinishedJobList = new ArrayList<Job>();
-        myCurrentDate = new GregorianCalendar();
+        myCurrentDate = new GregorianCalendar(2018, 2, 12);
     }
 
     // mutators
@@ -47,17 +49,24 @@ public class JobCoordinator implements Serializable {
      *
      * @param theJob job to be added.
      */
-    public void addPendingJob(final Job theJob) {
-        if (myPendingJobList.contains(theJob)) {
+    public int addPendingJob(final Job theJob) {
+        int returnInt = 0; //will return value depending on pass or specific business rule fail
+        
+    	if (myPendingJobList.contains(theJob)) {
             // warning, job already exists
+    		returnInt = 1;
         } else if (theJob.getJobLength() > MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
+        	returnInt = 2;
         } else if (getDifferenceInDays(this.myCurrentDate, theJob.getEndDate())
                         > MAXIMUM_DAYS_FROM_TODAY) {
+        	returnInt = 3;
             // warning, job is further than 75 days away
         } else {
             myPendingJobList.add(theJob);
         }
+    	
+    	return returnInt;
     }
     /** Adds a job to the finished jobs list.
      *
@@ -88,31 +97,26 @@ public class JobCoordinator implements Serializable {
 
 
     //queries
-    /**
-     * Gets the current list of pending jobs.
-     *
-     * I think this function may be tweaked - Jon
-     * @return the list of pending jobs.
-     */
+    
+    public int getMaximumJobLength() {
+        return MAXIMUM_JOB_LENGTH;
+    }
+    
+    public int getMaximumDaysFromToday() {
+        return MAXIMUM_DAYS_FROM_TODAY;
+    }
+
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getPendingJobs() {
         return (ArrayList<Job>) myPendingJobList.clone();
     }
+    
 
-
-    /**
-     * Gets the current list of finished jobs.
-     *
-     * @return the list of finished jobs.
-     */
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getFinshedJobs() {
         return (ArrayList<Job>) myFinishedJobList.clone();
     }
-
-    /**
-     *  Gets the current date in calendar form.
-     */
+    
     public GregorianCalendar getCurrentDate() {
         return (GregorianCalendar) this.myCurrentDate.clone();
     }
@@ -142,6 +146,7 @@ public class JobCoordinator implements Serializable {
                                           GregorianCalendar theSecondDate) {
         long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis() , TimeUnit.MILLISECONDS)
                         - TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),  TimeUnit.MILLISECONDS);
+        
         return Math.abs( (int) convertedTime);
     }
 }
