@@ -55,6 +55,24 @@ public class SystemCoordinator implements Serializable {
        
 	    myUsers.add(theUser);
 	}
+
+    public User getUser(String theUserName) {
+        return myUsers.stream()
+                .filter(u -> u.getUsername().equals(theUserName))
+                .findFirst()
+                .get();
+    }
+
+	// This method exists to update the user information
+    // to save job information that the user committed on console
+	public void updateUserInformationOnExit(User theUser) {
+	    for (int i = 0; i < this.myUsers.size(); i++) {
+            if (this.myUsers.get(i).getUsername().equals(theUser.getUsername())) {
+                // user exist, so must replace it with current user
+                this.myUsers.set(i, theUser);
+            }
+        }
+    }
 	
 //	public void signUserUpForJob(Job theJob, Volunteer theVolunteer) {
 //		for (User u : this.myUsers) {

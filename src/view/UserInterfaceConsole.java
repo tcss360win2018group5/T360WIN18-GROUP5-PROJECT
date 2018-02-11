@@ -21,6 +21,11 @@ public class UserInterfaceConsole {
 
     private final SystemCoordinator mySystemCoordinator;
     private final JobCoordinator myJobCoordinator;
+
+    // 2: // Volunteer
+    // 1: // Park Manager
+    // 0: // Urban Parks Staff Member
+    private static final int CHANGE_TO_CREATE_NEW_USER_ACCESS_LEVEL = 2;
     
     /**
      * Scanner to read user input from console.
@@ -77,6 +82,10 @@ public class UserInterfaceConsole {
         writeObjectToDisk(JOB_COORDINATOR_NAME, myJobCoordinator);
         System.out.println("\nThank you. Goodbye.");
         System.exit(0);
+    }
+
+    private void saveVolunteerJobInfomation(Volunteer theVolunteer) {
+        mySystemCoordinator.updateUserInformationOnExit(theVolunteer);
     }
 
     private static void writeObjectToDisk(String thisName, Object thisObject) {
@@ -143,13 +152,16 @@ public class UserInterfaceConsole {
             if (doesUserExist) {
                 switch(userAccessLevel) {
                     case 0: // Urban Parks Staff Member
-                        welcomeUrbanParkStaff(userName, new OfficeStaff(userName));
+                        welcomeUrbanParkStaff(userName,
+                                (OfficeStaff) mySystemCoordinator.getUser(userName));
                         break;
                     case 1: // Park Manager
-                        welcomeParkManager(userName, new ParkManager(userName));
+                        welcomeParkManager(userName,
+                                (ParkManager) mySystemCoordinator.getUser(userName));
                         break;
                     case 2: // Volunteer
-                        welcomeVolunteer(userName, new Volunteer(userName));
+                        welcomeVolunteer(userName,
+                                (Volunteer) mySystemCoordinator.getUser(userName));
                         break;
                     default:
                         System.out.println("Access level invalid");
@@ -180,8 +192,21 @@ public class UserInterfaceConsole {
 
             } else if (doesUserExist == false) {
                 System.out.println("Username " + userName + " is created!");
-                // Change this new Volunteer to switch access level on user creation to test
-                mySystemCoordinator.addUser(new ParkManager(userName));
+                switch (CHANGE_TO_CREATE_NEW_USER_ACCESS_LEVEL){
+                    case 0:
+                        mySystemCoordinator.addUser(new OfficeStaff(userName));
+                        break;
+                    case 1:
+                        mySystemCoordinator.addUser(new ParkManager(userName));
+                        break;
+                    case 2:
+                        mySystemCoordinator.addUser(new Volunteer(userName));
+                        break;
+                    default:
+                        System.out.println("Invalid system access " +
+                                "to create new user");
+                        break;
+                }
                 displaySeperator();
                 continueMethod = false;
 
@@ -221,6 +246,7 @@ public class UserInterfaceConsole {
                     displayVolunteerMenu();
                     break;
                 case LOGOUT:
+                    saveVolunteerJobInfomation(theVolunteer);
                     saveSystem();
                     break;
                 default:
@@ -493,14 +519,14 @@ public class UserInterfaceConsole {
         String contactEmail = theJob.getMyContactEmail();
         int numberOfVolunteers = theJob.getCurrentVolunteers().size();
         String jobDifficulty = theJob.getMyDifficulty();
-        System.out.println("Name:\t\t\t" + jobName + "\n" +
+        System.out.println("Name:\t\t\t\t" + jobName + "\n" +
                 "Location:\t\t\t" + jobLocation + "\n" +
                 "Start Date:\t\t\t" + printJobDate(jobStartDate) + "\n" +
                 "End Date:\t\t\t" + printJobDate(jobEndDate) + "\n" +
                 "Contact:\t\t\t" + contactName + "\n" +
-                "Contact Phone:\t\t\t" + contactNumber + "\n" +
-                "Contact Email:\t\t\t" + contactEmail + "\n" +
-                "Current Volunteers:\t\t" + numberOfVolunteers + "\n" +
+                "Contact Phone:\t\t" + contactNumber + "\n" +
+                "Contact Email:\t\t" + contactEmail + "\n" +
+                "Current Volunteers:\t" + numberOfVolunteers + "\n" +
                 "Difficulty:\t\t\t" + jobDifficulty + "\n");
         displaySignupForJobVolunteer();
         boolean menuTrue = true;
@@ -517,10 +543,16 @@ public class UserInterfaceConsole {
                         theJob.addVolunteer(theVolunteer);
                         successfulSignup = true;
                     } else if (isAdded == 1) {
-                    	System.out.println("The selected job overlaps with a job you've already signed up for.");
+                        displaySeperator();
+                        System.out.println("Unable to signup for job");
+                    	System.out.println("Reason: The selected job overlaps " +
+                                "with a job you've already signed up for.\n");
                     } else if (isAdded == 2) {
-                    	System.out.println("Could not sign up for a job less than " + theVolunteer.getMinDaysAway()
-                    						+ " days away");
+                        displaySeperator();
+                        System.out.println("Unable to signup for job");
+                    	System.out.println("Reason: Could not sign up " +
+                                "for a job less than "
+                                + theVolunteer.getMinDaysAway() + " days away\n");
                     }
                     menuTrue = false;
                     break;
@@ -612,17 +644,17 @@ public class UserInterfaceConsole {
     private void displaySummitJobListingParkManager(Job theJob) {
         System.out.println("Job Listing Overview:\n");
         displaySeperator();
-        System.out.println("Name:\t" + theJob.getJobTitle());
-        System.out.println("Location:\t" + theJob.getMyAddress());
-        System.out.println("Start Date:\t" + printJobDate(theJob.getStartDate()));
-        System.out.println("End Date:\t" + printJobDate(theJob.getEndDate()));
+        System.out.println("Name:\t\t\t" + theJob.getJobTitle());
+        System.out.println("Location:\t\t" + theJob.getMyAddress());
+        System.out.println("Start Date:\t\t" + printJobDate(theJob.getStartDate()));
+        System.out.println("End Date:\t\t" + printJobDate(theJob.getEndDate()));
 							
         System.out.println("Contact Phone\t" + theJob.getMyContactNumber());
         System.out.println("Contact Email:\t" + theJob.getMyContactEmail());
         System.out.println("Description:\t" + theJob.getMyJobDescription());
         System.out.println();
         System.out.println("Job Roles:");
-        System.out.println("Role:\t" + theJob.getMyJobRole());
+        System.out.println("Role:\t\t" + theJob.getMyJobRole());
         System.out.println("Difficulty: " + theJob.getMyDifficulty());
         System.out.println("Volunteers:\t" + theJob.getMaxVolunteers());
         //System.out.println("Description:\t" + theJob.getMyJobRoleDescription());
@@ -778,6 +810,7 @@ public class UserInterfaceConsole {
     					 + theJob.get(Calendar.DAY_OF_MONTH) + "/" 
     					 + theJob.get(Calendar.YEAR));
     }
+
 
     /*
     Separator below
