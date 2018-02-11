@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
@@ -26,7 +27,8 @@ public class UserInterfaceConsole {
      */
     Scanner myScanner;
 
-    public UserInterfaceConsole() {
+    @SuppressWarnings("unchecked")
+	public UserInterfaceConsole() {
 
 
         myScanner = new Scanner(System.in);
@@ -169,7 +171,7 @@ public class UserInterfaceConsole {
             System.out.println("\nPlease enter a username or press 0 to go back:");
             String userName = myScanner.nextLine();
             boolean doesUserExist = mySystemCoordinator.signIn(userName);
-            int userAccessLevel = mySystemCoordinator.getAccessLevel(userName);
+            //int userAccessLevel = mySystemCoordinator.getAccessLevel(userName);
 
             if (BACK.equals(userName.toLowerCase())) {
                 System.out.println("Returning to previous menu\n");
@@ -179,7 +181,7 @@ public class UserInterfaceConsole {
             } else if (doesUserExist == false) {
                 System.out.println("Username " + userName + " is created!");
                 // Change this new Volunteer to switch access level on user creation to test
-                mySystemCoordinator.addUser(new Volunteer(userName));
+                mySystemCoordinator.addUser(new ParkManager(userName));
                 displaySeperator();
                 continueMethod = false;
 
@@ -198,6 +200,7 @@ public class UserInterfaceConsole {
         displaySeperator();
         displayGreeting(theUserName);
         displayDate();
+        theVolunteer.setCurrentDay(myJobCoordinator.getCurrentDate());
         displayVolunteerMenu();
         boolean menuTrue = true;
         do {
@@ -240,13 +243,13 @@ public class UserInterfaceConsole {
             switch (userSelection) {
                 case "1":
                     // 1) Submit new job
-                    displaySummitJobParkManager(theParkManager);
+                    displaySummitJobParkManager();
                     displaySeperator();
                     displayParkManagerMenu();
                     break;
                 case "2":
                     // 2) View posted jobs
-                    displayJobsPostedParkManager(theParkManager);
+                    displayJobsPostedParkManager();
                     displaySeperator();
                     displayParkManagerMenu();
                     break;
@@ -299,7 +302,7 @@ public class UserInterfaceConsole {
         System.out.println("Welcome " + theGreeting + "!");
     }
 
-    private void displayDate() {
+	private void displayDate() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         System.out.println("Today is " + dateFormat.format(date) + "\n");
@@ -313,7 +316,7 @@ public class UserInterfaceConsole {
     }
 
     private void askForUserSelection() {
-        System.out.println("Enter a number to select from the following options");
+        System.out.println("\nEnter a number to select from the following options");
     }
 
     private void displayVolunteerMenu() {
@@ -346,36 +349,61 @@ public class UserInterfaceConsole {
         do {
             int iter = 1;
             while (iter <= 5) {
-                displayCycleJob(iter++ % 6, new Job(""));
+            	//grab from list of jobs
+            	//if my jobs is empty, break, otherwise show 5 jobs
+            	if (!myJobCoordinator.getPendingJobs().isEmpty() 
+            		&& myJobCoordinator.getPendingJobs().size() > ((iter-1) + (loop*5))) {
+            		
+            		displayCycleJob(iter % 6, myJobCoordinator.getPendingJobs().get((iter-1) + (loop*5)));
+            		iter++;
+                
+            	} else {
+            		if (myJobCoordinator.getPendingJobs().isEmpty()) {
+            			System.out.println("No jobs have been added yet\n");	
+            		} else {
+            			System.out.println("No jobs remaining\n");
+            		}
+            		break;
+            	}
             }
+
             displayCycleJobSelectionVolunteer();
             askForUserSelection();
             String userSelection = myScanner.nextLine();
 
             switch (userSelection) {
                 case "1":
-                    boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(new Job(""), theVolunteer);
+                    boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    					myJobCoordinator.getPendingJobs().get(0 + (loop*5)), theVolunteer);
                     menuTrue = !isSignupSuccessful;
                     break;
                 case "2":
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(new Job(""), theVolunteer);
+                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    					myJobCoordinator.getPendingJobs().get(1 + (loop*5)), theVolunteer);
                     menuTrue = !isSignupSuccessful;;
                     break;
                 case "3":
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(new Job(""), theVolunteer);
+                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    					myJobCoordinator.getPendingJobs().get(2 + (loop*5)), theVolunteer);
                     menuTrue = !isSignupSuccessful;
                     break;
                 case "4":
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(new Job(""), theVolunteer);
+                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    					myJobCoordinator.getPendingJobs().get(3 + (loop*5)), theVolunteer);
                     menuTrue = !isSignupSuccessful;
                     break;
                 case "5":
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(new Job(""), theVolunteer);
+                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    					myJobCoordinator.getPendingJobs().get(4 + (loop*5)), theVolunteer);
                     menuTrue = !isSignupSuccessful;
+                    break;
+                case "8":
+                    loop = loop - 1;
+                    System.out.println("");
                     break;
                 case "9":
                     loop = loop + 1;
-                    System.out.println(loop);
+                    System.out.println("");
                     break;
                 case BACK:
                     menuTrue = false;
@@ -393,8 +421,8 @@ public class UserInterfaceConsole {
             System.out.println("You are currently signed up for no jobs!");
         } else {
             System.out.println();
+            int iter = 1;
             for (Job aJob : currentJobs) {
-                int iter = 1;
                 displayCycleJob(iter++, aJob);
             }
             boolean menuTrue = true;
@@ -440,11 +468,12 @@ public class UserInterfaceConsole {
 
     private void displayCycleJob(int theIteration, Job theJob) {
         String jobName = theJob.getJobTitle();
-        String jobLocation = theJob.getMyJobLocation();
+        String jobLocation = theJob.getMyAddress();
         GregorianCalendar jobStartDate = theJob.getStartDate();
         System.out.println(theIteration + ") " + jobName + "\n" +
-                "Location:\t\t" + jobLocation + "\n" +
-                "Date:\t\t" + jobStartDate + "\n");
+                "Location:\t" + jobLocation + "\n" +
+                "Start Date:\t" + jobStartDate.get(Calendar.MONTH) + "/" +
+                jobStartDate.get(Calendar.DAY_OF_MONTH) + "/" + jobStartDate.get(Calendar.YEAR) + "\n");
     }
 
     private void displayCycleJobSelectionVolunteer() {
@@ -456,22 +485,22 @@ public class UserInterfaceConsole {
     private boolean displayCurrentJobSelectionVolunteer(Job theJob, Volunteer theVolunteer) {
         boolean successfulSignup = false;
         String jobName = theJob.getJobTitle();
-        String jobLocation = theJob.getMyJobLocation();
+        String jobLocation = theJob.getMyAddress();
         GregorianCalendar jobStartDate = theJob.getStartDate();
         GregorianCalendar jobEndDate = theJob.getEndDate();
         String contactName = theJob.getMyContactName();
         String contactNumber = theJob.getMyContactNumber();
         String contactEmail = theJob.getMyContactEmail();
         int numberOfVolunteers = theJob.getCurrentVolunteers().size();
-        int jobDifficulty = theJob.getMyJobDifficulty();
+        String jobDifficulty = theJob.getMyDifficulty();
         System.out.println("Name:\t\t\t" + jobName + "\n" +
                 "Location:\t\t\t" + jobLocation + "\n" +
-                "Start Date:\t\t\t" + jobStartDate + "\n" +
-                "End Date:\t\t\t" + jobEndDate + "\n" +
+                "Start Date:\t\t\t" + printJobDate(jobStartDate) + "\n" +
+                "End Date:\t\t\t" + printJobDate(jobEndDate) + "\n" +
                 "Contact:\t\t\t" + contactName + "\n" +
                 "Contact Phone:\t\t\t" + contactNumber + "\n" +
                 "Contact Email:\t\t\t" + contactEmail + "\n" +
-                "Current Volunteers:\t\t " + numberOfVolunteers + "\n" +
+                "Current Volunteers:\t\t" + numberOfVolunteers + "\n" +
                 "Difficulty:\t\t\t" + jobDifficulty + "\n");
         displaySignupForJobVolunteer();
         boolean menuTrue = true;
@@ -481,10 +510,17 @@ public class UserInterfaceConsole {
 
             switch (userSelection) {
                 case "1":
-                    boolean isAdded = theVolunteer.addToCurrentJobs(theJob);
-                    if (isAdded) {
+                    int isAdded = theVolunteer.addToCurrentJobs(theJob);
+                    if (isAdded == 0) {
                         System.out.println("Congrats! " + theJob.getJobTitle() + " is added!");
+                        theVolunteer.signUpForJob(theJob);
+                        theJob.addVolunteer(theVolunteer);
                         successfulSignup = true;
+                    } else if (isAdded == 1) {
+                    	System.out.println("The selected job overlaps with a job you've already signed up for.");
+                    } else if (isAdded == 2) {
+                    	System.out.println("Could not sign up for a job less than " + theVolunteer.getMinDaysAway()
+                    						+ " days away");
                     }
                     menuTrue = false;
                     break;
@@ -508,20 +544,22 @@ public class UserInterfaceConsole {
      Park Manage UI Methods are below
      */
 
-    private void displaySummitJobParkManager(ParkManager theParkManager) {
+    private void displaySummitJobParkManager() {
         //                                              0123456789
         System.out.println("Please indicate Start Date (MM/DD/YYYY):");
         String startDateString = myScanner.nextLine();
         GregorianCalendar startDate = new GregorianCalendar(
+                Integer.parseInt(startDateString.substring(6,10)),
                 Integer.parseInt(startDateString.substring(0,2)),
-                Integer.parseInt(startDateString.substring(3,5)),
-                Integer.parseInt(startDateString.substring(6,10)));
+                Integer.parseInt(startDateString.substring(3,5)));
         System.out.println("Please indicate End Date (MM/DD/YYYY):");
         String endDateString = myScanner.nextLine();
         GregorianCalendar endDate = new GregorianCalendar(
-                Integer.parseInt(endDateString.substring(0,2)),
-                Integer.parseInt(endDateString.substring(3,5)),
-                Integer.parseInt(endDateString.substring(6,10)));
+        		Integer.parseInt(endDateString.substring(6,10)),
+        		Integer.parseInt(endDateString.substring(0,2)),
+                Integer.parseInt(endDateString.substring(3,5))
+                );        
+        
         System.out.println("Please indicate Address (Street, City, State, ZIP):");
         String address = myScanner.nextLine();
         System.out.println("Please provide contact name:");
@@ -567,47 +605,37 @@ public class UserInterfaceConsole {
         }
         newJob.setMaxVolunteers(numVolunteers);
 
-        displaySummitJobListingParkManager(newJob, theParkManager);
-        displayAskToPostJobParkManager(newJob, theParkManager);
+        displaySummitJobListingParkManager(newJob);
+        displayAskToPostJobParkManager(newJob);
     }
 
-    private void displaySummitJobListingParkManager(Job theJob, ParkManager theParkManager) {
+    private void displaySummitJobListingParkManager(Job theJob) {
         System.out.println("Job Listing Overview:\n");
         displaySeperator();
         System.out.println("Name:\t" + theJob.getJobTitle());
         System.out.println("Location:\t" + theJob.getMyAddress());
-        System.out.println("Start Date:\t" + theJob.getStartDate());
-        System.out.println("End Date:\t" + theJob.getEndDate());
-        System.out.println("Contact Name:\t" + theJob.getMyContactName());
+        System.out.println("Start Date:\t" + printJobDate(theJob.getStartDate()));
+        System.out.println("End Date:\t" + printJobDate(theJob.getEndDate()));
+							
         System.out.println("Contact Phone\t" + theJob.getMyContactNumber());
         System.out.println("Contact Email:\t" + theJob.getMyContactEmail());
         System.out.println("Description:\t" + theJob.getMyJobDescription());
         System.out.println();
         System.out.println("Job Roles:");
         System.out.println("Role:\t" + theJob.getMyJobRole());
-        int difficulty = theJob.getMyDifficulty();
-        if (difficulty == 0) {
-            System.out.println("Difficulty: Easy");
-        } else if (difficulty == 1) {
-            System.out.println("Difficulty: Medium");
-        } else if (difficulty == 2) {
-            System.out.println("Difficulty: Hard");
-        } else {
-            System.out.println("Difficulty: Unknown");
-        }
+        System.out.println("Difficulty: " + theJob.getMyDifficulty());
         System.out.println("Volunteers:\t" + theJob.getMaxVolunteers());
-        System.out.println("Description:\t" + theJob.getMyJobRoleDescription());
+        //System.out.println("Description:\t" + theJob.getMyJobRoleDescription());
         System.out.println();
     }
 
-    private void displayAskToPostJobParkManager(Job theJob, ParkManager theParkManager) {
+    private void displayAskToPostJobParkManager(Job theJob) {
         boolean selectionTrue = true;
         do {
             System.out.println("\nWould you like to submit job? (Y/N): ");
             String userInput = myScanner.nextLine();
             if (userInput.toLowerCase().equals("y")) {
-                System.out.println("Job Submitted!\n");
-                theParkManager.addToSubmittedJobs(theJob);
+                tryToAddJob(theJob);
                 selectionTrue = false;
             } else if (userInput.toLowerCase().equals("n")) {
                 System.out.println("Job Not Submitted\n");
@@ -617,15 +645,33 @@ public class UserInterfaceConsole {
             }
         } while (selectionTrue);
     }
+    
+    private void tryToAddJob(Job theJob) {
+    	if (myJobCoordinator.addPendingJob(theJob) == 1) {
+    		System.out.println("This job already exists!\n");
+    	} else if (myJobCoordinator.addPendingJob(theJob) == 2) {
+    		System.out.println("This job is longer than the maximum allowed job of " 
+    							+ myJobCoordinator.getMaximumJobLength() + " days");
+    	} else if (myJobCoordinator.addPendingJob(theJob) == 3) {
+    		System.out.println("This job is further away than the maximum allowed " 
+								+ myJobCoordinator.getMaximumDaysFromToday() + " days from today");
+    	} else {
+    		System.out.println("Job Submitted!\n");
+    	}
+    
+    
+    
+    }
 
-    private void displayJobsPostedParkManager(ParkManager theParkManager) {
-        ArrayList<Job> currentJobs = theParkManager.getSubmittedJobs();
+    private void displayJobsPostedParkManager() {
+        //ArrayList<Job> currentJobs = theParkManager.getSubmittedJobs();
+    	ArrayList<Job> currentJobs = myJobCoordinator.getPendingJobs();
         if (currentJobs.size() == 0) {
-            System.out.println("You have submitted no jobs!");
+            System.out.println("There have not been any jobs submitted!");
         } else {
             System.out.println();
+            int iter = 1;
             for (Job aJob : currentJobs) {
-                int iter = 1;
                 displayCycleJob(iter++, aJob);
             }
             boolean menuTrue = true;
@@ -635,19 +681,19 @@ public class UserInterfaceConsole {
 
                 String userSelection = myScanner.nextLine();
                 if ("1".equals(userSelection) && currentJobs.size() > 0) {
-                    displaySummitJobListingParkManager(currentJobs.get(0), theParkManager);
+                    displaySummitJobListingParkManager(currentJobs.get(0));
 
                 } else if ("2".equals(userSelection) && currentJobs.size() > 1) {
-                    displaySummitJobListingParkManager(currentJobs.get(1), theParkManager);
+                    displaySummitJobListingParkManager(currentJobs.get(1));
 
                 } else if ("3".equals(userSelection) && currentJobs.size() > 2) {
-                    displaySummitJobListingParkManager(currentJobs.get(2), theParkManager);
+                    displaySummitJobListingParkManager(currentJobs.get(2));
 
                 } else if ("4".equals(userSelection) && currentJobs.size() > 3) {
-                    displaySummitJobListingParkManager(currentJobs.get(3), theParkManager);
+                    displaySummitJobListingParkManager(currentJobs.get(3));
 
                 } else if ("5".equals(userSelection) && currentJobs.size() > 4) {
-                    displaySummitJobListingParkManager(currentJobs.get(4), theParkManager);
+                    displaySummitJobListingParkManager(currentJobs.get(4));
 
                 } else if (BACK.equals(userSelection)) {
                     menuTrue = false;
@@ -722,6 +768,15 @@ public class UserInterfaceConsole {
                 }
             } while (menuTrue);
         }
+    }
+    
+    /**
+     * Prints date of job in correct format
+     */
+    private String printJobDate(final GregorianCalendar theJob) {
+    	return (theJob.get(Calendar.MONTH) + "/" 
+    					 + theJob.get(Calendar.DAY_OF_MONTH) + "/" 
+    					 + theJob.get(Calendar.YEAR));
     }
 
     /*
