@@ -5,21 +5,13 @@ import java.util.ArrayList;
 
 public class SystemCoordinator implements Serializable {
 	public ArrayList<User> myUsers;
+	
+    private ArrayList<Job> myVolunteerJobs;
 
 	public SystemCoordinator() {
 		myUsers = new ArrayList<User>();
+		myVolunteerJobs = new ArrayList<Job>();
 	}
-
-	//	public static void addUser(User theUser) {
-	//
-	//		if (theUser instanceof User) {
-	//			myUsers.add(theUser);
-	//			System.out.println("Added user: " + theUser.getUsername());
-	//		} else {
-	//			System.out.println("Not a valid User type");
-	//		}
-	//
-	//	}
 
 	public boolean signIn(String theUsername) {
 		boolean isUser = false;
@@ -27,6 +19,7 @@ public class SystemCoordinator implements Serializable {
 		for (User u : this.myUsers) {
 		    if (u.getUsername().equals(theUsername)) {
 		        isUser = true;
+
 		    }
 		}
 		
@@ -55,16 +48,29 @@ public class SystemCoordinator implements Serializable {
        
 	    myUsers.add(theUser);
 	}
+
+	/**
+	 * The below 2 methods were my attempt at getting SystemCoordinator
+	 * to save the jobs for the Volunteer's between runs.
+	 * It fails because it relies on fetching the information from
+	 * Volunteer. Need to have that info independently.
+	 */
+	public void addVolunteerJobs(Job theJob) {
+		myVolunteerJobs.add(theJob);
+	}
 	
-//	public void signUserUpForJob(Job theJob, Volunteer theVolunteer) {
-//		for (User u : this.myUsers) {
-//			if (u == theVolunteer) {
-//				Volunteer temp = (Volunteer) theVolunteer;
-//				temp.si
-//			}
-//		}
-//
-//	}
+    public void resetVolunteerJobs() {
+    	for (User u : this.myUsers) {
+    		if (u instanceof Volunteer) {
+    			for (Job j : this.myVolunteerJobs) {
+    				if (((Volunteer) u).getCurrentJobs().contains(j)) {
+        				((Volunteer) u).signUpForJob(j);
+    				}
+
+    			}
+    		}
+    	}
+    }
 
 
 	@SuppressWarnings("unchecked")

@@ -181,7 +181,7 @@ public class UserInterfaceConsole {
             } else if (doesUserExist == false) {
                 System.out.println("Username " + userName + " is created!");
                 // Change this new Volunteer to switch access level on user creation to test
-                mySystemCoordinator.addUser(new ParkManager(userName));
+                mySystemCoordinator.addUser(new Volunteer(userName));
                 displaySeperator();
                 continueMethod = false;
 
@@ -197,6 +197,7 @@ public class UserInterfaceConsole {
     }
 
     private void welcomeVolunteer(String theUserName, Volunteer theVolunteer) {
+    	mySystemCoordinator.resetVolunteerJobs();
         displaySeperator();
         displayGreeting(theUserName);
         displayDate();
@@ -354,7 +355,7 @@ public class UserInterfaceConsole {
             	if (!myJobCoordinator.getPendingJobs().isEmpty() 
             		&& myJobCoordinator.getPendingJobs().size() > ((iter-1) + (loop*5))) {
             		
-            		displayCycleJob(iter % 6, myJobCoordinator.getPendingJobs().get((iter-1) + (loop*5)));
+            		displayCycleJob(iter, myJobCoordinator.getPendingJobs().get((iter-1) + (loop*5)));
             		iter++;
                 
             	} else {
@@ -418,42 +419,57 @@ public class UserInterfaceConsole {
     private void displayJobsSignedUpVolunteer(Volunteer theVolunteer) {
         ArrayList<Job> currentJobs = theVolunteer.getCurrentJobs();
         if (currentJobs.size() == 0) {
-            System.out.println("You are currently signed up for no jobs!");
+            System.out.println("\nYou are currently signed up for no jobs!");
         } else {
             System.out.println();
-            int iter = 1;
-            for (Job aJob : currentJobs) {
-                displayCycleJob(iter++, aJob);
-            }
+            int loop = 0;
             boolean menuTrue = true;
             do {
+                int iter = 1;
+                while (iter <= 5) {
+                	//grab from list of jobs
+                	//if my jobs is empty, break, otherwise show 5 jobs
+                	if (!currentJobs.isEmpty() 
+                		&& currentJobs.size() > ((iter-1) + (loop*5))) {
+                		
+                		displayCycleJob(iter % 6, currentJobs.get((iter-1) + (loop*5)));
+                		iter++;
+                    
+                	} else {
+                		System.out.println("\nNo jobs remaining\n");
+                		break;
+                	}
+                }
                 System.out.println("0) Go back\n");
                 askForUserSelection();
+                
+                int nextSet = (loop * 5); //because we show 5 new per loop
 
                 String userSelection = myScanner.nextLine();
                 if ("1".equals(userSelection) && currentJobs.size() > 0) {
-                    boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(currentJobs.get(0), theVolunteer);
+                    boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                    							 currentJobs.get((iter - 5) + nextSet), theVolunteer);
                     menuTrue = !isSignupSuccessful;
 
                 } else if ("2".equals(userSelection) && currentJobs.size() > 1) {
-                    boolean isSignupSuccessful;
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(currentJobs.get(1), theVolunteer);
-                    menuTrue = !isSignupSuccessful;
+                	boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+							 					 currentJobs.get((iter - 4) + nextSet), theVolunteer);
+                	menuTrue = !isSignupSuccessful;
 
                 } else if ("3".equals(userSelection) && currentJobs.size() > 2) {
-                    boolean isSignupSuccessful;
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(currentJobs.get(2), theVolunteer);
-                    menuTrue = !isSignupSuccessful;
+                	boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                								 currentJobs.get((iter - 3) + nextSet), theVolunteer);
+                	menuTrue = !isSignupSuccessful;
 
                 } else if ("4".equals(userSelection) && currentJobs.size() > 3) {
-                    boolean isSignupSuccessful;
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(currentJobs.get(3), theVolunteer);
-                    menuTrue = !isSignupSuccessful;
+                	boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                								 currentJobs.get((iter - 2) + nextSet), theVolunteer);
+                	menuTrue = !isSignupSuccessful;
 
                 } else if ("5".equals(userSelection) && currentJobs.size() > 4) {
-                    boolean isSignupSuccessful;
-                    isSignupSuccessful = displayCurrentJobSelectionVolunteer(currentJobs.get(4), theVolunteer);
-                    menuTrue = !isSignupSuccessful;
+                	boolean isSignupSuccessful = displayCurrentJobSelectionVolunteer(
+                								 currentJobs.get((iter - 1) + nextSet), theVolunteer);
+                	menuTrue = !isSignupSuccessful;
 
                 } else if (BACK.equals(userSelection)) {
                     menuTrue = false;
@@ -462,6 +478,7 @@ public class UserInterfaceConsole {
                     System.out.println("Invalid Selection\n");
 
                 }
+                loop++;
             } while (menuTrue);
         }
     }
@@ -470,10 +487,9 @@ public class UserInterfaceConsole {
         String jobName = theJob.getJobTitle();
         String jobLocation = theJob.getMyAddress();
         GregorianCalendar jobStartDate = theJob.getStartDate();
-        System.out.println(theIteration + ") " + jobName + "\n" +
-                "Location:\t" + jobLocation + "\n" +
-                "Start Date:\t" + jobStartDate.get(Calendar.MONTH) + "/" +
-                jobStartDate.get(Calendar.DAY_OF_MONTH) + "/" + jobStartDate.get(Calendar.YEAR) + "\n");
+        System.out.println(theIteration + ")  |  " + jobName + 
+        		"  |  " + "Location: " + jobLocation + "  |  " +
+                "Start Date: " + printJobDate(jobStartDate));
     }
 
     private void displayCycleJobSelectionVolunteer() {
@@ -512,7 +528,8 @@ public class UserInterfaceConsole {
                 case "1":
                     int isAdded = theVolunteer.addToCurrentJobs(theJob);
                     if (isAdded == 0) {
-                        System.out.println("Congrats! " + theJob.getJobTitle() + " is added!");
+                        System.out.println("\nCongrats! " + theJob.getJobTitle() + " is added!");
+                        mySystemCoordinator.addVolunteerJobs(theJob);
                         theVolunteer.signUpForJob(theJob);
                         theJob.addVolunteer(theVolunteer);
                         successfulSignup = true;

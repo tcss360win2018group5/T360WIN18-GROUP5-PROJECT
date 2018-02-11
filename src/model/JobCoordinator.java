@@ -29,6 +29,7 @@ public class JobCoordinator implements Serializable {
     /** The current date as a calendar. */
     private GregorianCalendar myCurrentDate;
     
+    
     /**
      * Creates a new instance with empty job lists and the current date.
      */
@@ -94,7 +95,6 @@ public class JobCoordinator implements Serializable {
         }
         theJob.addVolunteer((Volunteer) theUser);
     }
-
 
     //queries
     
