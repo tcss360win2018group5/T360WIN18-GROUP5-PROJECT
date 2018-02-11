@@ -1,15 +1,16 @@
 package test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import model.User;
-import model.Volunteer;
 import model.Job;
 import model.OfficeStaff;
 import model.ParkManager;
 import model.SystemCoordinator;
+import model.User;
+import model.Volunteer;
 
 public class SystemCoordinatorTest {
     public SystemCoordinator globalSystemCoordinator;

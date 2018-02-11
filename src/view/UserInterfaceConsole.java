@@ -1,6 +1,11 @@
 package view;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,15 +14,21 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import model.*;
+import model.Job;
+import model.JobCoordinator;
+import model.OfficeStaff;
+import model.ParkManager;
+import model.SystemCoordinator;
+import model.Volunteer;
+import util.SystemConstants;
 
 public class UserInterfaceConsole {
 
     private static final String BACK = "0";
     private static final String EXIT = "0";
     private static final String LOGOUT = "0";
-    private static final String SYSTEM_COORDINATOR_NAME = "SystemCoordinator.ser";
-    private static final String JOB_COORDINATOR_NAME = "JobCoordinator.ser";
+    private static final String SYSTEM_COORDINATOR_NAME = "data/SystemCoordinator.ser";
+    private static final String JOB_COORDINATOR_NAME = "data/JobCoordinator.ser";
 
     private final SystemCoordinator mySystemCoordinator;
     private final JobCoordinator myJobCoordinator;
@@ -32,7 +43,6 @@ public class UserInterfaceConsole {
      */
     Scanner myScanner;
 
-    @SuppressWarnings("unchecked")
 	public UserInterfaceConsole() {
 
 
@@ -105,7 +115,6 @@ public class UserInterfaceConsole {
      */
 
     public void start() {
-
         String userInput;
 
         do {
@@ -269,13 +278,13 @@ public class UserInterfaceConsole {
             switch (userSelection) {
                 case "1":
                     // 1) Submit new job
-                    displaySummitJobParkManager();
+                    displaySubmitJobParkManager();
                     displaySeperator();
                     displayParkManagerMenu();
                     break;
                 case "2":
                     // 2) View posted jobs
-                    displayJobsPostedParkManager();
+                    displayJobsParkManager();
                     displaySeperator();
                     displayParkManagerMenu();
                     break;
@@ -305,12 +314,6 @@ public class UserInterfaceConsole {
                     displaySeperator();
                     displayParkManagerMenu();
                     break;
-                case "2":
-                    // 2) View finished jobs
-                    displayFinishedJobsUrbanParkStaff(theOfficeStaff);
-                    displaySeperator();
-                    displayParkManagerMenu();
-                    break;
                 case LOGOUT:
                     saveSystem();
                 default:
@@ -337,8 +340,8 @@ public class UserInterfaceConsole {
 
     private void displayIntroLogin() {
         System.out.println("1) Login with username\n" +
-                            "2) Create user\n" +
-                            "0) Exit\n");
+                           "2) Create user\n" +
+                           "0) Exit\n");
     }
 
     private void askForUserSelection() {
@@ -346,21 +349,20 @@ public class UserInterfaceConsole {
     }
 
     private void displayVolunteerMenu() {
-        System.out.println("1) Sign up for job\n" +
-                            "2) View signed up jobs\n" +
-                            "0) Logout & Exit\n");
+        System.out.println("1) View posted jobs & sign up\n" +
+                           "2) View jobs currently signed up for\n" +
+                           "0) Logout & Exit\n");
     }
 
     private void displayParkManagerMenu() {
         System.out.println("1) Submit new job\n" +
-                "2) View posted jobs\n" +
-                "0) Logout & Exit\n");
+                           "2) View posted jobs\n" +
+                           "0) Logout & Exit\n");
     }
 
     private void displayUrbanStaffMenu() {
-        System.out.println("1) View pending job\n" +
-                "2) View finished jobs\n" +
-                "0) Logout & Exit\n");
+        System.out.println("1) View posted jobs\n" +
+                           "0) Logout & Exit\n");
     }
 
 
@@ -536,23 +538,24 @@ public class UserInterfaceConsole {
 
             switch (userSelection) {
                 case "1":
-                    int isAdded = theVolunteer.addToCurrentJobs(theJob);
-                    if (isAdded == 0) {
+                    int canAddToJob = theVolunteer.canSignUpForJob(theJob);
+                    if (canAddToJob == 0) {
                         System.out.println("Congrats! " + theJob.getJobTitle() + " is added!");
                         theVolunteer.signUpForJob(theJob);
                         theJob.addVolunteer(theVolunteer);
                         successfulSignup = true;
-                    } else if (isAdded == 1) {
+                    } else if (canAddToJob == 1) {
                         displaySeperator();
                         System.out.println("Unable to signup for job");
                     	System.out.println("Reason: The selected job overlaps " +
                                 "with a job you've already signed up for.\n");
-                    } else if (isAdded == 2) {
+                    } else if (canAddToJob == 2) {
                         displaySeperator();
                         System.out.println("Unable to signup for job");
                     	System.out.println("Reason: Could not sign up " +
                                 "for a job less than "
-                                + theVolunteer.getMinDaysAway() + " days away\n");
+                                + SystemConstants.MINIMUM_DAYS_BEFORE_JOB_START
+                                + " days away\n");
                     }
                     menuTrue = false;
                     break;
@@ -576,7 +579,7 @@ public class UserInterfaceConsole {
      Park Manage UI Methods are below
      */
 
-    private void displaySummitJobParkManager() {
+    private void displaySubmitJobParkManager() {
         //                                              0123456789
         System.out.println("Please indicate Start Date (MM/DD/YYYY):");
         String startDateString = myScanner.nextLine();
@@ -637,11 +640,11 @@ public class UserInterfaceConsole {
         }
         newJob.setMaxVolunteers(numVolunteers);
 
-        displaySummitJobListingParkManager(newJob);
+        displayJobListingParkManager(newJob);
         displayAskToPostJobParkManager(newJob);
     }
 
-    private void displaySummitJobListingParkManager(Job theJob) {
+    private void displayJobListingParkManager(Job theJob) {
         System.out.println("Job Listing Overview:\n");
         displaySeperator();
         System.out.println("Name:\t\t\t" + theJob.getJobTitle());
@@ -683,10 +686,11 @@ public class UserInterfaceConsole {
     		System.out.println("This job already exists!\n");
     	} else if (myJobCoordinator.addPendingJob(theJob) == 2) {
     		System.out.println("This job is longer than the maximum allowed job of " 
-    							+ myJobCoordinator.getMaximumJobLength() + " days");
+    							+ SystemConstants.MAXIMUM_JOB_LENGTH + " days");
     	} else if (myJobCoordinator.addPendingJob(theJob) == 3) {
     		System.out.println("This job is further away than the maximum allowed " 
-								+ myJobCoordinator.getMaximumDaysFromToday() + " days from today");
+								+ SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB 
+								+ " days from today");
     	} else {
     		System.out.println("Job Submitted!\n");
     	}
@@ -694,48 +698,87 @@ public class UserInterfaceConsole {
     
     
     }
-
-    private void displayJobsPostedParkManager() {
-        //ArrayList<Job> currentJobs = theParkManager.getSubmittedJobs();
-    	ArrayList<Job> currentJobs = myJobCoordinator.getPendingJobs();
-        if (currentJobs.size() == 0) {
-            System.out.println("There have not been any jobs submitted!");
-        } else {
-            System.out.println();
+    
+    private void displayJobsParkManager() {
+        boolean menuTrue = true;
+        int loop = 0;
+        do {
             int iter = 1;
-            for (Job aJob : currentJobs) {
-                displayCycleJob(iter++, aJob);
-            }
-            boolean menuTrue = true;
-            do {
-                System.out.println("0) Go back\n");
-                askForUserSelection();
-
-                String userSelection = myScanner.nextLine();
-                if ("1".equals(userSelection) && currentJobs.size() > 0) {
-                    displaySummitJobListingParkManager(currentJobs.get(0));
-
-                } else if ("2".equals(userSelection) && currentJobs.size() > 1) {
-                    displaySummitJobListingParkManager(currentJobs.get(1));
-
-                } else if ("3".equals(userSelection) && currentJobs.size() > 2) {
-                    displaySummitJobListingParkManager(currentJobs.get(2));
-
-                } else if ("4".equals(userSelection) && currentJobs.size() > 3) {
-                    displaySummitJobListingParkManager(currentJobs.get(3));
-
-                } else if ("5".equals(userSelection) && currentJobs.size() > 4) {
-                    displaySummitJobListingParkManager(currentJobs.get(4));
-
-                } else if (BACK.equals(userSelection)) {
-                    menuTrue = false;
-
+            while (iter <= 5) {
+                //grab from list of jobs
+                //if my jobs is empty, break, otherwise show 5 jobs
+                if (!myJobCoordinator.getPendingJobs().isEmpty() 
+                    && myJobCoordinator.getPendingJobs().size() > ((iter-1) + (loop*5))) {
+                    
+                    displayCycleJob(iter % 6, myJobCoordinator.getPendingJobs().get((iter-1) + (loop*5)));
+                    iter++;
+                
                 } else {
-                    System.out.println("Invalid Selection\n");
-
+                    if (myJobCoordinator.getPendingJobs().isEmpty()) {
+                        System.out.println("No jobs have been added yet\n");    
+                    } else {
+                        System.out.println("No jobs remaining\n");
+                    }
+                    break;
                 }
-            } while (menuTrue);
-        }
+            }
+
+            displayCycleJobSelectionVolunteer();
+            askForUserSelection();
+            String userSelection = myScanner.nextLine();
+            Job theJob = null;
+            switch (userSelection) {
+                case "1":
+                    theJob = myJobCoordinator.getPendingJobs()
+                    .get(Integer.parseInt(userSelection) + (loop*5));
+                    if (theJob != null) {
+                        displayJobListingParkManager(theJob);
+                    }
+                    break;
+                case "2":
+                    theJob = myJobCoordinator.getPendingJobs()
+                    .get(Integer.parseInt(userSelection) + (loop*5));
+                    if (theJob != null) {
+                        displayJobListingParkManager(theJob);
+                    }
+                    break;
+                case "3":
+                    theJob = myJobCoordinator.getPendingJobs()
+                    .get(Integer.parseInt(userSelection) + (loop*5));
+                    if (theJob != null) {
+                        displayJobListingParkManager(theJob);
+                    }
+                    break;
+                case "4":
+                    theJob = myJobCoordinator.getPendingJobs()
+                    .get(Integer.parseInt(userSelection) + (loop*5));
+                    if (theJob != null) {
+                        displayJobListingParkManager(theJob);
+                    }
+                    break;
+                case "5":
+                    theJob = myJobCoordinator.getPendingJobs()
+                    .get(Integer.parseInt(userSelection) + (loop*5));
+                    if (theJob != null) {
+                        displayJobListingParkManager(theJob);
+                    }
+                    break;
+                case "8":
+                    loop = loop - 1;
+                    System.out.println("");
+                    break;
+                case "9":
+                    loop = loop + 1;
+                    System.out.println("");
+                    break;
+                case BACK:
+                    menuTrue = false;
+                    break;
+                default:
+                    System.out.println("Invalid Selection");
+                    break;
+            }
+        } while (menuTrue);
     }
 
     /*
@@ -745,35 +788,6 @@ public class UserInterfaceConsole {
     // ONLY DISPLAYING JOBS IS IMPLEMENTED
 
      */
-
-    private void displayFinishedJobsUrbanParkStaff(OfficeStaff theOfficeStaff) {
-        ArrayList<Job> currentJobs = myJobCoordinator.getFinshedJobs();
-        if (currentJobs.size() == 0) {
-            System.out.println("There are no approved jobs!");
-        } else {
-            System.out.println();
-            for (Job aJob : currentJobs) {
-                int iter = 1;
-                displayCycleJob(iter++, aJob);
-            }
-            boolean menuTrue = true;
-            do {
-                System.out.println("0) Go back\n");
-                askForUserSelection();
-
-                String userSelection = myScanner.nextLine();
-
-                if (BACK.equals(userSelection)) {
-                    menuTrue = false;
-
-                } else {
-                    System.out.println("Invalid Selection\n");
-
-                }
-            } while (menuTrue);
-        }
-    }
-
     private void displayPendingJobsUrbanParkStaff(OfficeStaff theOfficeStaff) {
         ArrayList<Job> pendingJobs = myJobCoordinator.getPendingJobs();
         if (pendingJobs.size() == 0) {

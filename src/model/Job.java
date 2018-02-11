@@ -89,13 +89,11 @@ public class Job implements Serializable {
 	public void addVolunteer(final Volunteer theVolunteer) {
 	    if (myVolunteers.contains(theVolunteer)) {
 	        // volunteer already applied
-	    } else if (theVolunteer.addToCurrentJobs(this) != 0) {
+	    } else if (theVolunteer.canSignUpForJob(this) != 0) {
 	        // if there exists conflicts with volunteer's current jobs
 	        // volunteer automatically gets added to job if there doesnt exist conflicts
 	    }
 		myVolunteers.add(theVolunteer);
-		// should probably be a UI feature
-		System.out.println("Added " + theVolunteer + " to " + myJobTitle);
 	}
 
 	public void setStartDate(GregorianCalendar theDate) {
@@ -275,5 +273,22 @@ public class Job implements Serializable {
 
     public void setMyDifficulty(int myDifficulty) {
         this.myDifficulty = myDifficulty;
+    }
+    
+    public boolean hasOverlap(Job theOtherJob) {
+        return this.myStartDate.compareTo(theOtherJob.myStartDate) == 0
+            // if listJob starts  on the same day that applyingJob ends
+            || this.myStartDate.compareTo(theOtherJob.myEndDate) == 0
+            // if listJob ends on the same day applyingJob starts
+            || this.myEndDate.compareTo(theOtherJob.myStartDate) == 0
+            // if listJob overlaps on the left with applyingJob
+            || (this.myStartDate.compareTo(theOtherJob.myStartDate) < 0
+                    && this.myEndDate.compareTo(theOtherJob.myStartDate) >= 0)
+            // if listJob overlaps on the right with applyingJob
+            || (this.myEndDate.compareTo(theOtherJob.myEndDate) > 0
+                    && this.myStartDate.compareTo(theOtherJob.myEndDate) <= 0)
+            // if listJob overlaps inside applyingJob
+            || (this.myStartDate.compareTo(theOtherJob.myStartDate) > 0
+                    && (this.myStartDate.compareTo(theOtherJob.myEndDate) < 0));
     }
 }

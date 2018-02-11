@@ -2,29 +2,14 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
+import util.SystemConstants;
+
 public class JobCoordinator implements Serializable {
-    /** The default maximum number of pending jobs at any given time. */
-    private final int MAXIMUM_JOBS = 20;
-
-    /** The default maximum job length in days. */
-    private final int MAXIMUM_JOB_LENGTH = 3;
-
-    /**
-     * The default maximum number of days away
-     * from the current date a new pending job can be.
-     */
-    private final int MAXIMUM_DAYS_FROM_TODAY = 75;
-
     /** The current list of pending jobs. */
     private final ArrayList<Job> myPendingJobList;
-
-    /** The current list of finished jobs. */
-    private final ArrayList<Job> myFinishedJobList;
 
     /** The current date as a calendar. */
     private GregorianCalendar myCurrentDate;
@@ -35,7 +20,6 @@ public class JobCoordinator implements Serializable {
      */
     public JobCoordinator() {
         myPendingJobList = new ArrayList<Job>();
-        myFinishedJobList = new ArrayList<Job>();
         myCurrentDate = new GregorianCalendar(2018, 2, 12);
     }
 
@@ -56,11 +40,11 @@ public class JobCoordinator implements Serializable {
     	if (myPendingJobList.contains(theJob)) {
             // warning, job already exists
     		returnInt = 1;
-        } else if (theJob.getJobLength() > MAXIMUM_JOB_LENGTH) {
+        } else if (theJob.getJobLength() > SystemConstants.MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
         	returnInt = 2;
         } else if (getDifferenceInDays(this.myCurrentDate, theJob.getEndDate())
-                        > MAXIMUM_DAYS_FROM_TODAY) {
+                        > SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
         	returnInt = 3;
             // warning, job is further than 75 days away
         } else {
@@ -69,52 +53,30 @@ public class JobCoordinator implements Serializable {
     	
     	return returnInt;
     }
-    /** Adds a job to the finished jobs list.
-     *
-     *  Preconditon: Job to be added must not end before the current date.
-     *
-     *  @param theJob job to be added.
-     */
-    public void addFinishedJob(final Job theJob) {
-        if (this.myCurrentDate.compareTo(theJob.getEndDate()) < 0) {
-            // impossible for job to be finished, warning
-        } else {
-            myFinishedJobList.add(theJob);
-        }
-    }
-
 
     /**
      * Adds a specified user to a job.
-     *
+     *    
      * @param theJob
      */
     public void applyToJob(User theUser, Job theJob) {
         if (theUser.getAccessLevel() != 1) {
             // warning, user applying is not a volunteer
         }
-        theJob.addVolunteer((Volunteer) theUser);
+        Volunteer theVolunteer = (Volunteer) theUser;
+        
+        if (theJob.canAcceptVolunteers() && theVolunteer.canSignUpForJob(theJob) == 0) {
+            theJob.addVolunteer(theVolunteer);
+            theVolunteer.signUpForJob(theJob);
+        }
+        
+        
     }
 
     //queries
-    
-    public int getMaximumJobLength() {
-        return MAXIMUM_JOB_LENGTH;
-    }
-    
-    public int getMaximumDaysFromToday() {
-        return MAXIMUM_DAYS_FROM_TODAY;
-    }
-
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getPendingJobs() {
         return (ArrayList<Job>) myPendingJobList.clone();
-    }
-    
-
-    @SuppressWarnings("unchecked")
-    public ArrayList<Job> getFinshedJobs() {
-        return (ArrayList<Job>) myFinishedJobList.clone();
     }
     
     public GregorianCalendar getCurrentDate() {
@@ -129,7 +91,7 @@ public class JobCoordinator implements Serializable {
      * @return True if there is space, false otherwise.
      */
     public boolean hasSpaceToAddNewJob() {
-        return myPendingJobList.size() < MAXIMUM_JOBS;
+        return myPendingJobList.size() < SystemConstants.MAXIMUM_JOBS;
     }
 
 
