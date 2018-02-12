@@ -768,35 +768,35 @@ public class UserInterfaceConsole {
             switch (userSelection) {
                 case "1":
                     theJob = myJobCoordinator.getPendingJobs()
-                                    .get(Integer.parseInt(userSelection) + (loop * 5));
+                                    .get(Integer.parseInt(userSelection) - 1 + (loop * 5));
                     if (theJob != null) {
                         displayJobListingParkManager(theJob);
                     }
                     break;
                 case "2":
                     theJob = myJobCoordinator.getPendingJobs()
-                                    .get(Integer.parseInt(userSelection) + (loop * 5));
+                                    .get(Integer.parseInt(userSelection) - 1 + (loop * 5));
                     if (theJob != null) {
                         displayJobListingParkManager(theJob);
                     }
                     break;
                 case "3":
                     theJob = myJobCoordinator.getPendingJobs()
-                                    .get(Integer.parseInt(userSelection) + (loop * 5));
+                                    .get(Integer.parseInt(userSelection) - 1 + (loop * 5));
                     if (theJob != null) {
                         displayJobListingParkManager(theJob);
                     }
                     break;
                 case "4":
                     theJob = myJobCoordinator.getPendingJobs()
-                                    .get(Integer.parseInt(userSelection) + (loop * 5));
+                                    .get(Integer.parseInt(userSelection) - 1 + (loop * 5));
                     if (theJob != null) {
                         displayJobListingParkManager(theJob);
                     }
                     break;
                 case "5":
                     theJob = myJobCoordinator.getPendingJobs()
-                                    .get(Integer.parseInt(userSelection) + (loop * 5));
+                                    .get(Integer.parseInt(userSelection) - 1 + (loop * 5));
                     if (theJob != null) {
                         displayJobListingParkManager(theJob);
                     }
