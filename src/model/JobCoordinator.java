@@ -36,15 +36,6 @@ public class JobCoordinator implements Serializable {
     public void addPendingJob(final Job theJob) {
             myPendingJobList.add(theJob);
     }
-    
-    /**
-     * Return list of pending jobs.
-     *
-     * @return return a list of pending jobs
-     */
-    public  ArrayList<Job> getPendingJob() {
-    		return myPendingJobList;
-    }
 
     /**
      * Adds a specified user to a job.
