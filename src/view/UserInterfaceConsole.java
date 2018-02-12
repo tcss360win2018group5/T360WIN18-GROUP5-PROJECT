@@ -95,7 +95,7 @@ public class UserInterfaceConsole {
     }
 
     private void saveVolunteerJobInfomation(Volunteer theVolunteer) {
-        mySystemCoordinator.updateUserInformationOnExit(theVolunteer);
+        //mySystemCoordinator.updateUserInformationOnExit(theVolunteer);
     }
 
     private static void writeObjectToDisk(String thisName, Object thisObject) {
