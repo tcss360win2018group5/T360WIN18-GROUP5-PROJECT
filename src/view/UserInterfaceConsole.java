@@ -528,7 +528,7 @@ public class UserInterfaceConsole {
         String jobLocation = theJob.getMyAddress();
         GregorianCalendar jobStartDate = theJob.getStartDate();
         System.out.println(theIteration + ") " + jobName + " | " + "Location: " + jobLocation
-                           + " | " + "Start Date: " + jobStartDate.get(Calendar.MONTH) + "/"
+                           + " | " + "Start Date: " + (jobStartDate.get(Calendar.MONTH) + 1) + "/"
                            + jobStartDate.get(Calendar.DAY_OF_MONTH) + "/"
                            + jobStartDate.get(Calendar.YEAR) + "\n");
     }
@@ -611,7 +611,7 @@ public class UserInterfaceConsole {
         System.out.println("Please indicate Start Date (MM/DD/YYYY):");
         String startDateString = myScanner.nextLine();
         GregorianCalendar startDate = new GregorianCalendar(Integer.parseInt(startDateString
-                        .substring(6, 10)), Integer.parseInt(startDateString.substring(0, 2)),
+                        .substring(6, 10)), Integer.parseInt(startDateString.substring(0, 2)) - 1,
                                                             Integer.parseInt(startDateString
                                                                             .substring(3, 5)));
         System.out.println("Please indicate End Date (MM/DD/YYYY):");
@@ -668,7 +668,7 @@ public class UserInterfaceConsole {
             newJob.setMyDifficulty(99);
         }
         newJob.setMaxVolunteers(numVolunteers);
-
+        
         displayJobListingParkManager(newJob);
         displayAskToPostJobParkManager(newJob);
     }
@@ -862,7 +862,7 @@ public class UserInterfaceConsole {
      * Prints date of job in correct format
      */
     private String printJobDate(final GregorianCalendar theJob) {
-        return (theJob.get(Calendar.MONTH) + "/" + theJob.get(Calendar.DAY_OF_MONTH) + "/"
+        return ((theJob.get(Calendar.MONTH) + 1) + "/" + theJob.get(Calendar.DAY_OF_MONTH) + "/"
                 + theJob.get(Calendar.YEAR));
     }
 
