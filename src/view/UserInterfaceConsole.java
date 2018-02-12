@@ -24,7 +24,6 @@ import model.Volunteer;
 import util.SystemConstants;
 
 public class UserInterfaceConsole {
-
     private static final String BACK = "0";
     private static final String EXIT = "0";
     private static final String LOGOUT = "0";
@@ -283,9 +282,14 @@ public class UserInterfaceConsole {
             switch (userSelection) {
                 case "1":
                     // 1) Submit new job
-                    displaySubmitJobParkManager();
-                    displaySeperator();
-                    displayParkManagerMenu();
+                    if (this.myJobCoordinator.hasSpaceToAddJobs()) {
+                        displaySubmitJobParkManager();
+                        displaySeperator();
+                        displayParkManagerMenu();
+                    } else {
+                        System.out.println("\nMaximum Pending Jobs Reached!" 
+                                           + " Cannot Submit new job \n");
+                    }
                     break;
                 case "2":
                     // 2) View posted jobs
@@ -523,8 +527,8 @@ public class UserInterfaceConsole {
         String jobName = theJob.getJobTitle();
         String jobLocation = theJob.getMyAddress();
         GregorianCalendar jobStartDate = theJob.getStartDate();
-        System.out.println(theIteration + ") " + jobName + "\n" + "Location:\t" + jobLocation
-                           + "\n" + "Start Date:\t" + jobStartDate.get(Calendar.MONTH) + "/"
+        System.out.println(theIteration + ") " + jobName + " | " + "Location: " + jobLocation
+                           + " | " + "Start Date: " + jobStartDate.get(Calendar.MONTH) + "/"
                            + jobStartDate.get(Calendar.DAY_OF_MONTH) + "/"
                            + jobStartDate.get(Calendar.YEAR) + "\n");
     }

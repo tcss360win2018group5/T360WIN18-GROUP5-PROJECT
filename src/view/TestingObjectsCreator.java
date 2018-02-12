@@ -15,10 +15,16 @@ import model.Volunteer;
 import util.SystemConstants;
 
 public final class TestingObjectsCreator {
+    private static Volunteer volunteerTest = new Volunteer("test_volunteer");
+    private static ParkManager parkManagerTest = new ParkManager("test_park_manager");
+    private static OfficeStaff officeStaffTest = new OfficeStaff("test_officeStf");
 
     public static void main(String[] args) {
+        createTestUsers();
         createMaxJobs();
+        createTestUsers();
         createOneLessThanMaxJobs();
+        createTestUsers();
         createNoJobs();
         createTestUsers();
         createTestVolunteerSignedUpForOneValidJob();
@@ -35,9 +41,15 @@ public final class TestingObjectsCreator {
             e.printStackTrace();
         }
     }
+    
+    private static void createTestUsers() {
+        volunteerTest = new Volunteer("test_volunteer");
+        parkManagerTest = new ParkManager("test_park_manager");
+        officeStaffTest = new OfficeStaff("test_officeStf");
+    }
 
     private static void createMaxJobs() {
-        String jcFileName = "data/testdata/JobCoordinator.MAXIMUMJOBS.ser";
+        String jcFileName = "data/testdata/MAX_JOBS.JobCoordinator.ser";
         JobCoordinator jcObject = new JobCoordinator();
         GregorianCalendar date = new GregorianCalendar();
 
@@ -48,12 +60,19 @@ public final class TestingObjectsCreator {
             genericJob.setEndDate(date);
             jcObject.addPendingJob(genericJob);
         }
-
+        
         writeObjectToDisk(jcFileName, jcObject);
+        
+        String scFileName = "data/testdata/MAX_JOBS.SystemCoordinator.ser";
+        SystemCoordinator scObject = new SystemCoordinator();
+        scObject.addUser(volunteerTest);
+        scObject.addUser(parkManagerTest);
+        scObject.addUser(officeStaffTest);
+        writeObjectToDisk(scFileName, scObject);
     }
 
     private static void createOneLessThanMaxJobs() {
-        String jcFileName = "data/testdata/JobCoordinator.ONELESSTHANMAXIMUMJOBS.ser";
+        String jcFileName = "data/testdata/ONE_LESS_THAN_MAX_JOBS.JobCoordinator.ser";
         JobCoordinator jcObject = new JobCoordinator();
         GregorianCalendar date = new GregorianCalendar();
 
@@ -66,37 +85,33 @@ public final class TestingObjectsCreator {
         }
 
         writeObjectToDisk(jcFileName, jcObject);
-    }
-
-    private static void createNoJobs() {
-        String jcFileName = "data/testdata/JobCoordinator.NOJOBS.ser";
-        JobCoordinator jcObject = new JobCoordinator();
-
-        writeObjectToDisk(jcFileName, jcObject);
-    }
-
-    private static void createTestUsers() {
-        String scFileName = "data/testdata/SystemCoordinator.TESTUSERS.ser";
+        
+        String scFileName = "data/testdata/ONE_LESS_THAN_MAX_JOBS.SystemCoordinator.ser";
         SystemCoordinator scObject = new SystemCoordinator();
-
-        Volunteer volunteerTest = new Volunteer("volunteerTest");
-        ParkManager parkManagerTest = new ParkManager("parkManagerTest");
-        OfficeStaff officeStaffTest = new OfficeStaff("officeStaffTest");
-
         scObject.addUser(volunteerTest);
         scObject.addUser(parkManagerTest);
         scObject.addUser(officeStaffTest);
-
         writeObjectToDisk(scFileName, scObject);
     }
 
-    private static void createTestVolunteerSignedUpForOneValidJob() {
-        String scFileName = "data/testdata/SystemCoordinator.VOLUNTEERWITHSIGNEDUPJOB.ser";
-        SystemCoordinator scObject = new SystemCoordinator();
-        String jcFileName = "data/testdata/JobCoordinator.VOLUNTEERWITHSIGNEDUPJOB.ser";
+    private static void createNoJobs() {
+        String jcFileName = "data/testdata/NO_JOBS.JobCoordinator.ser";
         JobCoordinator jcObject = new JobCoordinator();
 
-        Volunteer volunteerTest = new Volunteer("volunteerTest");
+        writeObjectToDisk(jcFileName, jcObject);        
+        String scFileName = "data/testdata/NO_JOBS.SystemCoordinator.ser";
+        SystemCoordinator scObject = new SystemCoordinator();
+        scObject.addUser(volunteerTest);
+        scObject.addUser(parkManagerTest);
+        scObject.addUser(officeStaffTest);
+        writeObjectToDisk(scFileName, scObject);        
+    }
+    
+    private static void createTestVolunteerSignedUpForOneValidJob() {
+        String scFileName = "data/testdata/VOLUNTEER_SIGNED_UP_FOR_JOB.SystemCoordinator.ser";
+        SystemCoordinator scObject = new SystemCoordinator();
+        String jcFileName = "data/testdata/VOLUNTEER_SIGNED_UP_FOR_JOB.JobCoordinator.ser";
+        JobCoordinator jcObject = new JobCoordinator();
 
         scObject.addUser(volunteerTest);
 
@@ -107,6 +122,10 @@ public final class TestingObjectsCreator {
         validJob.setEndDate(validDate);
         volunteerTest.signUpForJob(validJob);
         jcObject.addPendingJob(validJob);
+        Job validJobOverlapsWithOtherJob = new Job("AnotherValidJob");
+        validJobOverlapsWithOtherJob.setStartDate(validDate);
+        validJobOverlapsWithOtherJob.setEndDate(validDate);
+        jcObject.addPendingJob(validJobOverlapsWithOtherJob);
 
         writeObjectToDisk(scFileName, scObject);
         writeObjectToDisk(jcFileName, jcObject);
