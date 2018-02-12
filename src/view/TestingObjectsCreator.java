@@ -114,7 +114,9 @@ public final class TestingObjectsCreator {
         JobCoordinator jcObject = new JobCoordinator();
 
         scObject.addUser(volunteerTest);
-
+        scObject.addUser(parkManagerTest);
+        scObject.addUser(officeStaffTest);
+        
         Job validJob = new Job("SomeValidJob");
         GregorianCalendar validDate = new GregorianCalendar();
         validDate.add(GregorianCalendar.DAY_OF_YEAR, 10);
