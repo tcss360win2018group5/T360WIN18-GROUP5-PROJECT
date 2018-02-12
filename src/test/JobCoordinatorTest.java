@@ -1,10 +1,10 @@
+
 package test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +23,9 @@ public class JobCoordinatorTest {
         anyOldValidJob = new Job("anyOldValidJob");
     }
 
-
     // Business Rule:
-    // There can not be more than the maximum number of pending jobs at a time in the entire system, default of 20
+    // There can not be more than the maximum number of pending jobs at a time
+    // in the entire system, default of 20
 
     // The system has far fewer than the maximum number of pending jobs
     @Test
@@ -59,20 +59,86 @@ public class JobCoordinatorTest {
 
         assertFalse(globalJobCoordinator.hasSpaceToAddJobs());
     }
+    
+    // Business Rule:
+    // No job can be specified that takes more than the maximum number of days, default of 3
+    
+    // The specified job takes one fewer than the maximum number of days
+    @Test
+    public final void canAddJob_JobOneLessThanMaxJobLength_ShouldBeTrue() {
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
+        // create new calendar date to add to generic job
+        GregorianCalendar validDateOneWeekAhead = (GregorianCalendar) currentDate.clone();
+        validDateOneWeekAhead.add(GregorianCalendar.DAY_OF_YEAR, 7);
+        GregorianCalendar validDateOneWeekAheadPlusOneLessThanMaxLength = 
+                        (GregorianCalendar) validDateOneWeekAhead.clone();
+        validDateOneWeekAheadPlusOneLessThanMaxLength
+            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH - 1);
+        
+        Job lessThanMaxLengthJob = new Job("lessThanMaxLengthJob");
+        lessThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
+        lessThanMaxLengthJob.setEndDate(validDateOneWeekAheadPlusOneLessThanMaxLength);
+        
+        assertTrue(globalJobCoordinator.canAddJob(lessThanMaxLengthJob) == 0);
+        
+    }
+    
+    // The specified job takes the maximum number of days
+    @Test
+    public final void canAddJob_JobMaxJobLength_ShouldBeTrue() {        
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
+
+        // create new calendar date to add to generic job
+        GregorianCalendar validDateOneWeekAhead = (GregorianCalendar) currentDate.clone();
+        validDateOneWeekAhead.add(GregorianCalendar.DAY_OF_YEAR, 7);
+        GregorianCalendar validDateOneWeekAheadPlusMaxLength = 
+                        (GregorianCalendar) validDateOneWeekAhead.clone();
+        validDateOneWeekAheadPlusMaxLength
+            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH);
+        
+        Job exactlyMaxLengthJob = new Job("exactlyMaxLengthJob");
+        exactlyMaxLengthJob.setStartDate(validDateOneWeekAhead);
+        exactlyMaxLengthJob.setEndDate(validDateOneWeekAheadPlusMaxLength);
+        
+        assertTrue(globalJobCoordinator.canAddJob(exactlyMaxLengthJob) == 0);
+    }
+    
+    // The specified job takes one more than the maximum number of days
+    @Test
+    public final void canAddJob_JobOneMoreThanMaxJobLength_ShouldBeTrue() {
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
+
+        // create new calendar date to add to generic job
+        GregorianCalendar validDateOneWeekAhead = (GregorianCalendar) currentDate.clone();
+        validDateOneWeekAhead.add(GregorianCalendar.DAY_OF_YEAR, 7);
+        GregorianCalendar validDateOneWeekAheadPlusOneMoreThanMaxLength = 
+                        (GregorianCalendar) validDateOneWeekAhead.clone();
+        validDateOneWeekAheadPlusOneMoreThanMaxLength
+            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH + 1);
+        
+        Job moreThanMaxLengthJob = new Job("moreThanMaxLengthJob");
+        moreThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
+        moreThanMaxLengthJob.setEndDate(validDateOneWeekAheadPlusOneMoreThanMaxLength);
+
+        assertFalse(globalJobCoordinator.canAddJob(moreThanMaxLengthJob) == 0);
+        
+    }
 
     // Business Rule:
-    // No job can be specified whose end date is more than the maximum number of days from the current date, default of 75
+    // No job can be specified whose end date is more than the maximum number of
+    // days from the current date, default of 75
 
-
-    // The specified job ends one fewer than the maximum number of days from the current date
+    // The specified job ends one fewer than the maximum number of days from the
+    // current date
     @Test
     public final void canAddJob_JobEndsOneLessThanMaximumDays__ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
-        
+
         // create new calendar date to add to generic job
-        GregorianCalendar oneLessThanMaximumDaysAwayDate = (GregorianCalendar) currentDate.clone();
-        oneLessThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR, 
+        GregorianCalendar oneLessThanMaximumDaysAwayDate =
+                        (GregorianCalendar) currentDate.clone();
+        oneLessThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
                                            SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB - 1);
 
         // specify generic job on that day
@@ -88,10 +154,10 @@ public class JobCoordinatorTest {
     @Test
     public final void canAddJob_JobEndsExactlyMaximumDaysAway__ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
-        
+
         // create new calendar date to add to generic job
         GregorianCalendar exactlyMaximumDaysAwayDate = (GregorianCalendar) currentDate.clone();
-        exactlyMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR, 
+        exactlyMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
                                        SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB);
 
         // specify generic job on that day
@@ -103,15 +169,17 @@ public class JobCoordinatorTest {
         assertTrue(globalJobCoordinator.canAddJob(jobExactlyMaximumDaysAway) == 0);
     }
 
-    // The specified job ends one more than the maximum number of days from the current date
+    // The specified job ends one more than the maximum number of days from the
+    // current date
     @Test
     public final void canAddJob_JobEndsOneMoreThanMaximumDays__ShouldBeFalse() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
-        
+
         // create new calendar date to add to generic job
-        GregorianCalendar oneMoreThanMaximumDaysAwayDate = (GregorianCalendar) currentDate.clone();
-        oneMoreThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR, 
-                                       SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB + 1);
+        GregorianCalendar oneMoreThanMaximumDaysAwayDate =
+                        (GregorianCalendar) currentDate.clone();
+        oneMoreThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
+                                           SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB + 1);
 
         // specify generic job on that day
         Job jobOneMoreThanMaximumDaysAway = new Job("jobOneMoreThanMaximumDaysAway");
