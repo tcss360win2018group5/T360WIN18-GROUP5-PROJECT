@@ -57,7 +57,9 @@ public class Volunteer extends User implements Serializable {
         boolean is_there_conflict = myCurrentJobs.stream()
                         .anyMatch(aJobFromList -> aJobFromList.hasOverlap(theApplyingJob));
         boolean is_outside_timeframe = (getDifferenceInDays(myCurrentDay, theApplyingJob.getStartDate())
-                                        <= SystemConstants.MINIMUM_DAYS_BEFORE_JOB_START);
+                                        < SystemConstants.MINIMUM_DAYS_BEFORE_JOB_START);
+        //System.out.println("CurrentDate " + myCurrentDay.getTime() + " JobDate " + theApplyingJob.getStartDate().getTime());
+        //System.out.println("Difference = " + getDifferenceInDays(myCurrentDay, theApplyingJob.getStartDate()));
 
         if (is_there_conflict) {
             returnInt = 1; //job was overlapping with another job on this day
@@ -74,8 +76,8 @@ public class Volunteer extends User implements Serializable {
 										  GregorianCalendar theSecondDate) {
 		long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis() , TimeUnit.MILLISECONDS)
 				- TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),  TimeUnit.MILLISECONDS);
-
-		return Math.abs( (int) convertedTime);
+		
+		return Math.abs((int) convertedTime);
 	}
 
 

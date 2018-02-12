@@ -682,21 +682,20 @@ public class UserInterfaceConsole {
     }
     
     private void tryToAddJob(Job theJob) {
-    	if (myJobCoordinator.addPendingJob(theJob) == 1) {
+        int result = myJobCoordinator.canAddJob(theJob);
+    	if (result == 1) {
     		System.out.println("This job already exists!\n");
-    	} else if (myJobCoordinator.addPendingJob(theJob) == 2) {
+    	} else if (result == 2) {
     		System.out.println("This job is longer than the maximum allowed job of " 
     							+ SystemConstants.MAXIMUM_JOB_LENGTH + " days");
-    	} else if (myJobCoordinator.addPendingJob(theJob) == 3) {
+    	} else if (result == 3) {
     		System.out.println("This job is further away than the maximum allowed " 
 								+ SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB 
 								+ " days from today");
     	} else {
+    	    myJobCoordinator.addPendingJob(theJob);
     		System.out.println("Job Submitted!\n");
-    	}
-    
-    
-    
+    	}    
     }
     
     private void displayJobsParkManager() {

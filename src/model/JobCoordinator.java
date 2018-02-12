@@ -27,31 +27,14 @@ public class JobCoordinator implements Serializable {
     /**
      * Adds a job to the pending list of jobs.
      *
-     * Precondition: Job to be submitted must:
-     *      1) Not currently exist
-     *      2) Be 3 or less days in length
-     *      3) be no more than 75 days from the current date of submission
+     * Preconditions: 
+     *  1) canAddJob(theJob) == 0 has evaluated to TRUE
+     *  2) hasSpaceToAddNewJob() has evaluated to TRUE
      *
      * @param theJob job to be added.
      */
-    public int addPendingJob(final Job theJob) {
-        int returnInt = 0; //will return value depending on pass or specific business rule fail
-        
-    	if (myPendingJobList.contains(theJob)) {
-            // warning, job already exists
-    		returnInt = 1;
-        } else if (theJob.getJobLength() > SystemConstants.MAXIMUM_JOB_LENGTH) {
-            // warning, job exceeds maximum job length
-        	returnInt = 2;
-        } else if (getDifferenceInDays(this.myCurrentDate, theJob.getEndDate())
-                        > SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
-        	returnInt = 3;
-            // warning, job is further than 75 days away
-        } else {
+    public void addPendingJob(final Job theJob) {
             myPendingJobList.add(theJob);
-        }
-    	
-    	return returnInt;
     }
 
     /**
@@ -90,8 +73,34 @@ public class JobCoordinator implements Serializable {
      *
      * @return True if there is space, false otherwise.
      */
-    public boolean hasSpaceToAddNewJob() {
+    public boolean hasSpaceToAddJobs() {
         return myPendingJobList.size() < SystemConstants.MAXIMUM_JOBS;
+    }
+    
+    /**
+     * Job to be submitted must:
+     *      1) Not currently exist
+     *      2) Be 3 or less days in length
+     *      3) be no more than 75 days from the current date of submission
+     *      
+     * @param theJob
+     * @return
+     */
+    public int canAddJob(Job theJob) {
+        int returnInt = 0;
+        if (myPendingJobList.contains(theJob)) {
+            // warning, job already exists
+            returnInt = 1;
+        } else if (theJob.getJobLength() > SystemConstants.MAXIMUM_JOB_LENGTH) {
+            // warning, job exceeds maximum job length
+            returnInt = 2;
+        } else if (getDifferenceInDays(this.myCurrentDate, theJob.getEndDate())
+                        > SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
+            returnInt = 3;
+            // warning, job is further than 75 days away
+        } 
+        
+        return returnInt;
     }
 
 
