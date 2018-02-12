@@ -36,7 +36,7 @@ public class UserInterfaceConsole {
     // 2: // Volunteer
     // 1: // Park Manager
     // 0: // Urban Parks Staff Member
-    private static final int CHANGE_TO_CREATE_NEW_USER_ACCESS_LEVEL = 2;
+    private static final int CHANGE_TO_CREATE_NEW_USER_ACCESS_LEVEL = 1;
 
     /**
      * Scanner to read user input from console.

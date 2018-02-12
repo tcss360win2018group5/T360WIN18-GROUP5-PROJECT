@@ -20,7 +20,7 @@ public class JobCoordinator implements Serializable {
      */
     public JobCoordinator() {
         myPendingJobList = new ArrayList<Job>();
-        myCurrentDate = new GregorianCalendar(2018, 2, 12);
+        myCurrentDate = new GregorianCalendar();
     }
 
     // mutators
