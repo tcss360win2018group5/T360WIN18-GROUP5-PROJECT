@@ -676,10 +676,10 @@ public class UserInterfaceConsole {
     private void displayJobListingParkManager(Job theJob) {
         System.out.println("Job Listing Overview:\n");
         displaySeperator();
-        System.out.println("Name:\t\t\t" + theJob.getJobTitle());
-        System.out.println("Location:\t\t" + theJob.getMyAddress());
-        System.out.println("Start Date:\t\t" + printJobDate(theJob.getStartDate()));
-        System.out.println("End Date:\t\t" + printJobDate(theJob.getEndDate()));
+        System.out.println("Name:\t\t" + theJob.getJobTitle());
+        System.out.println("Location:\t" + theJob.getMyAddress());
+        System.out.println("Start Date:\t" + printJobDate(theJob.getStartDate()));
+        System.out.println("End Date:\t" + printJobDate(theJob.getEndDate()));
 
         System.out.println("Contact Phone\t" + theJob.getMyContactNumber());
         System.out.println("Contact Email:\t" + theJob.getMyContactEmail());
@@ -687,7 +687,7 @@ public class UserInterfaceConsole {
         System.out.println();
         System.out.println("Job Roles:");
         System.out.println("Role:\t\t" + theJob.getMyJobRole());
-        System.out.println("Difficulty: " + theJob.getMyDifficulty());
+        System.out.println("Difficulty: \t" + theJob.getMyDifficulty());
         System.out.println("Volunteers:\t" + theJob.getMaxVolunteers());
         // System.out.println("Description:\t" +
         // theJob.getMyJobRoleDescription());
