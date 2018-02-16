@@ -72,9 +72,7 @@ public class Volunteer extends User implements Serializable {
         System.out.println(job_starts_on_current_day);
         System.out.println(job_starts_prior_to_current_day);
         System.out.println(job_starts_more_than_min);
-        if (total_error_code == 0) {
-            myCurrentJobs.remove(theJob);
-        }
+        if (total_error_code == 0) myCurrentJobs.remove(theJob);
         return total_error_code;
     }
 
