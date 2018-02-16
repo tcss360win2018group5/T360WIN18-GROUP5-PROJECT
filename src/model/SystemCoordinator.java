@@ -36,6 +36,7 @@ public class SystemCoordinator implements Serializable {
 
     // This method exists to update the user information
     // to save job information that the user committed on console
+    // Un-needed - use for testing purposes until deleted
     public void updateUserInformationOnExit(User theUser) {
         for (int i = 0; i < this.myUsers.size(); i++) {
             if (this.myUsers.get(i).getUsername().equals(theUser.getUsername())) {
