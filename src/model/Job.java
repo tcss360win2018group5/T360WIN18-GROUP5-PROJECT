@@ -25,13 +25,9 @@ public class Job implements Serializable {
 
     /** Calendar for end date. */
     private GregorianCalendar myEndDate;
-
     private String myJobLocation = "";
-
     private String myContactName = "";
-
     private String myContactNumber = "";
-
     private String myContactEmail = "";
     private int myJobDifficulty = 0;
     private String myAddress = "";

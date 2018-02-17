@@ -618,7 +618,7 @@ public class UserInterfaceConsole {
         String endDateString = myScanner.nextLine();
         GregorianCalendar endDate =
                         new GregorianCalendar(Integer.parseInt(endDateString.substring(6, 10)),
-                                              Integer.parseInt(endDateString.substring(0, 2)),
+                                              Integer.parseInt(endDateString.substring(0, 2)) - 1,
                                               Integer.parseInt(endDateString.substring(3, 5)));
 
         System.out.println("Please indicate Address (Street, City, State, ZIP):");
