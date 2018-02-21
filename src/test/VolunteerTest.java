@@ -3,7 +3,6 @@ package test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static util.SystemConstants.MINIMUM_DAYS_BEFORE_JOB_START;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -78,20 +77,20 @@ public class VolunteerTest {
         job_starts_day_greater_than_min_days.setStartDate(new GregorianCalendar(
                 today.get(Calendar.YEAR),
                 today.get(Calendar.MONTH),
-                today.get(Calendar.DAY_OF_MONTH) + MINIMUM_DAYS_BEFORE_JOB_START + 1));
+                today.get(Calendar.DAY_OF_MONTH) + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1));
         job_starts_day_greater_than_min_days.setEndDate(new GregorianCalendar(
                 today.get(Calendar.YEAR),
                 today.get(Calendar.MONTH),
-                today.get(Calendar.DAY_OF_MONTH) + MINIMUM_DAYS_BEFORE_JOB_START + 1));
+                today.get(Calendar.DAY_OF_MONTH) + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1));
         job_starts_day_at_min_days = new Job("Job Greater than Min");
         job_starts_day_at_min_days.setStartDate(new GregorianCalendar(
                 today.get(Calendar.YEAR),
                 today.get(Calendar.MONTH),
-                today.get(Calendar.DAY_OF_MONTH) + MINIMUM_DAYS_BEFORE_JOB_START));
+                today.get(Calendar.DAY_OF_MONTH) + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START));
         job_starts_day_at_min_days.setEndDate(new GregorianCalendar(
                 today.get(Calendar.YEAR),
                 today.get(Calendar.MONTH),
-                today.get(Calendar.DAY_OF_MONTH) + MINIMUM_DAYS_BEFORE_JOB_START));
+                today.get(Calendar.DAY_OF_MONTH) + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START));
     }
 
     /*

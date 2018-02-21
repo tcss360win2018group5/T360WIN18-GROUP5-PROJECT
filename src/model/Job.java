@@ -11,9 +11,6 @@ public class Job implements Serializable {
     /** String representation of the title for this job. */
     private String myJobTitle;
 
-    /** Length of this job in days. */
-    private int myJobLength;
-
     /** Maximum amount of volunteers for this job. */
     private int myMaxVolunteers;
 
@@ -47,7 +44,10 @@ public class Job implements Serializable {
     public Job(final String theJobTitle, int theMaxVolunteers,
                GregorianCalendar theStartDate, GregorianCalendar theEndDate) {
         this.myJobTitle = theJobTitle;
+<<<<<<< HEAD
         this.myJobLength = getDifferenceInDays(theStartDate, theEndDate);
+=======
+>>>>>>> ac2a9e2e65684843f07de876c5556c5906191c1f
         this.myMaxVolunteers = theMaxVolunteers;
         this.myStartDate = theStartDate;
         this.myEndDate = theEndDate;

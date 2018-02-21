@@ -1,26 +1,10 @@
 package model;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Scanner;
-
-import model.Job;
-import model.JobCoordinator;
-import model.OfficeStaff;
-import model.ParkManager;
-import model.SystemCoordinator;
-import model.Volunteer;
-import util.SystemConstants;
 
 
 // Run this class to repopulate jobs & users after making backend changes
@@ -76,11 +60,11 @@ public class RepopulateJobAndUser {
         }
         else if (result == 2) {
             System.out.println("This job is longer than the maximum allowed job of "
-                    + SystemConstants.MAXIMUM_JOB_LENGTH + " days");
+                    + JobCoordinator.MAXIMUM_JOB_LENGTH + " days");
         }
         else if (result == 3) {
             System.out.println("This job is further away than the maximum allowed "
-                    + SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB
+                    + JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB
                     + " days from today");
         }
         else {
