@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-import util.SystemConstants;
-
 public class JobCoordinator implements Serializable {
+    public static final int MAXIMUM_JOBS = 20;
+    public static final int MAXIMUM_JOB_LENGTH = 3;
+    public static final int MAXIMUM_DAYS_AWAY_TO_POST_JOB = 75;
+    
     /** The current list of pending jobs. */
     private final ArrayList<Job> myPendingJobList;
 
@@ -71,7 +73,7 @@ public class JobCoordinator implements Serializable {
      * @return True if there is space, false otherwise.
      */
     public boolean hasSpaceToAddJobs() {
-        return myPendingJobList.size() < SystemConstants.MAXIMUM_JOBS;
+        return myPendingJobList.size() < JobCoordinator.MAXIMUM_JOBS;
     }
 
     /**
@@ -87,12 +89,12 @@ public class JobCoordinator implements Serializable {
             // warning, job already exists
             returnInt = 1;
         }
-        else if (theJob.getJobLength() > SystemConstants.MAXIMUM_JOB_LENGTH) {
+        else if (theJob.getJobLength() > JobCoordinator.MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
             returnInt = 2;
         }
         else if (getDifferenceInDays(this.myCurrentDate, theJob
-                        .getEndDate()) > SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
+                        .getEndDate()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
             returnInt = 3;
             // warning, job is further than 75 days away
         }
@@ -100,7 +102,7 @@ public class JobCoordinator implements Serializable {
         return returnInt;
     }
 
-    // private methods
+    // helper methods
     /**
      * Helper method to calculate the difference in days of two calendar dates.
      *

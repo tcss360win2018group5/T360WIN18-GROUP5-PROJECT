@@ -21,7 +21,6 @@ import model.OfficeStaff;
 import model.ParkManager;
 import model.SystemCoordinator;
 import model.Volunteer;
-import util.SystemConstants;
 
 public class UserInterfaceConsole {
     private static final String BACK = "0";
@@ -581,7 +580,7 @@ public class UserInterfaceConsole {
                         System.out.println("Unable to signup for job");
                         System.out.println("Reason: Could not sign up "
                                            + "for a job less than "
-                                           + SystemConstants.MINIMUM_DAYS_BEFORE_JOB_START
+                                           + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START
                                            + " days away\n");
                     }
                     menuTrue = false;
@@ -721,11 +720,11 @@ public class UserInterfaceConsole {
         }
         else if (result == 2) {
             System.out.println("This job is longer than the maximum allowed job of "
-                               + SystemConstants.MAXIMUM_JOB_LENGTH + " days");
+                               + JobCoordinator.MAXIMUM_JOB_LENGTH + " days");
         }
         else if (result == 3) {
             System.out.println("This job is further away than the maximum allowed "
-                               + SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB
+                               + JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB
                                + " days from today");
         }
         else {

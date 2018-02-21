@@ -7,9 +7,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-import static util.SystemConstants.*;
-
 public class Volunteer extends User implements Serializable {
+    public static final int MINIMUM_DAYS_BEFORE_JOB_START = 2;
 
     /** The current jobs this Volunteer is signed up for. */
     private ArrayList<Job> myCurrentJobs = new ArrayList<Job>();
@@ -22,7 +21,7 @@ public class Volunteer extends User implements Serializable {
      * @param theName the name to give the user.
      */
     public Volunteer(String theName) {
-        super(theName, VOLUTNEER_ACCESS_LEVEL);
+        super(theName, SystemCoordinator.VOLUTNEER_ACCESS_LEVEL);
     }
 
     // mutator's
@@ -54,7 +53,7 @@ public class Volunteer extends User implements Serializable {
 
     public boolean doesJobStartMoreThanMinDay(final Job theJob) {
         int is_difference_greater_than_min = getDifferenceInDaysAgainstToday(theJob.getStartDate());
-        return is_difference_greater_than_min >= MINIMUM_DAYS_BEFORE_JOB_START;
+        return is_difference_greater_than_min >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
     }
 
     /*

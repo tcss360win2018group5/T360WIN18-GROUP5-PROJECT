@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-import util.SystemConstants;
-
 public class OfficeStaff extends User implements Serializable {
 	/**
 	 * Creates a park manager with the given username.
@@ -13,7 +11,7 @@ public class OfficeStaff extends User implements Serializable {
 	 * @param theUsername the username for the park manager user.
 	 */
 	public OfficeStaff(String theUsername) {
-		super(theUsername, SystemConstants.OFFICE_STAFF_ACCESS_LEVEL);
+		super(theUsername, SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL);
 	}
 	
 	public class ZeroInputException extends Exception {

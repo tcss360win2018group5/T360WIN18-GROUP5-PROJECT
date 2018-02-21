@@ -11,9 +11,6 @@ public class Job implements Serializable {
     /** String representation of the title for this job. */
     private String myJobTitle;
 
-    /** Length of this job in days. */
-    private int myJobLength;
-
     /** Maximum amount of volunteers for this job. */
     private int myMaxVolunteers;
 
@@ -44,10 +41,9 @@ public class Job implements Serializable {
      * @param theStartDate The starting date of the job as a calendar.
      * @param theEndDate The ending date of a job as a calendar.
      */
-    public Job(final String theJobTitle, int theJobLength, int theMaxVolunteers,
+    public Job(final String theJobTitle, int theMaxVolunteers,
                GregorianCalendar theStartDate, GregorianCalendar theEndDate) {
         this.myJobTitle = theJobTitle;
-        this.myJobLength = theJobLength;
         this.myMaxVolunteers = theMaxVolunteers;
         this.myStartDate = theStartDate;
         this.myEndDate = theEndDate;
@@ -60,7 +56,7 @@ public class Job implements Serializable {
      */
     public Job(final String theJobTitle) {
         // Need dates that doesn't have null pointers to test the UI
-        this(theJobTitle, -1, -1, new GregorianCalendar(2018, 01, 01),
+        this(theJobTitle, -1, new GregorianCalendar(2018, 01, 01),
              new GregorianCalendar(2018, 01, 01));
     }
 
@@ -68,7 +64,7 @@ public class Job implements Serializable {
      * Creates a completely empty, invalid job.
      */
     public Job() {
-        this("", -1, -1, null, null);
+        this("", -1, null, null);
     }
 
     // mutators

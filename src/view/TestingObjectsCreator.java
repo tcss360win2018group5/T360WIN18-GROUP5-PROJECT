@@ -12,7 +12,6 @@ import model.OfficeStaff;
 import model.ParkManager;
 import model.SystemCoordinator;
 import model.Volunteer;
-import util.SystemConstants;
 
 public final class TestingObjectsCreator {
     private static Volunteer volunteerTest = new Volunteer("test_volunteer");
@@ -53,7 +52,7 @@ public final class TestingObjectsCreator {
         JobCoordinator jcObject = new JobCoordinator();
         GregorianCalendar date = new GregorianCalendar();
 
-        for (int i = 0; i < SystemConstants.MAXIMUM_JOBS; i++) {
+        for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS; i++) {
             Job genericJob = new Job("Job " + (i + 1));
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
@@ -76,7 +75,7 @@ public final class TestingObjectsCreator {
         JobCoordinator jcObject = new JobCoordinator();
         GregorianCalendar date = new GregorianCalendar();
 
-        for (int i = 0; i < SystemConstants.MAXIMUM_JOBS - 1; i++) {
+        for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS - 1; i++) {
             Job genericJob = new Job("Job " + (i + 1));
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);

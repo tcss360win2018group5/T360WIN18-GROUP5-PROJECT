@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import model.Job;
 import model.JobCoordinator;
-import util.SystemConstants;
 
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
@@ -40,7 +39,7 @@ public class JobCoordinatorTest {
     @Test
     public final void hasSpaceToAddJobs__OneLessThanMaximumPendingJobs__ShouldReturnTrue() {
         // add 20 - 1 = 19 jobs to pending
-        for (int i = 0; i < SystemConstants.MAXIMUM_JOBS - 1; i++) {
+        for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS - 1; i++) {
             Job generatedValidJob = new Job("generatedValidJob" + i);
             globalJobCoordinator.addPendingJob(generatedValidJob);
         }
@@ -74,7 +73,7 @@ public class JobCoordinatorTest {
         GregorianCalendar validDateOneWeekAheadPlusOneLessThanMaxLength = 
                         (GregorianCalendar) validDateOneWeekAhead.clone();
         validDateOneWeekAheadPlusOneLessThanMaxLength
-            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH - 1);
+            .add(GregorianCalendar.DAY_OF_YEAR, JobCoordinator.MAXIMUM_JOB_LENGTH - 1);
         
         Job lessThanMaxLengthJob = new Job("lessThanMaxLengthJob");
         lessThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
@@ -95,7 +94,7 @@ public class JobCoordinatorTest {
         GregorianCalendar validDateOneWeekAheadPlusMaxLength = 
                         (GregorianCalendar) validDateOneWeekAhead.clone();
         validDateOneWeekAheadPlusMaxLength
-            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH);
+            .add(GregorianCalendar.DAY_OF_YEAR, JobCoordinator.MAXIMUM_JOB_LENGTH);
         
         Job exactlyMaxLengthJob = new Job("exactlyMaxLengthJob");
         exactlyMaxLengthJob.setStartDate(validDateOneWeekAhead);
@@ -115,7 +114,7 @@ public class JobCoordinatorTest {
         GregorianCalendar validDateOneWeekAheadPlusOneMoreThanMaxLength = 
                         (GregorianCalendar) validDateOneWeekAhead.clone();
         validDateOneWeekAheadPlusOneMoreThanMaxLength
-            .add(GregorianCalendar.DAY_OF_YEAR, SystemConstants.MAXIMUM_JOB_LENGTH + 1);
+            .add(GregorianCalendar.DAY_OF_YEAR, JobCoordinator.MAXIMUM_JOB_LENGTH + 1);
         
         Job moreThanMaxLengthJob = new Job("moreThanMaxLengthJob");
         moreThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
@@ -139,7 +138,7 @@ public class JobCoordinatorTest {
         GregorianCalendar oneLessThanMaximumDaysAwayDate =
                         (GregorianCalendar) currentDate.clone();
         oneLessThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
-                                           SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB - 1);
+                                           JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB - 1);
 
         // specify generic job on that day
         Job jobOneLessThanMaximumDaysAway = new Job("jobOneLessThanMaximumDaysAway");
@@ -158,7 +157,7 @@ public class JobCoordinatorTest {
         // create new calendar date to add to generic job
         GregorianCalendar exactlyMaximumDaysAwayDate = (GregorianCalendar) currentDate.clone();
         exactlyMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
-                                       SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB);
+                                       JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB);
 
         // specify generic job on that day
         Job jobExactlyMaximumDaysAway = new Job("jobExactlyMaximumDaysAway");
@@ -179,7 +178,7 @@ public class JobCoordinatorTest {
         GregorianCalendar oneMoreThanMaximumDaysAwayDate =
                         (GregorianCalendar) currentDate.clone();
         oneMoreThanMaximumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
-                                           SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB + 1);
+                                           JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB + 1);
 
         // specify generic job on that day
         Job jobOneMoreThanMaximumDaysAway = new Job("jobOneMoreThanMaximumDaysAway");
