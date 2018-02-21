@@ -44,10 +44,10 @@ public class Job implements Serializable {
      * @param theStartDate The starting date of the job as a calendar.
      * @param theEndDate The ending date of a job as a calendar.
      */
-    public Job(final String theJobTitle, int theJobLength, int theMaxVolunteers,
+    public Job(final String theJobTitle, int theMaxVolunteers,
                GregorianCalendar theStartDate, GregorianCalendar theEndDate) {
         this.myJobTitle = theJobTitle;
-        this.myJobLength = theJobLength;
+        this.myJobLength = getDifferenceInDays(theStartDate, theEndDate);
         this.myMaxVolunteers = theMaxVolunteers;
         this.myStartDate = theStartDate;
         this.myEndDate = theEndDate;
@@ -60,7 +60,7 @@ public class Job implements Serializable {
      */
     public Job(final String theJobTitle) {
         // Need dates that doesn't have null pointers to test the UI
-        this(theJobTitle, -1, -1, new GregorianCalendar(2018, 01, 01),
+        this(theJobTitle, -1, new GregorianCalendar(2018, 01, 01),
              new GregorianCalendar(2018, 01, 01));
     }
 
@@ -68,7 +68,7 @@ public class Job implements Serializable {
      * Creates a completely empty, invalid job.
      */
     public Job() {
-        this("", -1, -1, null, null);
+        this("", -1, null, null);
     }
 
     // mutators
@@ -310,4 +310,26 @@ public class Job implements Serializable {
 
         return Math.abs((int) convertedTime);
     }
+    
+    @Override
+    public boolean equals(Object theObject) {
+    	boolean isEqual = false;
+    	if (this == theObject) {
+    		isEqual = true;
+    	} else {
+    		if (theObject != null && theObject.getClass() == this.getClass()) {
+    			Job test = (Job) theObject;
+    			if (test.getJobTitle().equals(this.getJobTitle())
+    				&& getDifferenceInDays(test.getStartDate(), this.getStartDate()) == 0
+    				&& getDifferenceInDays(test.getEndDate(), this.getEndDate()) == 0) 
+    			{
+    				isEqual = true;
+    			}
+    		}
+    	}
+    	return isEqual;
+    }
+    
+    
+    
 }

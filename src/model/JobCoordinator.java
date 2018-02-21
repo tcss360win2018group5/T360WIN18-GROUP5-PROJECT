@@ -26,10 +26,7 @@ public class JobCoordinator implements Serializable {
     // mutators
     /**
      * Adds a job to the pending list of jobs.
-     *
-     * Preconditions: 1) canAddJob(theJob) == 0 has evaluated to TRUE 2)
-     * hasSpaceToAddNewJob() has evaluated to TRUE
-     *
+     * Preconditions: 1) checkBusinessRules(theJob) == 0
      * @param theJob job to be added.
      */
     public void addPendingJob(final Job theJob) {
@@ -38,7 +35,6 @@ public class JobCoordinator implements Serializable {
 
     /**
      * Adds a specified user to a job.
-     * 
      * @param theJob
      */
     public void applyToJob(User theUser, Job theJob) {
@@ -65,57 +61,32 @@ public class JobCoordinator implements Serializable {
     }
 
     // testers
-    /**
-     * Checks to see if a job can be currently added to the pending jobs list.
-     *
-     * @return True if there is space, false otherwise.
-     */
+
     public boolean hasSpaceToAddJobs() {
         return myPendingJobList.size() < SystemConstants.MAXIMUM_JOBS;
     }
 
     /**
-     * Job to be submitted must: 1) Not currently exist 2) Be 3 or less days in
-     * length 3) be no more than 75 days from the current date of submission
+     * Job to be submitted must follow the business rules
+     * as outlined below.
      * 
      * @param theJob
-     * @return
+     * @return the appropriate Integer depending on business rules.
      */
-    public int canAddJob(Job theJob) {
-        int returnInt = 0;
-        if (myPendingJobList.contains(theJob)) {
-            // warning, job already exists
-            returnInt = 1;
-        }
-        else if (theJob.getJobLength() > SystemConstants.MAXIMUM_JOB_LENGTH) {
-            // warning, job exceeds maximum job length
-            returnInt = 2;
-        }
-        else if (getDifferenceInDays(this.myCurrentDate, theJob
-                        .getEndDate()) > SystemConstants.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
-            returnInt = 3;
-            // warning, job is further than 75 days away
-        }
-
-        return returnInt;
+    public int checkBusinessRules(Job candidateJob, ParkManager theParkManager) {
+		int businessRuleCheck = 0;
+		if (theParkManager.doesJobAlreadyExist(candidateJob, myPendingJobList)) {
+			businessRuleCheck = 1;
+		}else if (theParkManager.isJobInPast(myCurrentDate, candidateJob.getStartDate())) {
+			businessRuleCheck = 2;
+		} else if (theParkManager.isTooFarFromToday(candidateJob)) {
+			businessRuleCheck = 3;
+		} else if (theParkManager.isLessJobsThanMaxInSystem(myPendingJobList)) {
+			businessRuleCheck = 4;
+		} else if (theParkManager.isMaximumJobDuration(candidateJob)) {
+			businessRuleCheck = 5;
+		}
+		return businessRuleCheck;
     }
 
-    // private methods
-    /**
-     * Helper method to calculate the difference in days of two calendar dates.
-     *
-     * @param theFirstDate The first date chronologically.
-     * @param theSecondDate The second date chronologically.
-     *
-     * @return The positive difference in days.
-     */
-    public static int getDifferenceInDays(GregorianCalendar theFirstDate,
-                                          GregorianCalendar theSecondDate) {
-        long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
-                                                   TimeUnit.MILLISECONDS)
-                             - TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
-                                                     TimeUnit.MILLISECONDS);
-
-        return Math.abs((int) convertedTime);
-    }
 }
