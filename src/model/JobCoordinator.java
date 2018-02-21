@@ -75,7 +75,6 @@ public class JobCoordinator implements Serializable {
      * @param theJob
      * @return the appropriate Integer depending on business rules.
      */
-<<<<<<< HEAD
     public int checkBusinessRules(Job candidateJob, ParkManager theParkManager) {
 		int businessRuleCheck = 0;
 		if (theParkManager.doesJobAlreadyExist(candidateJob, myPendingJobList)) {
@@ -92,7 +91,7 @@ public class JobCoordinator implements Serializable {
 		return businessRuleCheck;
     }
 
-=======
+
     public int canAddJob(Job theJob) {
         int returnInt = 0;
         if (myPendingJobList.contains(theJob)) {
@@ -130,5 +129,4 @@ public class JobCoordinator implements Serializable {
 
         return Math.abs((int) convertedTime);
     }
->>>>>>> ac2a9e2e65684843f07de876c5556c5906191c1f
 }
