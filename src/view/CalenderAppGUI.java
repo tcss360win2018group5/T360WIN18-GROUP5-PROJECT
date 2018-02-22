@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 public class CalenderAppGUI {
 
-    public static final String fxmlFile = "fxml/CalenderAppGUI.fxml";
+    public static final String fxmlFile = "CalenderAppGUI.fxml";
     Stage subStage;
 
     public CalenderAppGUI() throws Exception {

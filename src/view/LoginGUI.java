@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class LoginGUI extends Application {
 
-    public static final String fxmlFile = "fxml/LoginGUI.fxml";
+    public static final String fxmlFile = "LoginGUI.fxml";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
