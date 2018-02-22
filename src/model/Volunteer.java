@@ -41,6 +41,13 @@ public class Volunteer extends User implements Serializable {
         myCurrentJobs.add(theJob);
     }
 
+
+    /*
+        Move the 3 job tests: To Job.java -NOT JOB COORDINATOR
+
+     */
+
+
     public boolean doesJobStartOnCurrentDay(final Job theJob) {
         int is_difference_of_day_zero = getDifferenceInDaysAgainstToday(theJob.getStartDate());
         return is_difference_of_day_zero == 0;
