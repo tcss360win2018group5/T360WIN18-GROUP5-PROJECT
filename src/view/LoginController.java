@@ -4,7 +4,6 @@ import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -72,7 +71,6 @@ public class LoginController implements Initializable {
 
     @FXML
     private void loginButtonClick() {
-//        mySystemCoordinator.getUsers().stream().forEach(u -> System.out.println(u.getUsername()));
         if (doesUserExist(inputUserNameField.getText())) {
             int user_access_level = getUserAccessLevel(inputUserNameField.getText());
             String user_name = getUserName(inputUserNameField.getText());
@@ -83,6 +81,7 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
         } else {
+            mySystemCoordinator.getUsers().stream().forEach(u -> System.out.println(u.getUsername()));
             Timeline timeline = new Timeline();
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.0),
                     event -> {

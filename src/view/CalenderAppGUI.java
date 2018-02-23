@@ -18,10 +18,18 @@ public class CalenderAppGUI extends AnchorPane {
         // 2: // Volunteer
         // 1: // Park Manager
         // 0: // Urban Parks Staff Member
-        System.out.println(theUserName);
-        System.out.println(theUserAccessLevel);
 
-        Parent main = FXMLLoader.load(getClass().getResource(fxmlFile));
+        // Setup the GUI
+        FXMLLoader thisGUI = new FXMLLoader(getClass().getResource(fxmlFile));
+        Parent main = thisGUI.load();
+        CalenderAppController calender_controller = thisGUI.getController();
+
+        // Init the values in the controller, cannot use constructor
+        calender_controller.setUsername(theUserName);
+        calender_controller.setAccess(theUserAccessLevel);
+        calender_controller.reInitializeWithUser();
+
+        // Display
         Scene mainScene = new Scene(main);
         theStage.setScene(mainScene);
         theStage.show();
@@ -32,5 +40,17 @@ public class CalenderAppGUI extends AnchorPane {
         Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
         theStage.setX((screenSize.getWidth() - theStage.getWidth()) / 2);
         theStage.setY((screenSize.getHeight() - theStage.getHeight()) / 2);
+    }
+
+    private void volunteerInit() {
+
+    }
+
+    private void managerInit() {
+
+    }
+
+    private void officeInit() {
+
     }
 }
