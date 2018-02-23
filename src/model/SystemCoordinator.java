@@ -50,7 +50,7 @@ public class SystemCoordinator implements Serializable {
                 // warning user already exists
             }
         }
-
+//        System.out.println("Success");
         myUsers.add(theUser);
     }
 

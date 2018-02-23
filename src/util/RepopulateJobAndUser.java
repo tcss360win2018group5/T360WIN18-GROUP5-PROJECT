@@ -1,4 +1,6 @@
-package model;
+package util;
+
+import model.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
