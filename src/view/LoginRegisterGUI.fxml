@@ -22,13 +22,18 @@
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets></Button>
-                  <Label layoutX="70.0" layoutY="142.0" text="Register Account" textAlignment="CENTER">
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutY="142.0" prefHeight="29.0" prefWidth="335.0" text="Register Account" textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label fx:id="wrongLabel" layoutX="125.0" layoutY="201.0" textFill="#39a862" />
-                  <Label fx:id="tryagainLabel" layoutX="108.0" layoutY="218.0" textAlignment="CENTER" textFill="#ee0000" />
+                  <Label fx:id="wrongLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="201.0" prefHeight="17.0" prefWidth="335.0" textAlignment="CENTER" textFill="#39a862" />
+                  <Label fx:id="tryagainLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="218.0" prefHeight="17.0" prefWidth="335.0" textAlignment="CENTER" textFill="#ee0000" textOverrun="CENTER_ELLIPSIS" />
+                  <Button fx:id="backButton" layoutX="85.0" layoutY="354.0" mnemonicParsing="false" onAction="#backButtonTransition" prefHeight="35.0" prefWidth="165.0" text="Cancel" textAlignment="CENTER">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Button>
                </children>
             </Pane>
          </center>

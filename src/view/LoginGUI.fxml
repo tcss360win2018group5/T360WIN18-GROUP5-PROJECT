@@ -23,13 +23,13 @@
                         <Insets />
                      </opaqueInsets></Button>
                   <Label fx:id="registerLabel" layoutX="85.0" layoutY="358.0" onMouseClicked="#registerUserTransition" text="Register" />
-                  <Label layoutX="45.0" layoutY="142.0" text="Login To Urban Parks">
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutY="142.0" prefHeight="29.0" prefWidth="335.0" text="Login To Urban Parks" textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label fx:id="wrongLabel" layoutX="68.0" layoutY="201.0" textFill="#ee0000" />
-                  <Label fx:id="tryagainLabel" layoutX="119.0" layoutY="218.0" textFill="#ee0000" />
+                  <Label fx:id="wrongLabel" alignment="CENTER" layoutY="201.0" prefHeight="17.0" prefWidth="335.0" textAlignment="CENTER" textFill="#ee0000" />
+                  <Label fx:id="tryagainLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="218.0" prefHeight="17.0" prefWidth="335.0" textAlignment="CENTER" textFill="#ee0000" />
                </children>
             </Pane>
          </center>

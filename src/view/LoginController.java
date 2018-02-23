@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -50,6 +51,9 @@ public class LoginController implements Initializable {
     @FXML
     private Button registerButton;
 
+    @FXML
+    private Button backButton;
+
     public LoginController() {
         if (doesFileExist(SYSTEM_COORDINATOR_NAME) && doesFileExist(JOB_COORDINATOR_NAME)) {
             mySystemCoordinator = (SystemCoordinator) restoreObject(SYSTEM_COORDINATOR_NAME);
@@ -79,8 +83,25 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            wrongLabel.setText("Username or password is wrong");
-            tryagainLabel.setText("Please try again");
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.0),
+                    event -> {
+                        wrongLabel.setText("Username or password is wrong");
+                        tryagainLabel.setText("Please try again");
+                    }));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.2),
+                    event -> {
+                        wrongLabel.setText("Username or password is wrong");
+                        tryagainLabel.setText("");
+
+                    }));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.4),
+                    event -> {
+                        wrongLabel.setText("Username or password is wrong");
+                        tryagainLabel.setText("Please try again");
+                    }));
+            timeline.setCycleCount(1);
+            timeline.play();
         }
 
     }
@@ -119,8 +140,22 @@ public class LoginController implements Initializable {
     }
 
     @FXML
+    private void backButtonTransition() {
+        try {
+            AnchorPane child = FXMLLoader.load(getClass().getResource("LoginGUI.fxml"));
+            rootPane.getChildren().setAll(child);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void createUser() {
-        if (!doesUserExist(inputUserNameField.getText())) {
+        if (inputUserNameField.getText().length() <= 4) {
+            wrongLabel.setText("");
+            tryagainLabel.setText("User name is shorter than 4 letters");
+        }
+        else if (!doesUserExist(inputUserNameField.getText())) {
             Timeline timeline = new Timeline();
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0),
                     event -> {
@@ -131,6 +166,7 @@ public class LoginController implements Initializable {
                         registerButton.setDisable(true);
                         inputUserNameField.setDisable(true);
                         inputPasswordField.setDisable(true);
+                        backButton.setDisable(true);
 
                     }));
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.5),
