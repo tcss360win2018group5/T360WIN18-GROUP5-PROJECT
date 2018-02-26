@@ -1,9 +1,16 @@
 package view;
 
-import javafx.animation.*;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,10 +24,6 @@ import javafx.util.Duration;
 import model.JobCoordinator;
 import model.SystemCoordinator;
 import model.Volunteer;
-
-import java.io.*;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 

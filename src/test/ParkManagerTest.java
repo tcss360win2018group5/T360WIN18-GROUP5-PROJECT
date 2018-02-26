@@ -1,11 +1,10 @@
 package test;
 
-import static org.junit.Assert.*;
-import java.util.Calendar;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.junit.Before;
@@ -15,7 +14,6 @@ import model.Job;
 import model.JobCoordinator;
 import model.ParkManager;
 import model.Volunteer;
-import util.SystemConstants;
 
 /**
  * Class to test the functionality of ParkManager and ensuring

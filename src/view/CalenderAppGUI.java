@@ -1,6 +1,5 @@
 package view;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -10,7 +9,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.JobCoordinator;
 import model.SystemCoordinator;
-import model.Volunteer;
 
 
 public class CalenderAppGUI extends AnchorPane {

@@ -1,12 +1,17 @@
 package util;
 
-import model.*;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.GregorianCalendar;
+
+import model.Job;
+import model.JobCoordinator;
+import model.OfficeStaff;
+import model.ParkManager;
+import model.SystemCoordinator;
+import model.Volunteer;
 
 
 // Run this class to repopulate jobs & users after making backend changes
