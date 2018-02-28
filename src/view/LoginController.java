@@ -27,7 +27,7 @@ public class LoginController implements Initializable {
     private final JobCoordinator myJobCoordinator;
 
     @FXML
-    private AnchorPane rootPane;
+    public AnchorPane rootPane;
 
     @FXML
     private Label wrongLabel;

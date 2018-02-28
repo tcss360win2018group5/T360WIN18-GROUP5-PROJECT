@@ -13,7 +13,6 @@ public class ParkManager extends User implements Serializable {
 
 	public JobCoordinator pendingJobs;
 
-
 	private ArrayList<Job> mySubmittedJobs;
 	private GregorianCalendar myCurrentDate;
 
@@ -33,7 +32,7 @@ public class ParkManager extends User implements Serializable {
 	 * @param theJob to be removed
 	 * @param theMasterList from JobCoordinator containing all the jobs
 	 */
-	public boolean removeJobFromList(final Job theJob, ArrayList<Job> theMasterList) {
+	public boolean unsubmitJob(final Job theJob, ArrayList<Job> theMasterList) {
 		boolean isJobRemoved = false;
 		if (!isTooCloseToAddOrRemove(theJob)) {
 			if (theMasterList.contains(theJob)) {

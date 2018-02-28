@@ -4,8 +4,10 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("serial")
 public class Job implements Serializable {
 
     /** String representation of the title for this job. */
@@ -328,6 +330,10 @@ public class Job implements Serializable {
     	return isEqual;
     }
     
-    
-    
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getJobTitle(), this.getStartDate(), this.getEndDate());
+    }
+
 }
+

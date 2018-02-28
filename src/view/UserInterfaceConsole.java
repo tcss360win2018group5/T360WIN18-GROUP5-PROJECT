@@ -720,7 +720,7 @@ public class UserInterfaceConsole {
 
 	private boolean tryToAddJob(Job theJob) {
 		boolean canAddJob = false;
-		int result = myJobCoordinator.checkBusinessRules(theJob, 
+		int result = myJobCoordinator.checkIfLegalToAddJob(theJob, 
 				(ParkManager) mySystemCoordinator.getUser(myUserName)); // SOMETHING UP WITH THIS
 		if (result == 1) {
 			System.out.println("Sorry, this job already exists!\n");
