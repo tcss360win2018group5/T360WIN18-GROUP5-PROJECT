@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="357.0" prefWidth="229.0">
+               <children>
+                  <FlowPane prefHeight="366.0" prefWidth="296.0">
+                     <children>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Job Title:" />
+                              <TextField layoutX="119.0" prefWidth="150.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="20.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Location:" />
+                              <TextField layoutX="119.0" prefWidth="150.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Start Date:" />
+                              <DatePicker layoutX="119.0" prefHeight="25.0" prefWidth="150.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="End Date" />
+                              <DatePicker layoutX="119.0" prefHeight="25.0" prefWidth="150.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Max Volunteers:" />
+                              <TextField layoutX="119.0" prefWidth="150.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Job Description:">
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </Label>
+                              <TextArea layoutY="26.0" prefHeight="216.0" prefWidth="274.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                     </children>
+                  </FlowPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="306.0" prefWidth="296.0">
+               <children>
+                  <FlowPane layoutY="-1.0" prefHeight="366.0" prefWidth="296.0">
+                     <children>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Contact Name:" />
+                              <TextField layoutX="119.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="20.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Contact Number:" />
+                              <TextField layoutX="119.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Contact Email:" />
+                              <TextField layoutX="119.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Job Role:" />
+                              <TextField layoutX="119.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="43.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <children>
+                              <Label layoutY="4.0" text="Job Role Description:">
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </Label>
+                              <TextArea layoutY="26.0" prefHeight="216.0" prefWidth="274.0" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                        <Group>
+                           <FlowPane.margin>
+                              <Insets bottom="5.0" left="10.0" top="5.0" />
+                           </FlowPane.margin>
+                        </Group>
+                     </children>
+                  </FlowPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <Pane prefHeight="39.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="534.0" layoutY="7.0" mnemonicParsing="false" text="Cancel" />
+            <Button layoutX="471.0" layoutY="7.0" mnemonicParsing="false" text="Submit" />
+         </children>
+      </Pane>
+   </bottom>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
