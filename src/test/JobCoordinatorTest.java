@@ -11,14 +11,23 @@ import org.junit.Test;
 
 import model.Job;
 import model.JobCoordinator;
+import model.OfficeStaff;
+import model.ParkManager;
+import model.Volunteer;
 
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
+    public Volunteer globalVolunteerJane;
+    public ParkManager globalParkManagerSam;
+    public OfficeStaff globalOfficeStaffAlex;
     public Job anyOldValidJob;
 
     @Before
     public void setUp() throws Exception {
         globalJobCoordinator = new JobCoordinator();
+        globalVolunteerJane = new Volunteer("Jane");
+        globalParkManagerSam = new ParkManager("Sam");
+        globalOfficeStaffAlex = new OfficeStaff("Alex");
         anyOldValidJob = new Job("anyOldValidJob");
     }
 
@@ -191,8 +200,63 @@ public class JobCoordinatorTest {
     
     
     @Test
-    public final void getJobListing_NoJobsWithVolunteer_ShouldBeEmpty() {
+    public final void getJobListing_NoJobsWithAnyUser_ShouldBeEmpty() {
+        assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).isEmpty());
+        assertTrue(globalJobCoordinator.getJobListing(globalParkManagerSam).isEmpty());
+        assertTrue(globalJobCoordinator.getJobListing(globalOfficeStaffAlex).isEmpty());
+    }
+    
+    @Test
+    public final void getJobListing_OneFutureJobWithVolunteer_ShouldOnlyHaveFutureJob() {
         fail("Not Yet Implemented");
+
+        assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).isEmpty());
+    }
+    
+    @Test
+    public final void getJobListing_OnePastJobWithVolunteer_ShouldBeEmpty() {
+        fail("Not Yet Implemented");
+
+        assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).isEmpty());
+    }
+    
+    @Test
+    public final void getJobListing_OneFutureOnePastJobWithVolunteer_ShouldOnlyHaveFutureJob() {
+        Job futureJob = new Job("Job in the Future");
+        GregorianCalendar futureDate = new GregorianCalendar();
+        futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
+        globalJobCoordinator.addPendingJob(futureJob);
+
+        assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).isEmpty());
     }
 
+    @Test
+    public final void getJobListing_OneFutureJobWithParkManager_ShouldOnlyHaveFutureJob() {
+        fail("Not Yet Implemented");
+    }
+    
+    @Test
+    public final void getJobListing_OnePastJobWithParkManager_ShouldBeEmpty() {
+        fail("Not Yet Implemented");
+    }
+    
+    @Test
+    public final void getJobListing_OneFutureOnePastJobWithParkManager_ShouldOnlyHaveFutureJob() {
+        fail("Not Yet Implemented");
+    }
+    
+    @Test
+    public final void getJobListing_OneFutureJobWithOfficeStaff_ShouldOnlyHaveFutureJob() {
+        fail("Not Yet Implemented");
+    }
+    
+    @Test
+    public final void getJobListing_OnePastJobWithOfficeStaff_ShouldBeEmpty() {
+        fail("Not Yet Implemented");
+    }
+    
+    @Test
+    public final void getJobListing_OneFutureOnePastJobWithOfficeStaff_ShouldHaveBothJobs() {
+        fail("Not Yet Implemented");
+    }
 }
