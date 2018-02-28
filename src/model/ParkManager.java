@@ -3,10 +3,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 //l.Calendar;
 import java.util.concurrent.TimeUnit;
-import java.util.GregorianCalendar;
-import util.SystemConstants;
 
 public class ParkManager extends User implements Serializable {
 	private ArrayList<Job> myJobsCreated;

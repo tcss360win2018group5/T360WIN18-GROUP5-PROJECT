@@ -1,12 +1,17 @@
 package util;
 
-import model.*;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.GregorianCalendar;
+
+import model.Job;
+import model.JobCoordinator;
+import model.OfficeStaff;
+import model.ParkManager;
+import model.SystemCoordinator;
+import model.Volunteer;
 
 
 // Run this class to repopulate jobs & users after making backend changes
@@ -99,7 +104,8 @@ public class RepopulateJobAndUser {
         }
     }
 
-    private void submitJobs(String theStartDate,
+    private void submitJobs(String theJobTitle,
+                            String theStartDate,
                             String theEndDate,
                             String theAddress,
                             String theContactName,
@@ -148,7 +154,7 @@ public class RepopulateJobAndUser {
         // Leaving the loop blank for now to add multiple job roles
         // Job api needs to be extended to make that work
 
-        Job newJob = new Job(jobName);
+        Job newJob = new Job(theJobTitle);
         newJob.setStartDate(startDate);
         newJob.setEndDate(endDate);
         newJob.setMyAddress(address);
@@ -171,9 +177,10 @@ public class RepopulateJobAndUser {
         tryToAddJob(newJob);
     }
 
-    public void createJob_03022018() {
+    public void createJob_03022018(String theJobTitle) {
         // (MM/DD/YYYY)
-        submitJobs("03/02/2018",
+        submitJobs(theJobTitle,
+                "03/02/2018",
                 "03/02/2018",
                 "4503 Beach Dr SW, Seattle, WA 98116",
                 "Rio Del Montana",
@@ -187,9 +194,10 @@ public class RepopulateJobAndUser {
                 5);
     }
 
-    public void createJob_03032018() {
+    public void createJob_03032018(String theJobTitle) {
         // (MM/DD/YYYY)
-        submitJobs("03/03/2018",
+        submitJobs(theJobTitle,
+                "03/03/2018",
                 "03/03/2018",
                 "10505 35th Ave NE, Seattle WA 98125",
                 "Lucy Weinberg",
@@ -203,9 +211,10 @@ public class RepopulateJobAndUser {
                 5);
     }
 
-    public void createJob_03032018_conflict() {
+    public void createJob_03032018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
-        submitJobs("03/03/2018",
+        submitJobs(theJobTitle,
+                "03/03/2018",
                 "03/03/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Sharon Baker",
@@ -224,9 +233,9 @@ public class RepopulateJobAndUser {
         re.createUserLogin("test_vol", 2);
         re.createUserLogin("test_pm", 1);
         re.createUserLogin("test_staff", 0);
-        re.createJob_03022018();
-        re.createJob_03032018();
-        re.createJob_03032018_conflict();
+        re.createJob_03022018("Test Job 1");
+        re.createJob_03032018("Test Job 2");
+        re.createJob_03032018_conflict("Test Job 3");
         re.saveSystem();
     }
 }

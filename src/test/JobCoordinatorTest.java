@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.GregorianCalendar;
 
@@ -186,6 +187,12 @@ public class JobCoordinatorTest {
 
         // test
         assertFalse(globalJobCoordinator.canAddJob(jobOneMoreThanMaximumDaysAway) == 0);
+    }
+    
+    
+    @Test
+    public final void getJobListing_NoJobsWithVolunteer_ShouldBeEmpty() {
+        fail("Not Yet Implemented");
     }
 
 }

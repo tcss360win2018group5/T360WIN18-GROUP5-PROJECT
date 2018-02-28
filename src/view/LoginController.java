@@ -1,6 +1,16 @@
 package view;
 
-import javafx.animation.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,10 +24,6 @@ import javafx.util.Duration;
 import model.JobCoordinator;
 import model.SystemCoordinator;
 import model.Volunteer;
-
-import java.io.*;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
@@ -76,7 +82,8 @@ public class LoginController implements Initializable {
             String user_name = getUserName(inputUserNameField.getText());
             try {
                 Stage stage = (Stage) loginButton.getScene().getWindow();
-                CalenderAppGUI calender_gui = new CalenderAppGUI(stage, user_name, user_access_level);
+                CalenderAppGUI calender_gui = new CalenderAppGUI(stage, user_name, user_access_level,
+                        mySystemCoordinator, myJobCoordinator);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -159,7 +166,7 @@ public class LoginController implements Initializable {
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0),
                     event -> {
                         mySystemCoordinator.addUser(new Volunteer(inputUserNameField.getText()));
-                        writeObjectToDisk(SYSTEM_COORDINATOR_NAME, mySystemCoordinator);
+                        saveSystem();
                         wrongLabel.setText("User Created!");
                         tryagainLabel.setText("");
                         registerButton.setDisable(true);
@@ -202,7 +209,6 @@ public class LoginController implements Initializable {
             ObjectInputStream ois = new ObjectInputStream(in);
             newObject = ois.readObject();
             ois.close();
-            // System.out.println("Success");
         }
         catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -213,8 +219,6 @@ public class LoginController implements Initializable {
     private void saveSystem() {
         writeObjectToDisk(SYSTEM_COORDINATOR_NAME, mySystemCoordinator);
         writeObjectToDisk(JOB_COORDINATOR_NAME, myJobCoordinator);
-        System.out.println("\nThank you. Goodbye.");
-        System.exit(0);
     }
 
     private static void writeObjectToDisk(String thisName, Object thisObject) {
@@ -223,10 +227,11 @@ public class LoginController implements Initializable {
             ObjectOutputStream oos = new ObjectOutputStream(out);
             oos.writeObject(thisObject);
             oos.close();
-            // System.out.println("Success");
         }
         catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }
