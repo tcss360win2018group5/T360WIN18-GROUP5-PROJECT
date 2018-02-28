@@ -115,7 +115,7 @@ public class JobCoordinator implements Serializable {
      * @param theJob
      * @return the appropriate Integer depending on business rules.
      */
-    public int checkBusinessRules(Job candidateJob, ParkManager theParkManager) {
+    public int checkIfLegalToAddJob(Job candidateJob, ParkManager theParkManager) {
 		int businessRuleCheck = 0;
 		if (theParkManager.doesJobAlreadyExist(candidateJob, myJobList)) {
 			businessRuleCheck = 1;
