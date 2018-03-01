@@ -11,13 +11,9 @@ import org.junit.Test;
 
 import model.Job;
 import model.JobCoordinator;
-<<<<<<< HEAD
-import model.ParkManager;
-=======
 import model.OfficeStaff;
 import model.ParkManager;
 import model.Volunteer;
->>>>>>> e6868a3348b84c5451296eb5bc245674453ffa3d
 
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
