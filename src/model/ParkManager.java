@@ -25,24 +25,6 @@ public class ParkManager extends User implements Serializable {
 
 	}
 
-	/**
-	 * @param theJob to be removed
-	 * @param theMasterList from JobCoordinator containing all the jobs
-	 */
-	public boolean unsubmitJob(final Job theJob, ArrayList<Job> theMasterList) {
-		boolean isJobRemoved = false;
-		if (isMaxDistanceAwayToAddOrRemove(theJob)) {
-			if (theMasterList.contains(theJob)) {
-				theMasterList.remove(theJob);
-				isJobRemoved = true;
-			}
-			if (myJobsCreated.contains(theJob)) {
-				myJobsCreated.remove(theJob);
-			}
-		}
-		return isJobRemoved;
-	}
-
 	/*
 	 * Adds a created job to this ParkManagers list of created jobs
 	 */
