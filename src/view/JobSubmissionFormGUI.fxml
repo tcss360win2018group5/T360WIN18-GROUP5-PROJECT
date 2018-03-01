@@ -16,8 +16,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -77,7 +76,7 @@
                                     <Insets bottom="5.0" />
                                  </padding>
                               </Label>
-                              <TextArea layoutY="26.0" prefHeight="216.0" prefWidth="274.0" />
+                              <TextArea layoutY="26.0" prefHeight="203.0" prefWidth="274.0" />
                            </children>
                            <FlowPane.margin>
                               <Insets bottom="5.0" left="10.0" top="5.0" />
@@ -134,7 +133,7 @@
                                     <Insets bottom="5.0" />
                                  </padding>
                               </Label>
-                              <TextArea layoutY="26.0" prefHeight="216.0" prefWidth="274.0" />
+                              <TextArea layoutY="26.0" prefHeight="203.0" prefWidth="274.0" />
                            </children>
                            <FlowPane.margin>
                               <Insets bottom="5.0" left="10.0" top="5.0" />
@@ -155,8 +154,8 @@
    <bottom>
       <Pane prefHeight="39.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="534.0" layoutY="7.0" mnemonicParsing="false" text="Cancel" />
-            <Button layoutX="471.0" layoutY="7.0" mnemonicParsing="false" text="Submit" />
+            <Button layoutX="534.0" layoutY="7.0" mnemonicParsing="false" text="Submit" />
+            <Button layoutX="471.0" layoutY="7.0" mnemonicParsing="false" text="Cancel" />
          </children>
       </Pane>
    </bottom>

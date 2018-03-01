@@ -5,22 +5,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.ResourceBundle;
+import java.util.*;
 
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import model.Job;
 import model.JobCoordinator;
 import model.OfficeStaff;
@@ -42,7 +49,23 @@ public class CalenderAppController implements Initializable {
     private ArrayList<Job> listOfJobs;
     private int accessLevel;
 
+    private Pane rightSideChild;
+    private Scene rightScene;
+    private Pane leftSideChild;
+    private Scene leftScene;
+    private TranslateTransition rightOpen;
+    private TranslateTransition rightClose;
+    private TranslateTransition leftOpen;
+    private TranslateTransition leftClose;
+
     ObservableList<Job> observableListOfJobs;
+
+    @FXML
+    AnchorPane rootPane;
+    @FXML
+    BorderPane borderPane;
+    @FXML
+    Pane topPane;
     @FXML
     ListView<Job> listviewListOfJobs;
     @FXML
@@ -76,6 +99,8 @@ public class CalenderAppController implements Initializable {
         managerTestButton.setDisable(true);
         staffTestButton.setDisable(true);
         volunteerTestButton.setVisible(false);
+        rootPane.setStyle("-fx-background-color: black;");
+        borderPane.setStyle("-fx-background-color: white;");
     }
 
     // Methods to Init GUI variables
@@ -103,14 +128,49 @@ public class CalenderAppController implements Initializable {
         startDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getStartDate())));
         endDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getEndDate())));
         // Add clicking functionality to the table view list
-        tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Job>() {
-            @Override
-            public void changed(ObservableValue<? extends Job> observable, Job oldValue, Job newValue) {
-                Job test = tableviewListOfJobs.getSelectionModel().getSelectedItem();
-                System.out.println(test);
-            }
+        tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Job test = tableviewListOfJobs.getSelectionModel().getSelectedItem();
+            System.out.println(test);
         });
+        // Create Right Menu
+        createRightMenu();
+        createLeftMenu();
 
+
+    }
+
+    private void createRightMenu() {
+        try {
+            // Create the side bar
+            rightSideChild = FXMLLoader.load(getClass().getResource("SlideoutVolunteer.fxml"));
+            rightScene = new Scene(rightSideChild);
+            // Set the panel off the screen to the right
+            rightSideChild.setLayoutX(rootPane.getPrefWidth());
+            rootPane.getChildren().add(rightSideChild);
+            rightOpen = new TranslateTransition(new Duration(500), rightSideChild);
+            rightOpen.setToX(-(rightSideChild.getWidth()));
+            rightClose = new TranslateTransition(new Duration(500), rightSideChild);
+            rightClose.setToX(-(rightSideChild.getWidth()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createLeftMenu() {
+        try {
+            // Create the side bar
+            leftSideChild = FXMLLoader.load(getClass().getResource("SlideoutVolunteer.fxml"));
+            leftScene = new Scene(leftSideChild);
+            // Set the panel off the screen to the right
+            leftSideChild.setLayoutX(-leftSideChild.getPrefWidth());
+            rootPane.getChildren().add(leftSideChild);
+            leftOpen = new TranslateTransition(new Duration(500), leftSideChild);
+            leftOpen.setToX(-(rightSideChild.getWidth()));
+            leftClose = new TranslateTransition(new Duration(500), leftSideChild);
+            leftClose.setToX(-(rightSideChild.getWidth()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -197,6 +257,31 @@ public class CalenderAppController implements Initializable {
 //        saveSystem();
     }
 
+    @FXML
+    private void rightMenuAnimation() {
+        if (rightSideChild.getTranslateX()!=0){
+            borderPane.setOpacity(1);
+            borderPane.setDisable(false);
+            rightOpen.play();
+        } else {
+            rightClose.setToX(-(rightSideChild.getWidth()));
+            borderPane.setOpacity(.7);
+            borderPane.setDisable(true);
+            rightClose.play();
+        }
+    }
 
-
+    @FXML
+    private void leftMenuAnimation() {
+        if (leftSideChild.getTranslateX()!=0){
+            borderPane.setOpacity(1);
+            borderPane.setDisable(false);
+            leftOpen.play();
+        } else {
+            leftClose.setToX((leftSideChild.getWidth()));
+            borderPane.setOpacity(.7);
+            borderPane.setDisable(true);
+            leftClose.play();
+        }
+    }
 }
