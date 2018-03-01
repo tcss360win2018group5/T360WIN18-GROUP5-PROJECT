@@ -292,7 +292,6 @@ public class Job implements Serializable {
                    && (this.myStartDate.compareTo(theOtherJob.myEndDate) < 0));
     }
     
-    // private methods
     /**
      * Helper method to calculate the difference in days of two calendar dates.
      *

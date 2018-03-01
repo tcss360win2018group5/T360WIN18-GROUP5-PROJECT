@@ -166,13 +166,12 @@ public class ParkManagerTest {
 
 	    @Test
 	    public void canUnsubmitJob_jobStartsOnCurrentDay_False() {
-	    	assertTrue(anyParkManager.isTooCloseToAddOrRemove(jobStartsOnCurrentDay));
+	    	assertTrue(anyParkManager.isMaxDistanceAwayToAddOrRemove(jobStartsOnCurrentDay));
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsPriorToCurrentDay_False() {
-	    	assertFalse(anyParkManager.isJobInPast(testDateToday, 
-	    				 jobStartsPriorToCurrentDay.getStartDate()));
+	    	assertFalse(anyParkManager.isJobInPast(jobStartsPriorToCurrentDay.getStartDate()));
 	    }
 	    
 	    @Test

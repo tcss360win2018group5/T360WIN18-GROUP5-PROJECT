@@ -11,15 +11,18 @@ import org.junit.Test;
 
 import model.Job;
 import model.JobCoordinator;
+import model.ParkManager;
 
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
     public Job anyOldValidJob;
+    public ParkManager anyParkManager;
 
     @Before
     public void setUp() throws Exception {
         globalJobCoordinator = new JobCoordinator();
         anyOldValidJob = new Job("anyOldValidJob");
+        anyParkManager = new ParkManager("anyOldPM");
     }
 
     // Business Rule:
@@ -60,7 +63,7 @@ public class JobCoordinatorTest {
     }
     
     // Business Rule:
-    // No job can be specified that takes more than the maximum number of days, default of 3
+    // No job can be specified that takes more than the maximum number of days
     
     // The specified job takes one fewer than the maximum number of days
     @Test
@@ -79,7 +82,7 @@ public class JobCoordinatorTest {
         lessThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
         lessThanMaxLengthJob.setEndDate(validDateOneWeekAheadPlusOneLessThanMaxLength);
         
-        assertTrue(globalJobCoordinator.canAddJob(lessThanMaxLengthJob) == 0);
+        assertTrue(globalJobCoordinator.checkIfLegalToAddJob(lessThanMaxLengthJob, anyParkManager) == 0);
         
     }
     
@@ -100,7 +103,7 @@ public class JobCoordinatorTest {
         exactlyMaxLengthJob.setStartDate(validDateOneWeekAhead);
         exactlyMaxLengthJob.setEndDate(validDateOneWeekAheadPlusMaxLength);
         
-        assertTrue(globalJobCoordinator.canAddJob(exactlyMaxLengthJob) == 0);
+        assertTrue(globalJobCoordinator.checkIfLegalToAddJob(exactlyMaxLengthJob, anyParkManager) == 0);
     }
     
     // The specified job takes one more than the maximum number of days
@@ -120,7 +123,7 @@ public class JobCoordinatorTest {
         moreThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
         moreThanMaxLengthJob.setEndDate(validDateOneWeekAheadPlusOneMoreThanMaxLength);
 
-        assertFalse(globalJobCoordinator.canAddJob(moreThanMaxLengthJob) == 0);
+        assertFalse(globalJobCoordinator.checkIfLegalToAddJob(moreThanMaxLengthJob, anyParkManager) == 0);
         
     }
 
@@ -146,7 +149,7 @@ public class JobCoordinatorTest {
         jobOneLessThanMaximumDaysAway.setEndDate(oneLessThanMaximumDaysAwayDate);
 
         // test
-        assertTrue(globalJobCoordinator.canAddJob(jobOneLessThanMaximumDaysAway) == 0);
+        assertTrue(globalJobCoordinator.checkIfLegalToAddJob(jobOneLessThanMaximumDaysAway, anyParkManager) == 0);
     }
 
     // The specified job ends the maximum number of days from the current date
@@ -165,7 +168,7 @@ public class JobCoordinatorTest {
         jobExactlyMaximumDaysAway.setEndDate(exactlyMaximumDaysAwayDate);
 
         // test
-        assertTrue(globalJobCoordinator.canAddJob(jobExactlyMaximumDaysAway) == 0);
+        assertTrue(globalJobCoordinator.checkIfLegalToAddJob(jobExactlyMaximumDaysAway, anyParkManager) == 0);
     }
 
     // The specified job ends one more than the maximum number of days from the
@@ -186,7 +189,7 @@ public class JobCoordinatorTest {
         jobOneMoreThanMaximumDaysAway.setEndDate(oneMoreThanMaximumDaysAwayDate);
 
         // test
-        assertFalse(globalJobCoordinator.canAddJob(jobOneMoreThanMaximumDaysAway) == 0);
+        assertFalse(globalJobCoordinator.checkIfLegalToAddJob(jobOneMoreThanMaximumDaysAway, anyParkManager) == 0);
     }
     
     
