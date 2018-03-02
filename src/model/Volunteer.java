@@ -141,22 +141,12 @@ public class Volunteer extends User implements Serializable {
         return (int) convertedTime;
     }
 
-
-    public static void main(String[]arg) {
-//        System.out.println(GregorianCalendar.getInstance().getTime());
-//
-//        Volunteer vol = new Volunteer("SomeOldVolunteer");
-//
-//        GregorianCalendar today = (GregorianCalendar) GregorianCalendar.getInstance();
-//        Job job = new Job("Job Start 0102 End 0103");
-//        job.setStartDate(new GregorianCalendar(2018, 01, 17));
-//        job.setEndDate(new GregorianCalendar(2018, 01, 17));
-//        vol.signUpForJob(job);
-//
-//        System.out.println(vol.unvolunteerJob(job));
-//
-////        System.out.println(getDifferenceInDays2((GregorianCalendar) GregorianCalendar.getInstance(),
-////                job.getStartDate()));
+    @Override
+    public Object clone() {
+        Volunteer cloneVolunteer = new Volunteer(this.getUsername());
+        cloneVolunteer.myCurrentDay = (GregorianCalendar) this.myCurrentDay.clone();
+        cloneVolunteer.myCurrentJobs = (ArrayList<Job>) this.myCurrentJobs.clone();
+        return cloneVolunteer;
     }
 
 }

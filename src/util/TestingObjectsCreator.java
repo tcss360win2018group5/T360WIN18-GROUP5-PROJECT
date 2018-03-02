@@ -57,7 +57,7 @@ public final class TestingObjectsCreator {
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
             genericJob.setEndDate(date);
-            jcObject.addPendingJob(genericJob);
+            jcObject.submitJob(genericJob);
         }
         
         writeObjectToDisk(jcFileName, jcObject);
@@ -80,7 +80,7 @@ public final class TestingObjectsCreator {
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
             genericJob.setEndDate(date);
-            jcObject.addPendingJob(genericJob);
+            jcObject.submitJob(genericJob);
         }
 
         writeObjectToDisk(jcFileName, jcObject);
@@ -122,11 +122,11 @@ public final class TestingObjectsCreator {
         validJob.setStartDate(validDate);
         validJob.setEndDate(validDate);
         volunteerTest.signUpForJob(validJob);
-        jcObject.addPendingJob(validJob);
+        jcObject.submitJob(validJob);
         Job validJobOverlapsWithOtherJob = new Job("AnotherValidJob");
         validJobOverlapsWithOtherJob.setStartDate(validDate);
         validJobOverlapsWithOtherJob.setEndDate(validDate);
-        jcObject.addPendingJob(validJobOverlapsWithOtherJob);
+        jcObject.submitJob(validJobOverlapsWithOtherJob);
 
         writeObjectToDisk(scFileName, scObject);
         writeObjectToDisk(jcFileName, jcObject);

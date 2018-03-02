@@ -1,5 +1,5 @@
 
-package view;
+package console_view;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -526,7 +526,7 @@ public class UserInterfaceConsole {
 
     private void displayCycleJob(int theIteration, Job theJob) {
         String jobName = theJob.getJobTitle();
-        String jobLocation = theJob.getMyAddress();
+        String jobLocation = theJob.getMyJobLocation();
         GregorianCalendar jobStartDate = theJob.getStartDate();
         System.out.println(theIteration + ") " + jobName + " | " + "Location: " + jobLocation
                            + " | " + "Start Date: " + (jobStartDate.get(Calendar.MONTH) + 1) + "/"
@@ -541,7 +541,7 @@ public class UserInterfaceConsole {
     private boolean displayCurrentJobSelectionVolunteer(Job theJob, Volunteer theVolunteer) {
         boolean successfulSignup = false;
         String jobName = theJob.getJobTitle();
-        String jobLocation = theJob.getMyAddress();
+        String jobLocation = theJob.getMyJobLocation();
         GregorianCalendar jobStartDate = theJob.getStartDate();
         GregorianCalendar jobEndDate = theJob.getEndDate();
         String contactName = theJob.getMyContactName();
@@ -650,7 +650,7 @@ public class UserInterfaceConsole {
 			// Leaving the loop blank for now to add multiple job roles
 			// Job api needs to be extended to make that work
 
-			newJob.setMyAddress(address);
+			newJob.setMyJobLocation(address);
 			newJob.setMyContactName(contactName);
 			newJob.setMyContactNumber(contactNum);
 			newJob.setMyContactEmail(contactEmail);
@@ -680,7 +680,7 @@ public class UserInterfaceConsole {
         System.out.println("Job Listing Overview:\n");
         displaySeperator();
         System.out.println("Name:\t\t\t" + theJob.getJobTitle());
-        System.out.println("Location:\t\t" + theJob.getMyAddress());
+        System.out.println("Location:\t\t" + theJob.getMyJobLocation());
         System.out.println("Start Date:\t\t" + printJobDate(theJob.getStartDate()));
         System.out.println("End Date:\t\t" + printJobDate(theJob.getEndDate()));
 
@@ -735,7 +735,7 @@ public class UserInterfaceConsole {
 		} else if (result == 4) {
 			System.out.println("Sorry, there is already the maximum allowed jobs in the system");
 		} else {
-			myJobCoordinator.addPendingJob(theJob);
+			myJobCoordinator.submitJob(theJob);
 			((ParkManager) mySystemCoordinator.getUser(myUserName)).addCreatedJob(theJob); // SOMETHING UP WITH THISS
 			canAddJob = true;
 		}

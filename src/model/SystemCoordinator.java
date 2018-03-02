@@ -1,6 +1,8 @@
 
 package model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,35 +12,50 @@ public class SystemCoordinator implements Serializable {
     public static final int PARK_MANAGER_ACCESS_LEVEL = 1;
     public static final int OFFICE_STAFF_ACCESS_LEVEL = 0;
     
-    public ArrayList<User> myUsers;
+    private final PropertyChangeSupport myPropertyChangeHandler;
+    
+    private final ArrayList<User> myUsers;
 
     public SystemCoordinator() {
+        myPropertyChangeHandler = new PropertyChangeSupport(this);
         myUsers = new ArrayList<User>();
+    }    
+    
+    /** Method to allow attachment of listeners to the instance of this object. */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        myPropertyChangeHandler.addPropertyChangeListener(listener);
     }
+    
+    
     public int signIn(String theUsername) {
         int isUser = 1;
 
         for (User u : this.myUsers) {
             if (u.getUsername().equals(theUsername)) {
                 isUser = 0;
+                fireSignInEvent(u);
             }
         }
 
         return isUser;
     }
-
-    // This method exists to update the user information
-    // to save job information that the user committed on console
-    // Un-needed - use for testing purposes until deleted
-    public void updateUserInformationOnExit(User theUser) {
-        for (int i = 0; i < this.myUsers.size(); i++) {
-            if (this.myUsers.get(i).getUsername().equals(theUser.getUsername())) {
-                // user exist, so must replace it with current user
-                this.myUsers.set(i, theUser);
-            }
+    
+    public void fireSignInEvent(User u) {
+        if (u.getAccessLevel() == SystemCoordinator.VOLUTNEER_ACCESS_LEVEL) {
+            Volunteer theVolunteer = (Volunteer) u;
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
+                                                   null, theVolunteer.clone());
+        } else if (u.getAccessLevel() == SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL ) {
+            ParkManager theParkManager = (ParkManager) u;
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
+                                                       null, theParkManager.clone());
+        } else if (u.getAccessLevel() == SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL) {
+            OfficeStaff theOfficeStaff = (OfficeStaff) u;
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
+                                                       null, theOfficeStaff.clone());
         }
     }
-
+    
     /***
      * PRECONDITION: canAddUser(theUser) must evaluate to TRUE
      * 
@@ -81,4 +98,20 @@ public class SystemCoordinator implements Serializable {
     public ArrayList<User> getUsers() {
         return (ArrayList<User>) myUsers.clone();
     }
+    
+    
+    /* Helper Methods */
+    
+    // This method exists to update the user information
+    // to save job information that the user committed on console
+    // Un-needed - use for testing purposes until deleted
+    public void updateUserInformationOnExit(User theUser) {
+        for (int i = 0; i < this.myUsers.size(); i++) {
+            if (this.myUsers.get(i).getUsername().equals(theUser.getUsername())) {
+                // user exist, so must replace it with current user
+                this.myUsers.set(i, theUser);
+            }
+        }
+    }
+
 }
