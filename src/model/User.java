@@ -3,7 +3,7 @@ package model;
 
 import java.io.Serializable;
 
-public abstract class User implements Serializable, Cloneable {
+public abstract class User implements Serializable {
     /** The access level of the user. */
     private int myAccessLevel;
 
@@ -38,7 +38,5 @@ public abstract class User implements Serializable, Cloneable {
     public String toString() {
         return myUsername;
     }
-    
-    @Override
-    public abstract Object clone();
+
 }

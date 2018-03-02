@@ -46,9 +46,10 @@ public class SystemCoordinatorTest {
     @Test
     public final void canAddUser_addNonValidUserType_ShouldBeFalse() {
         class BusinessPartner extends User {
-            public BusinessPartner(String theUsername) { super(theUsername, 99); }
-            @Override
-            public Object clone() { return null; }
+            public BusinessPartner(String theUsername) {
+                super(theUsername, 99);
+            }
+
         }
         BusinessPartner invalidUserThatIsABusinessPartner = new BusinessPartner("John");
         assertFalse(globalSystemCoordinator.canAddUser(invalidUserThatIsABusinessPartner));

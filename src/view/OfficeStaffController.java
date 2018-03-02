@@ -1,4 +1,4 @@
-package gui_view;
+package view;
 
 public class OfficeStaffController {
 

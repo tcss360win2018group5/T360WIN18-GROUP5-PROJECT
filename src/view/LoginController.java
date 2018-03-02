@@ -1,4 +1,4 @@
-package gui_view;
+package view;
 
 import java.io.File;
 import java.io.FileInputStream;

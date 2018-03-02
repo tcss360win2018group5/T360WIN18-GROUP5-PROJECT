@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
-public class Job implements Serializable, Cloneable {
+public class Job implements Serializable {
 
 	/** String representation of the title for this job. */
 	private String myJobTitle;
@@ -29,6 +29,7 @@ public class Job implements Serializable, Cloneable {
 	private String myContactNumber = "";
 	private String myContactEmail = "";
 	private int myJobDifficulty = 0;
+	private String myAddress = "";
 	private String myJobDescription = "";
 	private String myJobRole = "";
 	private String myJobRoleDescription = "";
@@ -127,6 +128,34 @@ public class Job implements Serializable, Cloneable {
 						TimeUnit.MILLISECONDS);
 
 		return Math.abs((int) convertedTime);
+	}
+
+	/**
+	 * Jobs with the same name that start on the same date as
+	 * each other and end on the same date as each other are equal.
+	 */
+	@Override
+	public boolean equals(Object theObject) {
+		boolean isEqual = false;
+		if (this == theObject) {
+			isEqual = true;
+		} else {
+			if (theObject != null && theObject.getClass() == this.getClass()) {
+				Job test = (Job) theObject;
+				if (test.getJobTitle().equals(this.getJobTitle())
+						&& getDifferenceInDays(test.getStartDate(), this.getStartDate()) == 0
+						&& getDifferenceInDays(test.getEndDate(), this.getEndDate()) == 0) 
+				{
+					isEqual = true;
+				}
+			}
+		}
+		return isEqual;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.getJobTitle(), this.getStartDate(), this.getEndDate());
 	}
 
 	/*
@@ -228,6 +257,14 @@ public class Job implements Serializable, Cloneable {
 		this.myJobDifficulty = myJobDifficulty;
 	}
 
+	public String getMyAddress() {
+		return myAddress;
+	}
+
+	public void setMyAddress(String myAddress) {
+		this.myAddress = myAddress;
+	}
+
 	public String getMyJobDescription() {
 		return myJobDescription;
 	}
@@ -251,70 +288,5 @@ public class Job implements Serializable, Cloneable {
 	public void setMyJobRoleDescription(String myJobRoleDescription) {
 		this.myJobRoleDescription = myJobRoleDescription;
 	}
-	
-	/* Java object implementation methods. */
-	
-	/** 
-	 * Allows for sensitive instances of the object to be cloned. 
-	 */
-	@Override
-	public Job clone() {
-	    Job jobClone = new Job(this.myJobTitle, this.myMaxVolunteers,
-	                           (GregorianCalendar) this.myStartDate.clone(), 
-	                           (GregorianCalendar) this.myEndDate.clone());
-	       
-	    jobClone.myVolunteers = (ArrayList<Volunteer>) this.myVolunteers.clone();
-	    jobClone.myJobLocation = this.myJobLocation;
-	    jobClone.myContactName = this.myContactName;
-	    jobClone.myContactNumber = this.myContactNumber;
-	    jobClone.myContactEmail = this.myContactEmail;
-	    jobClone.myJobDifficulty = this.myJobDifficulty;
-	    jobClone.myJobDescription = this.myJobDescription;
-	    jobClone.myJobRole = this.myJobRole;
-	    jobClone.myJobRoleDescription = this.myJobRoleDescription;
-	    
-	    return jobClone;
-	}
-	
-	/** 
-	 * Simple implementation and override of equals method for checking pure equality between
-	 * objects.
-	 */
-	@Override
-	public boolean equals(Object theObject) {
-	    boolean result = false;
-	    if (this == theObject) {
-	        result = true;
-	    } else if (this.getClass() == theObject.getClass()) {
-	        Job theOtherJob = (Job) theObject;
-	        
-	        result = Objects.equals(this.myJobTitle, theOtherJob.myJobTitle)
-                        && Objects.equals(this.myMaxVolunteers, theOtherJob.myMaxVolunteers)
-                        && Objects.equals(this.myStartDate, theOtherJob.myStartDate)
-                        && Objects.equals(this.myEndDate, theOtherJob.myEndDate)
-                        && Objects.equals(this.myVolunteers, theOtherJob.myVolunteers)
-                        && Objects.equals(this.myJobLocation, theOtherJob.myJobLocation)
-                        && Objects.equals(this.myContactName, theOtherJob.myContactName)
-                        && Objects.equals(this.myContactNumber, theOtherJob.myContactNumber)
-                        && Objects.equals(this.myContactEmail, theOtherJob.myContactEmail)
-                        && Objects.equals(this.myJobDifficulty, theOtherJob.myJobDifficulty)
-                        && Objects.equals(this.myJobDescription, theOtherJob.myJobDescription)
-                        && Objects.equals(this.myJobRole, theOtherJob.myJobRole)
-                        && Objects.equals(this.myJobRoleDescription, theOtherJob.myJobRoleDescription);
-	    }
-        return result;
-	}
-
-	/** 
-	 * For mapping purposes, a proper hash of this object is available.
-	 */
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.myJobTitle, this.myMaxVolunteers, this.myStartDate, 
-                            this.myEndDate, this.myVolunteers, this.myJobLocation,
-                            this.myContactName, this.myContactNumber, this.myContactEmail,
-                            this.myJobDifficulty, this.myJobDescription, this.myJobRole,
-                            this.myJobRoleDescription);
-    }
-	
 }
+

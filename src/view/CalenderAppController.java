@@ -1,4 +1,4 @@
-package gui_view;
+package view;
 
 
 import java.io.FileOutputStream;
@@ -192,6 +192,7 @@ public class CalenderAppController implements Initializable {
                 });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
+//                    jobSubmittedAnimation();
                     rightMenuAnimation();
                     backgroundEnable();
                 });

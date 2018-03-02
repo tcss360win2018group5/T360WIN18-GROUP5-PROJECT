@@ -98,10 +98,4 @@ public class OfficeStaff extends User implements Serializable {
 		return job.getStartDate().getTime().compareTo(start) >= 0 && 
 				job.getEndDate().getTime().compareTo(end) <= 0;
 	}
-
-    @Override
-    public Object clone() {
-        OfficeStaff cloneOfficeStaff = new OfficeStaff(this.getUsername());
-        return cloneOfficeStaff;
-    }
 }

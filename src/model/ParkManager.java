@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ParkManager extends User implements Serializable {
 	private ArrayList<Job> myJobsCreated;
+	public JobCoordinator pendingJobs;
 	private ArrayList<Job> mySubmittedJobs;
 	private GregorianCalendar myCurrentDate;
 
@@ -140,13 +141,4 @@ public class ParkManager extends User implements Serializable {
 	public boolean isFutureJob(Job theJob) {
 		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
 	}
-
-    @Override
-    public Object clone() {
-        ParkManager cloneParkManager = new ParkManager(this.getUsername());
-        cloneParkManager.myCurrentDate = (GregorianCalendar) this.myCurrentDate.clone();
-        cloneParkManager.mySubmittedJobs = (ArrayList<Job>) this.mySubmittedJobs.clone();
-        cloneParkManager.myJobsCreated = (ArrayList<Job>) this.myJobsCreated.clone();
-        return cloneParkManager;
-    }
 }
