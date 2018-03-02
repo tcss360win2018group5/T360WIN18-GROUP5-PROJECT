@@ -164,7 +164,7 @@ public class CalenderAppController implements Initializable {
         jobNameTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getJobTitle()));
         startDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getStartDate())));
         endDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getEndDate())));
-        // Add clicking functionality to the table view list
+        // Add clicking functionality to the table gui_view list
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
             System.out.println(selectedJobFromSystem.getJobTitle());
@@ -274,7 +274,7 @@ public class CalenderAppController implements Initializable {
                     backgroundEnable();
                 });
 
-                } else if (accessLevel == 0) {
+            } else if (accessLevel == 0) {
                 // pass
             }
 
@@ -295,7 +295,7 @@ public class CalenderAppController implements Initializable {
 //                    }
 //                });
         } catch (IOException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
 //        rightScene = new Scene(rightSideChild);
         // Set the panel off the screen to the right
