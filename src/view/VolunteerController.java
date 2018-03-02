@@ -14,6 +14,9 @@ public class VolunteerController implements Initializable {
     Button submitButton;
 
     @FXML
+    Button cancelButton;
+
+    @FXML
     Label submitLabel;
 
     @Override
