@@ -2,9 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,34 +11,13 @@
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CalenderAppController">
    <children>
       <BorderPane fx:id="borderPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#exitClick" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
          <center>
             <Pane fx:id="topPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
                   <ListView fx:id="listviewListOfJobs" layoutX="853.0" layoutY="59.0" prefHeight="609.0" prefWidth="388.0" />
-                  <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="724.0" layoutY="168.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Volunteer Test" textAlignment="CENTER" />
-                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="726.0" layoutY="213.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Manager Test" textAlignment="CENTER" />
-                  <Button fx:id="staffTestButton" alignment="CENTER" layoutX="733.0" layoutY="260.0" mnemonicParsing="false" onAction="#exitClick" text="Office Test" />
+                  <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="724.0" layoutY="168.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Open Left Menu" textAlignment="CENTER" />
+                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="726.0" layoutY="213.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu" textAlignment="CENTER" />
+                  <Button fx:id="staffTestButton" alignment="CENTER" layoutX="733.0" layoutY="260.0" mnemonicParsing="false" text="Nothing" />
                   <Button fx:id="testListButton" layoutX="695.0" layoutY="522.0" mnemonicParsing="false" onAction="#populateListWithJobs" text="Add Job To Test 1" />
                   <TableView fx:id="tableviewListOfJobs" fixedCellSize="0.0" layoutX="103.0" layoutY="71.0" prefHeight="597.0" prefWidth="546.0">
                     <columns>

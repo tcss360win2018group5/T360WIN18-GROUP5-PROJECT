@@ -72,7 +72,8 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        inputUserNameField.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+        inputPasswordField.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
     }
 
     @FXML
