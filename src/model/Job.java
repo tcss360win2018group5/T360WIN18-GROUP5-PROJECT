@@ -285,6 +285,8 @@ public class Job implements Serializable, Cloneable {
 	    boolean result = false;
 	    if (this == theObject) {
 	        result = true;
+	    } else if (theObject == null) {
+	        result = false;
 	    } else if (this.getClass() == theObject.getClass()) {
 	        Job theOtherJob = (Job) theObject;
 	        
@@ -302,6 +304,7 @@ public class Job implements Serializable, Cloneable {
                         && Objects.equals(this.myJobRole, theOtherJob.myJobRole)
                         && Objects.equals(this.myJobRoleDescription, theOtherJob.myJobRoleDescription);
 	    }
+	
         return result;
 	}
 

@@ -35,7 +35,6 @@ public class VolunteerTest {
         globalJobCoordinator = new JobCoordinator();
         anyVolunteer = new Volunteer("SomeOldVolunteer");
         today = globalJobCoordinator.getCurrentDate();
-        anyVolunteer.setCurrentDay(today);
 
         job_start_0101_end_0101 = new Job("Job Start 0101 End 0101");
         job_start_0101_end_0101.setStartDate(new GregorianCalendar(2018, 01, 01));

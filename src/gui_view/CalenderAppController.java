@@ -141,7 +141,7 @@ public class CalenderAppController implements Initializable {
 
         // User Jobs
         listviewListOfJobs.setItems(observable_UserJobs);
-        listviewListOfJobs.setCellFactory(cell -> new ListCell<>() {
+        listviewListOfJobs.setCellFactory(cell -> new ListCell<Job>() {
             @Override
             public void updateItem(Job item, boolean empty) {
                 super.updateItem(item, empty);
@@ -154,9 +154,12 @@ public class CalenderAppController implements Initializable {
         });
         listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
-            System.out.println(selectedJobFromUser.getJobTitle());
-            System.out.println(selectedJobFromUser);
-
+            if (selectedJobFromUser != null) {
+                System.out.println(selectedJobFromUser.getJobTitle());
+                System.out.println(selectedJobFromUser);
+            } else {
+                System.out.println("null selected job");
+            }
         });
 
         // System Jobs
