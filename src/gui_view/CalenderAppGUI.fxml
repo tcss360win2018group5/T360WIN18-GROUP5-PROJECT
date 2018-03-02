@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -16,19 +17,19 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.CalenderAppController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="801.0" stroke="BLACK" strokeType="INSIDE" width="1280.0" />
       <BorderPane fx:id="borderPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
             <Pane fx:id="topPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="801.0" stroke="BLACK" strokeType="INSIDE" width="1280.0" />
                   <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="481.0" layoutY="216.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Open Left Menu" textAlignment="CENTER" />
                   <Button fx:id="managerTestButton" alignment="CENTER" layoutX="615.0" layoutY="214.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu" textAlignment="CENTER" />
-                  <Button fx:id="staffTestButton" alignment="CENTER" layoutX="615.0" layoutY="288.0" mnemonicParsing="false" onAction="#applyToJob" text="Apply To Job" />
+                  <Button fx:id="staffTestButton" alignment="CENTER" layoutX="496.0" layoutY="289.0" mnemonicParsing="false" onAction="#applyToJob" text="Apply To Job" />
                   <Button fx:id="testListButton" layoutX="662.0" layoutY="379.0" mnemonicParsing="false" onAction="#populateListWithJobs" text="Add Job To Test 1" />
                   <Button fx:id="testListButton1" layoutX="662.0" layoutY="425.0" mnemonicParsing="false" onAction="#populateListWithJobs2" text="Add Job To Test 2" />
                   <Label layoutX="910.0" layoutY="450.0" text="Applied Jobs" />
                   <Label layoutX="276.0" layoutY="450.0" text="All jobs" />
-                  <Button fx:id="staffTestButton1" alignment="CENTER" layoutX="481.0" layoutY="288.0" mnemonicParsing="false" onAction="#unvolunteerFromJob" text="UnVol From Job" />
+                  <Button fx:id="staffTestButton1" alignment="CENTER" layoutX="619.0" layoutY="289.0" mnemonicParsing="false" onAction="#unvolunteerFromJob" text="UnVol From Job" />
                   <GridPane layoutY="473.0" prefHeight="327.0" prefWidth="1281.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -75,16 +76,22 @@
                                     <Font size="24.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="64.0" prefWidth="82.0" text="#" GridPane.columnIndex="1">
+                              <Label fx:id="numberOfJobsLabel" prefHeight="64.0" prefWidth="83.0" text="#" GridPane.columnIndex="1">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
                               </Label>
                            </children>
                         </GridPane>
                         <Label alignment="CENTER" prefHeight="63.0" prefWidth="297.0" text="Jobs" GridPane.rowIndex="1">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="24.0" />
                            </font>
                         </Label>
                      </children>
