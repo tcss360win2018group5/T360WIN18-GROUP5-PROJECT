@@ -97,6 +97,28 @@ public class JobCoordinator implements Serializable {
         
         return theModifiedList;
     }
+    
+    /**
+     * Unsubmits the jobs if the business rule criteria are met.
+     * 
+     * @param theJob
+     * @param theParkManager
+     * @return an integer representation of -> broken business rules XOR the job can be legally removed
+     */
+	public int unsubmitJob(final Job theJob, ParkManager theParkManager) {
+		int isRemoved = 0;
+		if (theParkManager.isMaxDistanceAwayToAddOrRemove(theJob)) {
+			isRemoved = 1;
+		} else if (!theParkManager.getCreatedJobs().contains(theJob)) {
+			isRemoved = 2;
+		} else {
+			theParkManager.getCreatedJobs().remove(theJob);
+			if (myJobList.contains(theJob)) {
+				myJobList.remove(theJob);
+			}
+		}
+		return isRemoved;
+	}
 
     public GregorianCalendar getCurrentDate() {
         return (GregorianCalendar) this.myCurrentDate.clone();
@@ -112,14 +134,18 @@ public class JobCoordinator implements Serializable {
      * Job to be submitted must follow the business rules
      * as outlined below.
      * 
+     * PreCondition: User is logged in as Park Manager and
+     * 
+     * 
      * @param theJob
-     * @return the appropriate Integer depending on business rules.
+     * @return and integer representation of the 
+     *         broken business rule XOR successfully able to add.
      */
     public int checkIfLegalToAddJob(Job candidateJob, ParkManager theParkManager) {
 		int businessRuleCheck = 0;
 		if (theParkManager.doesJobAlreadyExist(candidateJob, myJobList)) {
 			businessRuleCheck = 1;
-		}else if (theParkManager.isJobInPast(myCurrentDate, candidateJob.getStartDate())) {
+		}else if (theParkManager.isJobInPast(candidateJob.getStartDate())) {
 			businessRuleCheck = 2;
 		} else if (theParkManager.isTooFarFromToday(candidateJob)) {
 			businessRuleCheck = 3;
@@ -130,8 +156,14 @@ public class JobCoordinator implements Serializable {
 		}
 		return businessRuleCheck;
     }
+    
+    // Methods on chopping block but still in use.
 
-
+    /**
+     * @param theJob
+     * @return and integer representation of the 
+     *         broken business rule XOR successfully able to add.
+     */
     public int canAddJob(Job theJob) {
         int returnInt = 0;
         if (myJobList.contains(theJob)) {
@@ -151,7 +183,6 @@ public class JobCoordinator implements Serializable {
         return returnInt;
     }
 
-    // helper methods
     /**
      * Helper method to calculate the difference in days of two calendar dates.
      *
