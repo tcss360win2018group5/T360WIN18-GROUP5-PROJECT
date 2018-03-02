@@ -1,4 +1,4 @@
-package view;
+package gui_view;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
