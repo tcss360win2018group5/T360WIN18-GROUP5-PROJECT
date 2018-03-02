@@ -15,11 +15,14 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -86,9 +89,8 @@ public class CalenderAppController implements Initializable {
     Button staffTestButton;
     @FXML
     Button testListButton;
-
     @FXML
-    Label submitLabel;
+    Label numberOfJobsLabel;
 
     // 2: // Volunteer
     // 1: // Park Manager
@@ -152,6 +154,9 @@ public class CalenderAppController implements Initializable {
                 }
             }
         });
+
+        // Adding Functionality
+        // Highlight Click
         listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
             if (selectedJobFromUser != null) {
@@ -161,23 +166,137 @@ public class CalenderAppController implements Initializable {
                 System.out.println("null selected job");
             }
         });
+        // Double Click
+        listviewListOfJobs.setOnMousePressed(e -> {
+            if (e.getClickCount() == 2) {
+                System.out.println("User Jobs HI");
+//                createUserJobMenu();
+                rightMenuAnimation();
+            }
+        });
+
 
         // System Jobs
         tableviewListOfJobs.setItems(observable_SystemJobs);
         jobNameTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getJobTitle()));
         startDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getStartDate())));
         endDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getEndDate())));
+
         // Add clicking functionality to the table gui_view list
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
             System.out.println(selectedJobFromSystem.getJobTitle());
             System.out.println(selectedJobFromSystem);
         });
+
+        // Double Click
+        tableviewListOfJobs.setOnMousePressed(e -> {
+            if (e.getClickCount() == 2) {
+                System.out.println("System Jobs Hi!");
+//                createSystemJobMenu();
+                rightMenuAnimation();
+            }
+        });
+
         // Create Right Menu
         createRightMenu();
         createLeftMenu();
 
+        updateJobLabels();
 
+    }
+
+    private void createSystemJobMenu() {
+        try {
+            if (accessLevel == 2) { // Volunteer
+                // Create the side bar
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
+                rightSideChild = fxml.load();
+                VolunteerController subController = fxml.getController();
+                // Add functionality
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation();
+                    rightMenuAnimation();
+                });
+                subController.cancelButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    rightMenuAnimation();
+                    backgroundEnable();
+                });
+            } else if (accessLevel == 1) { // Park Manager
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManager.fxml"));
+                rightSideChild = fxml.load();
+                ParkManagerController subController = fxml.getController();
+                // Add functionality
+
+
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+
+                    rightMenuAnimation();
+
+                });
+                subController.cancelButton.setOnAction(event -> {
+                    rightMenuAnimation();
+                    backgroundEnable();
+                });
+
+            } else if (accessLevel == 0) {
+                // pass
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        setRightPanel();
+    }
+
+    private void createUserJobMenu() {
+        try {
+            if (accessLevel == 2) { // Volunteer
+                // Create the side bar
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
+                rightSideChild = fxml.load();
+                VolunteerController subController = fxml.getController();
+                // Add functionality
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation();
+                    rightMenuAnimation();
+                });
+                subController.cancelButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    rightMenuAnimation();
+                    backgroundEnable();
+                });
+            } else if (accessLevel == 1) { // Park Manager
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManager.fxml"));
+                rightSideChild = fxml.load();
+                ParkManagerController subController = fxml.getController();
+                // Add functionality
+
+
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+
+                    rightMenuAnimation();
+
+                });
+                subController.cancelButton.setOnAction(event -> {
+                    rightMenuAnimation();
+                    backgroundEnable();
+                });
+
+            } else if (accessLevel == 0) {
+                // pass
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Set the panel off the screen to the right
+        setRightPanel();
     }
 
     private void createRightMenu() {
@@ -301,13 +420,7 @@ public class CalenderAppController implements Initializable {
             e.printStackTrace();
         }
 //        rightScene = new Scene(rightSideChild);
-        // Set the panel off the screen to the right
-        rightSideChild.setLayoutX(rootPane.getPrefWidth());
-        rootPane.getChildren().add(rightSideChild);
-        rightOpen = new TranslateTransition(new Duration(350), rightSideChild);
-        rightOpen.setToX(-(rightSideChild.getWidth()));
-        rightClose = new TranslateTransition(new Duration(350), rightSideChild);
-        rightClose.setToX(-(rightSideChild.getWidth()));
+        setRightPanel();
     }
 
 
@@ -329,6 +442,21 @@ public class CalenderAppController implements Initializable {
             e.printStackTrace();
         }
 //        leftScene = new Scene(leftSideChild);
+
+        setLeftPanel();
+    }
+
+    private void setRightPanel() {
+        // Set the panel off the screen to the right
+        rightSideChild.setLayoutX(rootPane.getPrefWidth());
+        rootPane.getChildren().add(rightSideChild);
+        rightOpen = new TranslateTransition(new Duration(350), rightSideChild);
+        rightOpen.setToX(-(rightSideChild.getWidth()));
+        rightClose = new TranslateTransition(new Duration(350), rightSideChild);
+        rightClose.setToX(-(rightSideChild.getWidth()));
+    }
+
+    private void setLeftPanel() {
         // Set the panel off the screen to the right
         leftSideChild.setLayoutX(-leftSideChild.getPrefWidth());
         rootPane.getChildren().add(leftSideChild);
@@ -336,13 +464,19 @@ public class CalenderAppController implements Initializable {
         leftOpen.setToX(-(rightSideChild.getWidth()));
         leftClose = new TranslateTransition(new Duration(350), leftSideChild);
         leftClose.setToX(-(rightSideChild.getWidth()));
-
     }
 
     private void jobSubmittedAnimation() {
         try {
-            Pane fxml = FXMLLoader.load(getClass().getResource("jobSummitted.fxml"));
-//            Scene submitScene = new Scene(fxml);
+            FXMLLoader fxmlLoad = new FXMLLoader(getClass().getResource("showSuccess.fxml"));
+            Pane fxml = fxmlLoad.load();
+
+            ShowSuccessLabelController subController = fxmlLoad.getController();
+            if (accessLevel == 2 ) { // Vol
+                subController.showLabel.setText("Applied to Job!");
+            } else if (accessLevel == 1 ) { // PM
+                subController.showLabel.setText("Job Submitted!");
+            }
             rootPane.getChildren().add(fxml);
             fxml.setLayoutX(-fxml.getPrefWidth()*2);
             fxml.setLayoutY(rootPane.getPrefHeight()/3);
@@ -471,16 +605,18 @@ public class CalenderAppController implements Initializable {
                 observable_UserJobs.add(selectedJobFromSystem);
             }
         }
+        updateJobLabels();
     }
 
     @FXML
     private void unvolunteerFromJob() {
         if (accessLevel == 2) {
             if (selectedJobFromUser != null) {
-                volunteerUser.signUpForJob(selectedJobFromUser);
+                volunteerUser.unvolunteerJob(selectedJobFromUser);
                 observable_UserJobs.remove(selectedJobFromUser);
             }
         }
+        updateJobLabels();
     }
 
     @FXML
@@ -503,6 +639,13 @@ public class CalenderAppController implements Initializable {
             leftClose.setToX((leftSideChild.getWidth()));
             backgroundDisable();
             leftClose.play();
+        }
+    }
+
+    private void updateJobLabels() {
+        if (accessLevel == 2) {
+            int numberOfJobs = volunteerUser.getCurrentJobs().size();
+            numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
         }
     }
 
