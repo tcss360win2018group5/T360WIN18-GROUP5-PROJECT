@@ -13,22 +13,16 @@ import javafx.animation.TranslateTransition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import model.Job;
 import model.JobCoordinator;
@@ -51,6 +45,9 @@ public class CalenderAppController implements Initializable {
     private ArrayList<Job> listOfJobs;
     private int accessLevel;
 
+    private Job selectedJobFromSystem;
+    private Job selectedJobFromUser;
+
     private Pane rightSideChild;
     private Scene rightScene;
     private Pane leftSideChild;
@@ -60,7 +57,9 @@ public class CalenderAppController implements Initializable {
     private TranslateTransition leftOpen;
     private TranslateTransition leftClose;
 
-    ObservableList<Job> observableListOfJobs;
+    ObservableList<Job> observable_SystemJobs;
+    ObservableList<Job> observable_UserJobs;
+
 
     @FXML
     AnchorPane rootPane;
@@ -95,7 +94,8 @@ public class CalenderAppController implements Initializable {
     // 1: // Park Manager
     // 0: // Urban Parks Staff Member
     public CalenderAppController() {
-        observableListOfJobs = FXCollections.observableArrayList();
+        observable_SystemJobs = FXCollections.observableArrayList();
+        observable_UserJobs = FXCollections.observableArrayList();
     }
 
     @Override
@@ -130,21 +130,45 @@ public class CalenderAppController implements Initializable {
         officeInit();
         listOfJobs = myJobCoordinator.getPendingJobs();
         if (accessLevel == 2) {
-            observableListOfJobs.addAll(volunteerUser.getCurrentJobs());
+            observable_SystemJobs.addAll(myJobCoordinator.getPendingJobs());
+            observable_UserJobs.addAll(volunteerUser.getCurrentJobs());
         } else if (accessLevel == 1) {
-            observableListOfJobs.addAll(parkManagerUser.getCreatedJobs());
+            observable_SystemJobs.addAll(myJobCoordinator.getPendingJobs());
+            observable_UserJobs.addAll(parkManagerUser.getCreatedJobs());
         } else if (accessLevel == 0) {
             // pass
         }
-        listviewListOfJobs.setItems(observableListOfJobs);
-        tableviewListOfJobs.setItems(observableListOfJobs);
+
+        // User Jobs
+        listviewListOfJobs.setItems(observable_UserJobs);
+        listviewListOfJobs.setCellFactory(cell -> new ListCell<>() {
+            @Override
+            public void updateItem(Job item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.getJobTitle());
+                }
+            }
+        });
+        listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
+            System.out.println(selectedJobFromUser.getJobTitle());
+            System.out.println(selectedJobFromUser);
+
+        });
+
+        // System Jobs
+        tableviewListOfJobs.setItems(observable_SystemJobs);
         jobNameTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getJobTitle()));
         startDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getStartDate())));
         endDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getEndDate())));
-        // Add clicking functionality to the table view list
+        // Add clicking functionality to the table gui_view list
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Job test = tableviewListOfJobs.getSelectionModel().getSelectedItem();
-            System.out.println(test);
+            selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
+            System.out.println(selectedJobFromSystem.getJobTitle());
+            System.out.println(selectedJobFromSystem);
         });
         // Create Right Menu
         createRightMenu();
@@ -165,6 +189,11 @@ public class CalenderAppController implements Initializable {
                     System.out.println("Right");
                     jobSubmittedAnimation();
                     rightMenuAnimation();
+                });
+                subController.cancelButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    rightMenuAnimation();
+                    backgroundEnable();
                 });
             } else if (accessLevel == 1) { // Park Manager
                 FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManager.fxml"));
@@ -236,7 +265,7 @@ public class CalenderAppController implements Initializable {
                             jobRole[0], jobRoleDescription[0]);
                     parkManagerUser.addCreatedJob(newJob);
                     jobSubmittedAnimation();
-                    observableListOfJobs.add(newJob);
+                    observable_SystemJobs.add(newJob);
                     rightMenuAnimation();
 
                 });
@@ -245,7 +274,7 @@ public class CalenderAppController implements Initializable {
                     backgroundEnable();
                 });
 
-                } else if (accessLevel == 0) {
+            } else if (accessLevel == 0) {
                 // pass
             }
 
@@ -266,9 +295,9 @@ public class CalenderAppController implements Initializable {
 //                    }
 //                });
         } catch (IOException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
-        rightScene = new Scene(rightSideChild);
+//        rightScene = new Scene(rightSideChild);
         // Set the panel off the screen to the right
         rightSideChild.setLayoutX(rootPane.getPrefWidth());
         rootPane.getChildren().add(rightSideChild);
@@ -296,7 +325,7 @@ public class CalenderAppController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        leftScene = new Scene(leftSideChild);
+//        leftScene = new Scene(leftSideChild);
         // Set the panel off the screen to the right
         leftSideChild.setLayoutX(-leftSideChild.getPrefWidth());
         rootPane.getChildren().add(leftSideChild);
@@ -310,7 +339,7 @@ public class CalenderAppController implements Initializable {
     private void jobSubmittedAnimation() {
         try {
             Pane fxml = FXMLLoader.load(getClass().getResource("jobSummitted.fxml"));
-            Scene submitScene = new Scene(fxml);
+//            Scene submitScene = new Scene(fxml);
             rootPane.getChildren().add(fxml);
             fxml.setLayoutX(-fxml.getPrefWidth()*2);
             fxml.setLayoutY(rootPane.getPrefHeight()/3);
@@ -399,7 +428,7 @@ public class CalenderAppController implements Initializable {
     @FXML
     private void populateListWithJobs() {
         volunteerUser.signUpForJob(new Job("Test Job 1"));
-        observableListOfJobs.add(new Job("Test Job 1"));
+        observable_UserJobs.add(new Job("Test Job 1"));
     }
 
     @FXML
@@ -408,7 +437,7 @@ public class CalenderAppController implements Initializable {
                 new GregorianCalendar(2018, 03, 11),
                 new GregorianCalendar(2018, 03, 11));
         volunteerUser.signUpForJob(test2);
-        observableListOfJobs.add(test2);
+        observable_UserJobs.add(test2);
     }
 
     @FXML
@@ -429,6 +458,26 @@ public class CalenderAppController implements Initializable {
         System.out.println(accessLevel);
 
 //        saveSystem();
+    }
+
+    @FXML
+    private void applyToJob() {
+        if (accessLevel == 2) {
+            if (selectedJobFromSystem != null) {
+                volunteerUser.signUpForJob(selectedJobFromSystem);
+                observable_UserJobs.add(selectedJobFromSystem);
+            }
+        }
+    }
+
+    @FXML
+    private void unvolunteerFromJob() {
+        if (accessLevel == 2) {
+            if (selectedJobFromUser != null) {
+                volunteerUser.signUpForJob(selectedJobFromUser);
+                observable_UserJobs.remove(selectedJobFromUser);
+            }
+        }
     }
 
     @FXML
