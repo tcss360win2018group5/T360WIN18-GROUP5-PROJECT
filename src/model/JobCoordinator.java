@@ -163,7 +163,7 @@ public class JobCoordinator implements Serializable {
 		int businessRuleCheck = 0;
 		if (theParkManager.doesJobAlreadyExist(candidateJob, myJobList)) {
 			businessRuleCheck = 1;
-		}else if (theParkManager.isJobInPast(candidateJob.getStartDate())) {
+		} else if (theParkManager.isJobInPast(candidateJob.getStartDate())) {
 			businessRuleCheck = 2;
 		} else if (theParkManager.isTooFarFromToday(candidateJob)) {
 			businessRuleCheck = 3;
@@ -172,6 +172,7 @@ public class JobCoordinator implements Serializable {
 		} else if (theParkManager.isMaximumJobDuration(candidateJob)) {
 			businessRuleCheck = 5;
 		}
+		
 		return businessRuleCheck;
     }
     

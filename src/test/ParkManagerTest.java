@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,18 +50,12 @@ public class ParkManagerTest {
 	        
 	        //Denotes one day for "today" to be compared with test dates
 	        testDateToday = new GregorianCalendar();
-	        testDatePriorToCurrentDay = new GregorianCalendar(Calendar.YEAR, 
-	        												  Calendar.MONTH,
-	        												  Calendar.DAY_OF_MONTH - 1);
-	        testDateMoreThanMinDaysAway = new GregorianCalendar(Calendar.YEAR, 
-	        													Calendar.MONTH,
-	        													Calendar.DAY_OF_MONTH 
-	        													+ Volunteer.MINIMUM_DAYS_BEFORE_JOB_START 
-	        													+ 2);
-	        testDateExactlyMinDaysAway = new GregorianCalendar(Calendar.YEAR, 
-	        												   Calendar.MONTH,
-	        												   Calendar.DAY_OF_MONTH 
-	        												   + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START);
+	        testDatePriorToCurrentDay = (GregorianCalendar) testDateToday.clone();
+	        testDatePriorToCurrentDay.add(GregorianCalendar.DAY_OF_YEAR, -1);
+	        testDateMoreThanMinDaysAway = (GregorianCalendar) testDateToday.clone();
+	        testDateMoreThanMinDaysAway.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1);
+	        testDateExactlyMinDaysAway = (GregorianCalendar) testDateToday.clone();
+	        testDateExactlyMinDaysAway.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START);
 	        
 	        testJobStartsToday = new Job("Job Today");
 	        testJobStartsToday.setStartDate(new GregorianCalendar());
@@ -143,7 +138,7 @@ public class ParkManagerTest {
 	        // setup past job
 	        GregorianCalendar pastDate = (GregorianCalendar) theCurrentDate.clone();
 	        pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
-	        Job pastJobOneWeekBefore = new Job("A Job 1 Week In The Future");
+	        Job pastJobOneWeekBefore = new Job("A Job 1 Week In The Past");
 	        pastJobOneWeekBefore.setStartDate(pastDate);
 	        pastJobOneWeekBefore.setEndDate(pastDate);
 	        
@@ -164,24 +159,30 @@ public class ParkManagerTest {
 	        assertFalse(futureSubmittedJobs.contains(jobThatIsNotSubmitted));
 	    }
 
+	    
+	    /* 
+	     * THESE METHODS NEED TO BE LOOKED AT !!!! also an unsubmit method should be added
+	     * to park manager class, testing individual business rule methods without testing the
+	     * actual unsubmit method will not suffice. 
+	     */
 	    @Test
 	    public void canUnsubmitJob_jobStartsOnCurrentDay_False() {
-	    	assertTrue(anyParkManager.isMaxDistanceAwayToAddOrRemove(jobStartsOnCurrentDay));
+	    	assertFalse(anyParkManager.isMaxDistanceAwayToAddOrRemove(jobStartsOnCurrentDay));
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsPriorToCurrentDay_False() {
-	    	assertFalse(anyParkManager.isJobInPast(jobStartsPriorToCurrentDay.getStartDate()));
+	    	assertTrue(anyParkManager.isJobInPast(jobStartsPriorToCurrentDay.getStartDate()));
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsMoreThanMinDaysAway_True() {
-	    	assertTrue(anyParkManager.isTooFarFromToday(jobStartsMoreThanMinDaysAway));
+	    	assertFalse(anyParkManager.isTooFarFromToday(jobStartsMoreThanMinDaysAway));
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsExactlyMinDaysAway_True() {
-	    	assertTrue(anyParkManager.isTooFarFromToday(jobStartsExactlyMinDaysAway));
+	    	assertFalse(anyParkManager.isTooFarFromToday(jobStartsExactlyMinDaysAway));
 	    }
 
 }

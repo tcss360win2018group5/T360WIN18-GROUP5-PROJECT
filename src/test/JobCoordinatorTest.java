@@ -99,6 +99,7 @@ public class JobCoordinatorTest {
         lessThanMaxLengthJob.setStartDate(validDateOneWeekAhead);
         lessThanMaxLengthJob.setEndDate(validDateOneWeekAheadPlusOneLessThanMaxLength);
         
+        System.out.println(globalJobCoordinator.checkIfLegalToAddJob(lessThanMaxLengthJob, anyParkManager));
         assertTrue(globalJobCoordinator.checkIfLegalToAddJob(lessThanMaxLengthJob, anyParkManager) == 0);
         
     }

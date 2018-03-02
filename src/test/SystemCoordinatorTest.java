@@ -4,6 +4,8 @@ package test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.GregorianCalendar;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,10 +15,12 @@ import model.Volunteer;
 
 public class SystemCoordinatorTest {
     public SystemCoordinator globalSystemCoordinator;
+    public GregorianCalendar theCurrentDate;
 
     @Before
     public void setUp() throws Exception {
         globalSystemCoordinator = new SystemCoordinator();
+        theCurrentDate = new GregorianCalendar();
     }
 
     // Business Rule:
@@ -29,6 +33,7 @@ public class SystemCoordinatorTest {
     @Test
     public final void signIn_isVolunteerInSystem_ShouldBeTrue() {
         Volunteer aValidRegisterdVolunteer = new Volunteer("Jane Doe");
+        aValidRegisterdVolunteer.setCurrentDay(theCurrentDate);
         globalSystemCoordinator.addUser(aValidRegisterdVolunteer);
         assertTrue(globalSystemCoordinator
                         .signIn(aValidRegisterdVolunteer.getUsername()) == 0);
