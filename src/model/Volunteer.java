@@ -11,7 +11,7 @@ public class Volunteer extends User implements Serializable {
     public static final int MINIMUM_DAYS_BEFORE_JOB_START = 2;
 
     /** The current jobs this Volunteer is signed up for. */
-    private ArrayList<Job> myCurrentJobs = new ArrayList<Job>();
+    private ArrayList<Job> myCurrentJobs;
 
     private GregorianCalendar myCurrentDay;
 
@@ -22,6 +22,8 @@ public class Volunteer extends User implements Serializable {
      */
     public Volunteer(String theName) {
         super(theName, SystemCoordinator.VOLUNTEER_ACCESS_LEVEL);
+        this.myCurrentJobs = new ArrayList<Job>();
+        this.myCurrentDay = new GregorianCalendar();
     }
 
     // mutator's
