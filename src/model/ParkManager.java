@@ -157,6 +157,6 @@ public class ParkManager extends User implements Serializable {
 	}
 
 	public boolean isFutureJob(Job theJob) {
-		return theJob.getStartDate().after(myCurrentDate);
+		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
 	}
 }

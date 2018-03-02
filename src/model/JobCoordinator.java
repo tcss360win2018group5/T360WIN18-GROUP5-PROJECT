@@ -87,7 +87,7 @@ public class JobCoordinator implements Serializable {
         } else if (theUser instanceof ParkManager) {
             ParkManager thePM = (ParkManager) theUser;
             for (Job aJob : this.myJobList) {
-                if (!thePM.isJobInPast(myCurrentDate, aJob.getStartDate())) {
+                if (thePM.isFutureJob(aJob)) {
                     theModifiedList.add(aJob);
                 }
             }
