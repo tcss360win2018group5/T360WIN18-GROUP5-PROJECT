@@ -3,12 +3,11 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 //l.Calendar;
 import java.util.concurrent.TimeUnit;
 
-public class ParkManager extends User implements Serializable {
+public final class ParkManager extends User implements Serializable {
 	private ArrayList<Job> myJobsCreated;
 	private ArrayList<Job> mySubmittedJobs;
 	private GregorianCalendar myCurrentDate;
@@ -143,6 +142,7 @@ public class ParkManager extends User implements Serializable {
 		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         ParkManager cloneParkManager = new ParkManager(this.getUsername());

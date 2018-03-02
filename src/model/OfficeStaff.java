@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class OfficeStaff extends User implements Serializable {
+public final class OfficeStaff extends User implements Serializable {
 	/**
 	 * Creates a park manager with the given username.
 	 * 

@@ -50,6 +50,7 @@ public class SystemCoordinatorTest {
     // Volunteer
     @Test
     public final void canAddUser_addNonValidUserType_ShouldBeFalse() {
+        @SuppressWarnings("serial")
         class BusinessPartner extends User {
             public BusinessPartner(String theUsername) { super(theUsername, 99); }
             @Override

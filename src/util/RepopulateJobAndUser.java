@@ -139,7 +139,7 @@ public class RepopulateJobAndUser {
         // Please provide contact email:");
         String contactEmail = theContactEmail;
         // "Please provide job listing headline:");
-        String jobName = theJobHeadline;
+        String jobName = theJobTitle + ": " + theJobHeadline;
         // "Please provide job description:");
         String jobDescription = theJobDescription;
         // "Please provide a job role:");
@@ -154,7 +154,7 @@ public class RepopulateJobAndUser {
         // Leaving the loop blank for now to add multiple job roles
         // Job api needs to be extended to make that work
 
-        Job newJob = new Job(theJobTitle);
+        Job newJob = new Job(jobName);
         newJob.setStartDate(startDate);
         newJob.setEndDate(endDate);
         newJob.setMyJobLocation(address);;
