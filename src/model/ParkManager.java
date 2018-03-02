@@ -112,10 +112,6 @@ public class ParkManager extends User implements Serializable {
 	public void setCurrentDate(GregorianCalendar theDate) {
 		myCurrentDate = theDate;
 	}
-
-	public boolean isFutureJob(Job theJob) {
-		return theJob.getStartDate().after(myCurrentDate);
-	}
 	
 	/**
 	 * Helper method to calculate the difference in days of two calendar dates.
@@ -142,5 +138,7 @@ public class ParkManager extends User implements Serializable {
 						TimeUnit.MILLISECONDS)) < 0;
 	}
 
-
+	public boolean isFutureJob(Job theJob) {
+		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
+	}
 }
