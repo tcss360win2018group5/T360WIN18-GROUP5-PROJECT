@@ -75,7 +75,7 @@ public class RepopulateJobAndUser {
                     + " days from today");
         }
         else {
-            myJobCoordinator.addPendingJob(theJob);
+            myJobCoordinator.submitJob(theJob);
             System.out.println("Job Submitted!\n");
         }
     }
@@ -157,7 +157,7 @@ public class RepopulateJobAndUser {
         Job newJob = new Job(theJobTitle);
         newJob.setStartDate(startDate);
         newJob.setEndDate(endDate);
-        newJob.setMyAddress(address);
+        newJob.setMyJobLocation(address);;
         newJob.setMyContactName(contactName);
         newJob.setMyContactNumber(contactNum);
         newJob.setMyContactEmail(contactEmail);

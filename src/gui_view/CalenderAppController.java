@@ -1,4 +1,4 @@
-package view;
+package gui_view;
 
 
 import java.io.FileOutputStream;

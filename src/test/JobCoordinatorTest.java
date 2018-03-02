@@ -17,21 +17,27 @@ import model.Volunteer;
 
 public class JobCoordinatorTest {
     public JobCoordinator globalJobCoordinator;
+    
     public Volunteer globalVolunteerJane;
     public ParkManager globalParkManagerSam;
     public OfficeStaff globalOfficeStaffAlex;
+    
     public Job anyOldValidJob;
     public ParkManager anyParkManager;
 
     @Before
     public void setUp() throws Exception {
         globalJobCoordinator = new JobCoordinator();
+        
         globalVolunteerJane = new Volunteer("Jane");
         globalVolunteerJane.setCurrentDay(globalJobCoordinator.getCurrentDate());
+        
         globalParkManagerSam = new ParkManager("Sam");
         globalVolunteerJane.setCurrentDay(globalJobCoordinator.getCurrentDate());
+        
         globalOfficeStaffAlex = new OfficeStaff("Alex");
         globalVolunteerJane.setCurrentDay(globalJobCoordinator.getCurrentDate());
+        
         anyOldValidJob = new Job("anyOldValidJob");
         anyParkManager = new ParkManager("anyOldPM");
     }
@@ -44,7 +50,7 @@ public class JobCoordinatorTest {
     @Test
     public final void hasSpaceToAddJobs_LessThanMaximumPendingJobs_ShouldReturnTrue() {
         // add 0 or 1 job so that # current jobs < maximum jobs
-        globalJobCoordinator.addPendingJob(anyOldValidJob);
+        globalJobCoordinator.submitJob(anyOldValidJob);
 
         assertTrue(globalJobCoordinator.hasSpaceToAddJobs());
     }
@@ -55,7 +61,7 @@ public class JobCoordinatorTest {
         // add 20 - 1 = 19 jobs to pending
         for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS - 1; i++) {
             Job generatedValidJob = new Job("generatedValidJob" + i);
-            globalJobCoordinator.addPendingJob(generatedValidJob);
+            globalJobCoordinator.submitJob(generatedValidJob);
         }
 
         assertTrue(globalJobCoordinator.hasSpaceToAddJobs());
@@ -67,7 +73,7 @@ public class JobCoordinatorTest {
         // add exactly 20 (maximum) jobs to pending
         for (int i = 0; i < 20; i++) {
             Job generatedValidJob = new Job("generatedValidJob" + i);
-            globalJobCoordinator.addPendingJob(generatedValidJob);
+            globalJobCoordinator.submitJob(generatedValidJob);
         }
 
         assertFalse(globalJobCoordinator.hasSpaceToAddJobs());
@@ -219,7 +225,7 @@ public class JobCoordinatorTest {
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
         futureJob.setMaxVolunteers(10);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
 
         assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).contains(futureJob));
     }
@@ -231,7 +237,7 @@ public class JobCoordinatorTest {
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
         assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).isEmpty());
     }
     
@@ -243,7 +249,7 @@ public class JobCoordinatorTest {
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
         futureJob.setMaxVolunteers(10);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
         
         Job pastJob = new Job("Job in the Past");
         GregorianCalendar pastDate = new GregorianCalendar();
@@ -251,7 +257,7 @@ public class JobCoordinatorTest {
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
         futureJob.setMaxVolunteers(10);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
 
         assertFalse(globalJobCoordinator.getJobListing(globalVolunteerJane).contains(pastJob));
         assertTrue(globalJobCoordinator.getJobListing(globalVolunteerJane).contains(futureJob));
@@ -264,7 +270,7 @@ public class JobCoordinatorTest {
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
 
         assertTrue(globalJobCoordinator.getJobListing(globalParkManagerSam).contains(futureJob));
     }
@@ -276,7 +282,7 @@ public class JobCoordinatorTest {
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
         
         assertTrue(globalJobCoordinator.getJobListing(globalParkManagerSam).isEmpty());
     }
@@ -288,14 +294,14 @@ public class JobCoordinatorTest {
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
         
         Job pastJob = new Job("Job in the Past");
         GregorianCalendar pastDate = new GregorianCalendar();
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
 
         assertFalse(globalJobCoordinator.getJobListing(globalParkManagerSam).contains(pastJob));
         assertTrue(globalJobCoordinator.getJobListing(globalParkManagerSam).contains(futureJob));
@@ -308,7 +314,7 @@ public class JobCoordinatorTest {
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
         
         assertTrue(globalJobCoordinator.getJobListing(globalOfficeStaffAlex).contains(futureJob));
     }
@@ -320,7 +326,7 @@ public class JobCoordinatorTest {
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
 
         assertTrue(globalJobCoordinator.getJobListing(globalOfficeStaffAlex).contains(pastJob));
     }
@@ -332,14 +338,14 @@ public class JobCoordinatorTest {
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
         futureJob.setStartDate(futureDate);
         futureJob.setEndDate(futureDate);
-        globalJobCoordinator.addPendingJob(futureJob);
+        globalJobCoordinator.submitJob(futureJob);
         
         Job pastJob = new Job("Job in the Past");
         GregorianCalendar pastDate = new GregorianCalendar();
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
         pastJob.setStartDate(pastDate);
         pastJob.setEndDate(pastDate);
-        globalJobCoordinator.addPendingJob(pastJob);
+        globalJobCoordinator.submitJob(pastJob);
 
         assertTrue(globalJobCoordinator.getJobListing(globalOfficeStaffAlex).contains(pastJob));
         assertTrue(globalJobCoordinator.getJobListing(globalOfficeStaffAlex).contains(futureJob));
