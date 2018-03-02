@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.*;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
@@ -14,15 +16,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -86,6 +86,9 @@ public class CalenderAppController implements Initializable {
     @FXML
     Button testListButton;
 
+    @FXML
+    Label submitLabel;
+
     // 2: // Volunteer
     // 1: // Park Manager
     // 0: // Urban Parks Staff Member
@@ -95,12 +98,7 @@ public class CalenderAppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        volunteerTestButton.setDisable(true);
-        managerTestButton.setDisable(true);
-        staffTestButton.setDisable(true);
-        volunteerTestButton.setVisible(false);
-        rootPane.setStyle("-fx-background-color: black;");
-        borderPane.setStyle("-fx-background-color: white;");
+        // Leave blank, cannot load side menu with stuff here.
     }
 
     // Methods to Init GUI variables
@@ -117,11 +115,23 @@ public class CalenderAppController implements Initializable {
         this.myJobCoordinator = myJobCoordinator;
     }
     public void reInitializeWithUser() {
+        volunteerTestButton.setDisable(true);
+        managerTestButton.setDisable(true);
+        staffTestButton.setDisable(true);
+        volunteerTestButton.setVisible(false);
+        rootPane.setStyle("-fx-background-color: black;");
+        borderPane.setStyle("-fx-background-color: white;");
         volunteerInit();
         managerInit();
         officeInit();
         listOfJobs = myJobCoordinator.getPendingJobs();
-        observableListOfJobs.addAll(volunteerUser.getCurrentJobs());
+        if (accessLevel == 2) {
+            observableListOfJobs.addAll(volunteerUser.getCurrentJobs());
+        } else if (accessLevel == 1) {
+            observableListOfJobs.addAll(parkManagerUser.getCreatedJobs());
+        } else if (accessLevel == 0) {
+            // pass
+        }
         listviewListOfJobs.setItems(observableListOfJobs);
         tableviewListOfJobs.setItems(observableListOfJobs);
         jobNameTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getJobTitle()));
@@ -141,36 +151,124 @@ public class CalenderAppController implements Initializable {
 
     private void createRightMenu() {
         try {
-            // Create the side bar
-            rightSideChild = FXMLLoader.load(getClass().getResource("SlideoutVolunteer.fxml"));
-            rightScene = new Scene(rightSideChild);
-            // Set the panel off the screen to the right
-            rightSideChild.setLayoutX(rootPane.getPrefWidth());
-            rootPane.getChildren().add(rightSideChild);
-            rightOpen = new TranslateTransition(new Duration(500), rightSideChild);
-            rightOpen.setToX(-(rightSideChild.getWidth()));
-            rightClose = new TranslateTransition(new Duration(500), rightSideChild);
-            rightClose.setToX(-(rightSideChild.getWidth()));
+            if (accessLevel == 2) { // Volunteer
+                // Create the side bar
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
+                rightSideChild = fxml.load();
+                VolunteerController subController = fxml.getController();
+                // Add functionality
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation();
+                    rightMenuAnimation();
+                });
+            } else if (accessLevel == 1) { // Park Manager
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManager.fxml"));
+                rightSideChild = fxml.load();
+                ParkManagerController subController = fxml.getController();
+                // Add functionality
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation();
+                    rightMenuAnimation();
+                });
+            } else if (accessLevel == 0) {
+                // pass
+            }
+
+//                @Override
+//                public void changed(ObservableValue<? extends Node> observable, Node oldValue, Node newValue) {
+//                    System.out.println("HI");
+//                }
+//                    @Override
+//                    public void changed(ObservableValue<? extends String> obs, String oldValue, String newValue) {
+//                        changeContent(newValue);
+//                    }
+//                });
+//
+//                contentController.submitLabel().addListener(new ChangeListener<String>() {
+//                    @Override
+//                    public void changed(ObservableValue<? extends String> obs, String oldValue, String newValue) {
+//                        changeContent(newValue);
+//                    }
+//                });
         } catch (IOException e) {
-            e.printStackTrace();
+        e.printStackTrace();
         }
+        rightScene = new Scene(rightSideChild);
+        // Set the panel off the screen to the right
+        rightSideChild.setLayoutX(rootPane.getPrefWidth());
+        rootPane.getChildren().add(rightSideChild);
+        rightOpen = new TranslateTransition(new Duration(500), rightSideChild);
+        rightOpen.setToX(-(rightSideChild.getWidth()));
+        rightClose = new TranslateTransition(new Duration(500), rightSideChild);
+        rightClose.setToX(-(rightSideChild.getWidth()));
     }
 
     private void createLeftMenu() {
         try {
             // Create the side bar
-            leftSideChild = FXMLLoader.load(getClass().getResource("SlideoutVolunteer.fxml"));
-            leftScene = new Scene(leftSideChild);
-            // Set the panel off the screen to the right
-            leftSideChild.setLayoutX(-leftSideChild.getPrefWidth());
-            rootPane.getChildren().add(leftSideChild);
-            leftOpen = new TranslateTransition(new Duration(500), leftSideChild);
-            leftOpen.setToX(-(rightSideChild.getWidth()));
-            leftClose = new TranslateTransition(new Duration(500), leftSideChild);
-            leftClose.setToX(-(rightSideChild.getWidth()));
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
+            leftSideChild = fxml.load();
+            VolunteerController subController = fxml.getController();
+            // Add functionality
+            subController.submitButton.setOnAction(event -> {
+                System.out.println("Left");
+                leftMenuAnimation();
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        leftScene = new Scene(leftSideChild);
+        // Set the panel off the screen to the right
+        leftSideChild.setLayoutX(-leftSideChild.getPrefWidth());
+        rootPane.getChildren().add(leftSideChild);
+        leftOpen = new TranslateTransition(new Duration(500), leftSideChild);
+        leftOpen.setToX(-(rightSideChild.getWidth()));
+        leftClose = new TranslateTransition(new Duration(500), leftSideChild);
+        leftClose.setToX(-(rightSideChild.getWidth()));
+
+    }
+
+    private void jobSubmittedAnimation() {
+        try {
+            Pane fxml = FXMLLoader.load(getClass().getResource("jobSummitted.fxml"));
+            Scene submitScene = new Scene(fxml);
+            rootPane.getChildren().add(fxml);
+            fxml.setLayoutX(-fxml.getPrefWidth()*2);
+            fxml.setLayoutY(rootPane.getPrefHeight()/3);
+
+            TranslateTransition left = new TranslateTransition(new Duration(350), fxml);
+
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0.1),
+                    event -> {
+                        left.setToX((fxml.getWidth()));
+                        left.play();
+                    }));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.5),
+                    event -> {
+                        left.setToX((fxml.getWidth()*2));
+                        left.play();
+                    }));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.5),
+                    event -> {
+                        left.setToX((fxml.getWidth()*4));
+                        left.play();
+                        backgroundEnable();
+
+                    }));
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(2.3),
+                    event -> {
+                        rootPane.getChildren().remove(fxml);
+                    }));
+            timeline.setCycleCount(1);
+            timeline.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -260,13 +358,10 @@ public class CalenderAppController implements Initializable {
     @FXML
     private void rightMenuAnimation() {
         if (rightSideChild.getTranslateX()!=0){
-            borderPane.setOpacity(1);
-            borderPane.setDisable(false);
             rightOpen.play();
         } else {
             rightClose.setToX(-(rightSideChild.getWidth()));
-            borderPane.setOpacity(.7);
-            borderPane.setDisable(true);
+            backgroundDisable();
             rightClose.play();
         }
     }
@@ -274,14 +369,28 @@ public class CalenderAppController implements Initializable {
     @FXML
     private void leftMenuAnimation() {
         if (leftSideChild.getTranslateX()!=0){
-            borderPane.setOpacity(1);
-            borderPane.setDisable(false);
+            backgroundEnable();
             leftOpen.play();
         } else {
             leftClose.setToX((leftSideChild.getWidth()));
-            borderPane.setOpacity(.7);
-            borderPane.setDisable(true);
+            backgroundDisable();
             leftClose.play();
         }
+    }
+
+    private void backgroundEnable() {
+        borderPane.setOpacity(1);
+        borderPane.setDisable(false);
+    }
+
+    private void backgroundDisable() {
+        borderPane.setOpacity(.7);
+        borderPane.setDisable(true);
+    }
+
+    @FXML
+    private void submitInfo() {
+        rightMenuAnimation();
+        System.out.println("test");
     }
 }
