@@ -163,7 +163,7 @@ public class CalenderAppController implements Initializable {
                 System.out.println(selectedJobFromUser.getJobTitle());
                 System.out.println(selectedJobFromUser);
             } else {
-                System.out.println("null selected job");
+                System.out.println("NULL selected job (probably unapplied all from all jobs in user?)");
             }
         });
         // Double Click
@@ -185,8 +185,12 @@ public class CalenderAppController implements Initializable {
         // Add clicking functionality to the table gui_view list
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
-            System.out.println(selectedJobFromSystem.getJobTitle());
-            System.out.println(selectedJobFromSystem);
+            if (selectedJobFromSystem != null) {
+                System.out.println(selectedJobFromSystem.getJobTitle());
+                System.out.println(selectedJobFromSystem);
+            } else {
+                System.out.println("NULL Job selected (probably all system jobs gone?).");
+            }
         });
 
         // Double Click
