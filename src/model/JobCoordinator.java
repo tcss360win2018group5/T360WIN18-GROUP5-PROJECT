@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-public class JobCoordinator implements Serializable {
+public final class JobCoordinator implements Serializable {
     public static final int MAXIMUM_JOBS = 20;
     public static final int MAXIMUM_JOB_LENGTH = 3;
     public static final int MAXIMUM_DAYS_AWAY_TO_POST_JOB = 75;
@@ -113,6 +113,7 @@ public class JobCoordinator implements Serializable {
      *                       conflict with a new job submission.
      *      For OfficeStaff: All jobs will be listed. 
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<Job> getJobListing(User theUser) {
         ArrayList<Job> theModifiedList = new ArrayList<Job>();
         if (theUser instanceof Volunteer) {

@@ -6,7 +6,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SystemCoordinator implements Serializable {
+public final class SystemCoordinator implements Serializable {
     public static final int DEFAULT_ACCESS_LEVEL = 2;
     public static final int VOLUNTEER_ACCESS_LEVEL = 2;
     public static final int PARK_MANAGER_ACCESS_LEVEL = 1;

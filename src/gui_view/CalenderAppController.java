@@ -5,7 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -18,8 +21,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -63,10 +71,6 @@ public class CalenderAppController implements Initializable {
     private Pane leftSideChild;
     private TranslateTransition leftOpen;
     private TranslateTransition leftClose;
-
-
-
-    private MouseEvent currentMouseSelection;
 
     ObservableList<Job> observable_SystemJobs;
     ObservableList<Job> observable_UserJobs;
@@ -151,7 +155,7 @@ public class CalenderAppController implements Initializable {
 
         // User Jobs
         listviewListOfJobs.setItems(observable_UserJobs);
-        listviewListOfJobs.setCellFactory(cell -> new ListCell<>() {
+        listviewListOfJobs.setCellFactory(cell -> new ListCell<Job>() {
             @Override
             public void updateItem(Job item, boolean empty) {
                 super.updateItem(item, empty);
@@ -167,9 +171,12 @@ public class CalenderAppController implements Initializable {
         // Highlight Click
         listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
-            System.out.println(selectedJobFromUser.getJobTitle());
-            System.out.println(selectedJobFromUser);
-
+            if (selectedJobFromUser != null) {
+                System.out.println(selectedJobFromUser.getJobTitle());
+                System.out.println(selectedJobFromUser);
+            } else {
+                System.out.println("NULL selected job (probably unapplied all from all jobs in user?)");
+            }
         });
         // Double Click
         listviewListOfJobs.setOnMousePressed(e -> {
@@ -189,8 +196,12 @@ public class CalenderAppController implements Initializable {
         // Add clicking functionality to the table gui_view list
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
-            System.out.println(selectedJobFromSystem.getJobTitle());
-            System.out.println(selectedJobFromSystem);
+            if (selectedJobFromSystem != null) {
+                System.out.println(selectedJobFromSystem.getJobTitle());
+                System.out.println(selectedJobFromSystem);
+            } else {
+                System.out.println("NULL Job selected (probably all system jobs gone?).");
+            }
         });
 
         // Double Click

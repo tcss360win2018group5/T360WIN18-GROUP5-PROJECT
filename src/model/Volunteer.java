@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-public class Volunteer extends User implements Serializable {
+public final class Volunteer extends User implements Serializable {
     public static final int MINIMUM_DAYS_BEFORE_JOB_START = 2;
 
     /** The current jobs this Volunteer is signed up for. */
@@ -143,6 +143,7 @@ public class Volunteer extends User implements Serializable {
         return (int) convertedTime;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         Volunteer cloneVolunteer = new Volunteer(this.getUsername());

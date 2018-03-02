@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
-public class Job implements Serializable, Cloneable {
+public final class Job implements Serializable, Cloneable {
 
 	/** String representation of the title for this job. */
 	private String myJobTitle;
@@ -257,7 +257,8 @@ public class Job implements Serializable, Cloneable {
 	/** 
 	 * Allows for sensitive instances of the object to be cloned. 
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public Job clone() {
 	    Job jobClone = new Job(this.myJobTitle, this.myMaxVolunteers,
 	                           (GregorianCalendar) this.myStartDate.clone(), 
@@ -285,7 +286,9 @@ public class Job implements Serializable, Cloneable {
 	    boolean result = false;
 	    if (this == theObject) {
 	        result = true;
-	    } else if (theObject != null && this.getClass() == theObject.getClass()) {
+	    } else if (theObject == null) {
+	        result = false;
+	    } else if (this.getClass() == theObject.getClass()) {
 	        Job theOtherJob = (Job) theObject;
 	        
 	        result = Objects.equals(this.myJobTitle, theOtherJob.myJobTitle)
@@ -302,6 +305,7 @@ public class Job implements Serializable, Cloneable {
                         && Objects.equals(this.myJobRole, theOtherJob.myJobRole)
                         && Objects.equals(this.myJobRoleDescription, theOtherJob.myJobRoleDescription);
 	    }
+	
         return result;
 	}
 
