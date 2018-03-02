@@ -21,7 +21,7 @@ public class Volunteer extends User implements Serializable {
      * @param theName the name to give the user.
      */
     public Volunteer(String theName) {
-        super(theName, SystemCoordinator.VOLUTNEER_ACCESS_LEVEL);
+        super(theName, SystemCoordinator.VOLUNTEER_ACCESS_LEVEL);
     }
 
     // mutator's

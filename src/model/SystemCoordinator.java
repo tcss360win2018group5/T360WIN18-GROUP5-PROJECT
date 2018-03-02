@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class SystemCoordinator implements Serializable {
     public static final int DEFAULT_ACCESS_LEVEL = 2;
-    public static final int VOLUTNEER_ACCESS_LEVEL = 2;
+    public static final int VOLUNTEER_ACCESS_LEVEL = 2;
     public static final int PARK_MANAGER_ACCESS_LEVEL = 1;
     public static final int OFFICE_STAFF_ACCESS_LEVEL = 0;
     
@@ -41,7 +41,7 @@ public class SystemCoordinator implements Serializable {
     }
     
     public void fireSignInEvent(User u) {
-        if (u.getAccessLevel() == SystemCoordinator.VOLUTNEER_ACCESS_LEVEL) {
+        if (u.getAccessLevel() == SystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
             Volunteer theVolunteer = (Volunteer) u;
             myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
                                                    null, theVolunteer.clone());

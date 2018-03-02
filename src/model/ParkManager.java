@@ -3,6 +3,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 //l.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -20,8 +21,8 @@ public class ParkManager extends User implements Serializable {
 	public ParkManager(String theUsername) {
 		super(theUsername, SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL);
 		myJobsCreated = new ArrayList<Job>();
+		mySubmittedJobs = new ArrayList<Job>();
 		myCurrentDate = new GregorianCalendar();
-
 	}
 
 	/*
@@ -43,7 +44,7 @@ public class ParkManager extends User implements Serializable {
 	 * @return true if it end exactly or less than the maximum number of days.
 	 */
 	public boolean isTooFarFromToday(Job theCandidateJob) {
-		return getDifferenceInDays(theCandidateJob.getStartDate(), new GregorianCalendar()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB;
+		return getDifferenceInDays(theCandidateJob.getStartDate(), myCurrentDate) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB;
 	}
 
 	public boolean isLessJobsThanMaxInSystem(ArrayList<Job> theMasterList) {
@@ -52,7 +53,7 @@ public class ParkManager extends User implements Serializable {
 
 	//Determines if today is too close to the 
 	public boolean isMaxDistanceAwayToAddOrRemove(Job theJob) {
-		return getDifferenceInDays(theJob.getStartDate(), new GregorianCalendar()) >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
+		return getDifferenceInDays(theJob.getStartDate(), myCurrentDate) >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
 	}
 
 	public boolean doesJobAlreadyExist(Job candidateJob, ArrayList<Job> theMasterList) {
@@ -131,10 +132,11 @@ public class ParkManager extends User implements Serializable {
 	}
 
 	public boolean isJobInPast(GregorianCalendar theJobDate) {
-		return (TimeUnit.DAYS.convert(new GregorianCalendar().getTimeInMillis(),
+	    return theJobDate.before(myCurrentDate);
+		/* return (TimeUnit.DAYS.convert(new GregorianCalendar().getTimeInMillis(),
 				TimeUnit.MILLISECONDS)
 				- TimeUnit.DAYS.convert(theJobDate.getTimeInMillis(),
-						TimeUnit.MILLISECONDS)) < 0;
+						TimeUnit.MILLISECONDS)) < 0; */
 	}
 
 	public boolean isFutureJob(Job theJob) {
