@@ -21,6 +21,9 @@ public final class Job implements Serializable, Cloneable {
 
 	/** Calendar for start date. */
 	private GregorianCalendar myStartDate;
+	
+	/** boolean for unsubmitting job*/
+	private boolean isUnsubmit;
 
 	/** Calendar for end date. */
 	private GregorianCalendar myEndDate;
@@ -250,6 +253,14 @@ public final class Job implements Serializable, Cloneable {
 
 	public void setMyJobRoleDescription(String myJobRoleDescription) {
 		this.myJobRoleDescription = myJobRoleDescription;
+	}
+	
+	public boolean getUnSubmitJob() {
+		return isUnsubmit;
+	}
+	
+	public void setUnSubmitJob(boolean isUnsubmit) {
+		this.isUnsubmit = isUnsubmit;
 	}
 	
 	/* Java object implementation methods. */
