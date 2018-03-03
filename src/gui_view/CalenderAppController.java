@@ -5,10 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -163,7 +160,13 @@ public class CalenderAppController implements Initializable {
             observable_SystemJobs.addAll(myJobCoordinator.getPendingJobs());
             observable_UserJobs.addAll(parkManagerUser.getSubmittedJobs());
         } else if (accessLevel == 0) {
-            // pass
+            try {
+//                officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()).forEach(System.out::println);
+//                observable_SystemJobs.addAll(officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         ///////// System Jobs /////////
@@ -546,9 +549,21 @@ public class CalenderAppController implements Initializable {
                 officeStaffChangeSystemConstController = fxml.getController();
                 // Add functionality
                 final int[] maxPendingJobs = new int[1];
+                final GregorianCalendar[] startDate = new GregorianCalendar[1];
+                final GregorianCalendar[] endDate = new GregorianCalendar[1];
                 officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
                     maxPendingJobs[0] = Integer.parseInt((s.get()));
+                });
+                officeStaffChangeSystemConstController.startDate.valueProperty().addListener(e ->{
+                    ObjectProperty o = (ObjectProperty) e;
+                    startDate[0] = officeStaffChangeSystemConstController
+                            .convertToGregorianCalender((o.get().toString()));
+                });
+                officeStaffChangeSystemConstController.endDate.valueProperty().addListener(e ->{
+                    ObjectProperty o = (ObjectProperty) e;
+                    endDate[0] = officeStaffChangeSystemConstController
+                            .convertToGregorianCalender((o.get().toString()));
                 });
 
                 officeStaffChangeSystemConstController.cancelButton.setOnAction(event -> {
@@ -564,6 +579,10 @@ public class CalenderAppController implements Initializable {
                         e.printStackTrace();
                     }
                     jobSubmittedAnimation("System Changes Accepted!");
+
+                    officeStaffUser.setStartDate(startDate[0]);
+                    officeStaffUser.setEndDate(endDate[0]);
+
                     updateOfficeLabel();
                     rightMenuAnimation();
                 });
@@ -885,6 +904,17 @@ public class CalenderAppController implements Initializable {
         if (accessLevel == 0) {
             officeStaffChangeSystemConstController.currentMaxPendingJobs
                     .setText(String.valueOf(officeStaffUser.getMaxPendingJobs()));
+            officeStaffChangeSystemConstController.currentStartDate
+                    .setText(printJobDate(officeStaffUser.getStartDate()));
+            officeStaffChangeSystemConstController.currentEndDate
+                    .setText(printJobDate(officeStaffUser.getEndDate()));
+            try {
+                observable_SystemJobs.clear();
+                observable_SystemJobs.addAll(officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

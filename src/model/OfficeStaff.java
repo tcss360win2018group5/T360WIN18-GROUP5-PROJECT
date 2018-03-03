@@ -3,10 +3,14 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 public final class OfficeStaff extends User implements Serializable {
 
 	private int tempMaxPendingJobs = 5;
+	private GregorianCalendar startDate;
+	private GregorianCalendar endDate;
 
 	/**
 	 * Creates a park manager with the given username.
@@ -15,8 +19,10 @@ public final class OfficeStaff extends User implements Serializable {
 	 */
 	public OfficeStaff(String theUsername) {
 		super(theUsername, SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL);
+		startDate = new GregorianCalendar(2000, 00, 01);
+		endDate = new GregorianCalendar(3000, 11, 01);
 	}
-	
+
 	public class ZeroInputException extends Exception {
 		public ZeroInputException() {}
 	    public ZeroInputException(String message) {
@@ -84,29 +90,50 @@ public final class OfficeStaff extends User implements Serializable {
 	public boolean isInputInteger(Object newMaxPendingJobs) {
 		return newMaxPendingJobs instanceof Integer;
 	}
-	
-	public ArrayList<Job> getJobsBetween2Dates(Date start, Date end) throws Exception {
+
+	// Required methods for GUI & User story
+	public void setStartDate(GregorianCalendar theStartDate) {
+		startDate = theStartDate;
+	}
+	public void setEndDate(GregorianCalendar theEendDate) {
+		endDate = theEendDate;
+	}
+	public GregorianCalendar getStartDate() {
+		return startDate;
+	}
+	public GregorianCalendar getEndDate() {
+		return endDate;
+	}
+
+	public ArrayList<Job> getJobsBetween2Dates(ArrayList<Job> listOfJobs) throws Exception {
 		
 		final ArrayList<Job> jobs = new ArrayList<Job>();
 
+		System.out.println((listOfJobs.size()));
 		
-		for (int index = 0; index < jobs.size(); index++) {
+		for (int index = 0; index < listOfJobs.size(); index++) {
 			
-			Job job = jobs.get(index);
-			
-			if (isJobBetween2Dates(job, start, end)) {
-				
+			Job job = listOfJobs.get(index);
+			System.out.println(job);
+
+			if (getDifferenceInDays(startDate, job.getStartDate()) >= 0 &&
+					getDifferenceInDays(job.getEndDate(), endDate) >= 0) {
 				jobs.add(job);
 			}
-			
 		}
 		
 		return jobs;
 	}
+	
+	// private helpers
+	private int getDifferenceInDays(GregorianCalendar theFirstDate,
+									GregorianCalendar theSecondDate) {
+		long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
+				TimeUnit.MILLISECONDS)
+				- TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
+				TimeUnit.MILLISECONDS);
 
-	private boolean isJobBetween2Dates(Job job, Date start, Date end) {
-		return job.getStartDate().getTime().compareTo(start) >= 0 && 
-				job.getEndDate().getTime().compareTo(end) <= 0;
+		return ((int) convertedTime);
 	}
 
     @Override
