@@ -13,15 +13,18 @@ import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -53,9 +56,6 @@ public class CalenderAppController implements Initializable {
     private ArrayList<Job> listOfJobs;
     private int accessLevel;
 
-    private Job selectedJobFromSystem;
-    private Job selectedJobFromUser;
-
     private Pane rightSideChild;
     private TranslateTransition rightOpen;
     private TranslateTransition rightClose;
@@ -72,8 +72,15 @@ public class CalenderAppController implements Initializable {
     private TranslateTransition leftOpen;
     private TranslateTransition leftClose;
 
-    ObservableList<Job> observable_SystemJobs;
-    ObservableList<Job> observable_UserJobs;
+    private ObservableList<Job> observable_SystemJobs;
+    private ObservableList<Job> observable_UserJobs;
+
+    private Job selectedJobFromSystem;
+    private Job selectedJobFromUser;
+
+    private VolunteerController volunteerJobSystemController;
+    private VolunteerController volunteerUserJobController;
+
 
 
     @FXML
@@ -153,41 +160,7 @@ public class CalenderAppController implements Initializable {
             // pass
         }
 
-        // User Jobs
-        listviewListOfJobs.setItems(observable_UserJobs);
-        listviewListOfJobs.setCellFactory(cell -> new ListCell<Job>() {
-            @Override
-            public void updateItem(Job item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item.getJobTitle());
-                }
-            }
-        });
-
-        // Adding Functionality
-        // Highlight Click
-        listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
-            if (selectedJobFromUser != null) {
-                System.out.println(selectedJobFromUser.getJobTitle());
-                System.out.println(selectedJobFromUser);
-            } else {
-                System.out.println("NULL selected job (probably unapplied all from all jobs in user?)");
-            }
-        });
-        // Double Click
-        listviewListOfJobs.setOnMousePressed(e -> {
-            if (e.getClickCount() == 2 && selectedJobFromUser != null) {
-                System.out.println("User Jobs HI");
-                rightJobUserMenuAnimation();
-            }
-        });
-
-
-        // System Jobs
+        ///////// System Jobs /////////
         tableviewListOfJobs.setItems(observable_SystemJobs);
         jobNameTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getJobTitle()));
         startDateTableColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(printJobDate(cell.getValue().getStartDate())));
@@ -208,9 +181,45 @@ public class CalenderAppController implements Initializable {
         tableviewListOfJobs.setOnMousePressed(e -> {
             if (e.getClickCount() == 2 && selectedJobFromSystem != null) {
                 System.out.println("System Jobs Hi!");
+                updateJobSystemLabels();
                 rightJobSystemMenuAnimation();
             }
         });
+
+        ///////// User Jobs /////////
+        listviewListOfJobs.setItems(observable_UserJobs);
+        listviewListOfJobs.setCellFactory(cell -> new ListCell<Job>() {
+            @Override
+            public void updateItem(Job item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item.getJobTitle());
+                }
+            }
+        });
+
+        // Adding Functionality
+        // Highlight Click
+        listviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedJobFromUser = listviewListOfJobs.getSelectionModel().getSelectedItem();
+            if (selectedJobFromUser != null) {
+                System.out.println(selectedJobFromUser.getJobTitle());
+                System.out.println(selectedJobFromUser);
+                updateJobUserLabels();
+            } else {
+                System.out.println("NULL selected job (probably unapplied all from all jobs in user?)");
+            }
+        });
+        // Double Click
+        listviewListOfJobs.setOnMousePressed(e -> {
+            if (e.getClickCount() == 2 && selectedJobFromUser != null) {
+                System.out.println("User Jobs HI");
+                rightJobUserMenuAnimation();
+            }
+        });
+
 
         // Create Right Menu
         createRightMenu();
@@ -223,62 +232,115 @@ public class CalenderAppController implements Initializable {
         updateJobLabels();
     }
 
+    private void updateJobSystemLabels() {
+        if (accessLevel == 2) {
+            volunteerJobSystemController.jobTitle.
+                    setText(selectedJobFromSystem.getJobTitle());
+            volunteerJobSystemController.startDate
+                    .setText(volunteerJobSystemController.printJobDate(selectedJobFromSystem.getStartDate()));
+            volunteerJobSystemController.endDate
+                    .setText(volunteerJobSystemController.printJobDate(selectedJobFromSystem.getEndDate()));
+            volunteerJobSystemController.location
+                    .setText(selectedJobFromSystem.getMyJobLocation());
+            volunteerJobSystemController.jobRole
+                    .setText(selectedJobFromSystem.getMyJobRole());
+            volunteerJobSystemController.maxVolunteers
+                    .setText(String.valueOf(selectedJobFromSystem.getCurrentNumberOfVolunteers()));
+            volunteerJobSystemController.jobDescription
+                    .setText(selectedJobFromSystem.getMyJobDescription());
+            volunteerJobSystemController.contactName
+                    .setText(selectedJobFromSystem.getMyContactName());
+            volunteerJobSystemController.contactEmail
+                    .setText(selectedJobFromSystem.getMyContactEmail());
+            volunteerJobSystemController.contactNumber
+                    .setText(selectedJobFromSystem.getMyContactNumber());
+        }
+
+    }
+
+    private void updateJobUserLabels() {
+        if (accessLevel == 2) {
+            volunteerUserJobController.jobTitle.
+                    setText(selectedJobFromUser.getJobTitle());
+            volunteerUserJobController.startDate
+                    .setText(volunteerUserJobController.printJobDate(selectedJobFromUser.getStartDate()));
+            volunteerUserJobController.endDate
+                    .setText(volunteerUserJobController.printJobDate(selectedJobFromUser.getEndDate()));
+            volunteerUserJobController.location
+                    .setText(selectedJobFromUser.getMyJobLocation());
+            volunteerUserJobController.jobRole
+                    .setText(selectedJobFromUser.getMyJobRole());
+            volunteerUserJobController.maxVolunteers
+                    .setText(String.valueOf(selectedJobFromUser.getCurrentNumberOfVolunteers()));
+            volunteerUserJobController.jobDescription
+                    .setText(selectedJobFromUser.getMyJobDescription());
+            volunteerUserJobController.contactName
+                    .setText(selectedJobFromUser.getMyContactName());
+            volunteerUserJobController.contactEmail
+                    .setText(selectedJobFromUser.getMyContactEmail());
+            volunteerUserJobController.contactNumber
+                    .setText(selectedJobFromUser.getMyContactNumber());
+        }
+
+    }
+
     private void createJobSystemMenu() {
         try {
-            if (accessLevel == 2) { // Volunteer
+            if (accessLevel == 2) { // Volunteer - Apply to Job
 
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer2.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowSystemJob.fxml"));
                 rightJobSystemSideChild = fxml.load();
-                VolunteerController subController = fxml.getController();
-                // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobSystemMenuAnimation();
-                });
-                subController.cancelButton.setOnAction(event -> {
+                volunteerJobSystemController = fxml.getController();
+                // Add button functionality
+                volunteerJobSystemController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobSystemMenuAnimation();
                     backgroundEnable();
+                });
+                volunteerJobSystemController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("Applied to Job!");
+                    addJobFromSystemToUser();
+                    rightJobSystemMenuAnimation();
                 });
 
             } else if (accessLevel == 1) { // PM
 
                 // CHANGE ALL
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer2.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowSystemJob.fxml"));
                 rightJobSystemSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobSystemMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobSystemMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("");
+                    rightJobSystemMenuAnimation();
                 });
 
             } else if (accessLevel == 0) { // Staff
 
                 // CHANGE ALL
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer2.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowSystemJob.fxml"));
                 rightJobSystemSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobSystemMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobSystemMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("");
+                    rightJobSystemMenuAnimation();
                 });
 
             }
@@ -290,60 +352,61 @@ public class CalenderAppController implements Initializable {
 
     private void createJobUserMenu() {
         try {
-            if (accessLevel == 2) { // Volunteer
+            if (accessLevel == 2) { // Volunteer - Unvolunteer
 
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer3.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowOwnJob.fxml"));
                 rightJobUserSideChild = fxml.load();
-                VolunteerController subController = fxml.getController();
+                volunteerUserJobController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobUserMenuAnimation();
-                });
-                subController.cancelButton.setOnAction(event -> {
+                volunteerUserJobController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobUserMenuAnimation();
                     backgroundEnable();
+                });
+                volunteerUserJobController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("Removed Job!");
+                    unvolunteerFromJob();
+                    rightJobUserMenuAnimation();
                 });
 
             } else if (accessLevel == 1) { // PM
 
                 // CHANGE ALL
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer3.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowOwnJob.fxml"));
                 rightJobUserSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobUserMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobUserMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("");
+                    rightJobUserMenuAnimation();
                 });
 
             } else if (accessLevel == 0) { // Office
 
                 // CHANGE ALL
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer3.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowOwnJob.fxml"));
                 rightJobUserSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightJobUserMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobUserMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("");
+                    rightJobUserMenuAnimation();
                 });
 
             }
@@ -355,22 +418,22 @@ public class CalenderAppController implements Initializable {
 
     private void createRightMenu() {
         try {
-            if (accessLevel == 2) { // Volunteer
+            if (accessLevel == 2) { // Volunteer - Pointless for now
 
                 // Create the side bar
                 FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
                 rightSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("Pointless!");
+                    rightMenuAnimation();
                 });
 
             } else if (accessLevel == 1) { // Park Manager
@@ -379,24 +442,19 @@ public class CalenderAppController implements Initializable {
                 ParkManagerController subController = fxml.getController();
                 // Add functionality
                 final String[] jobTitle = new String[1];
-                final String[] location = new String[1];
                 final String[] startDate = new String[1];
                 final String[] endDate = new String[1];
-                final String[] jobDescription = new String[1];
-                final String[] maxVolunteers = new String[1];
-                final String[] contactName = new String[1];
-                final String[] contactNumber = new String[1];
-                final String[] contactEmail = new String[1];
+                final String[] location = new String[1];
                 final String[] jobRole = new String[1];
-                final String[] jobRoleDescription = new String[1];
+                final String[] maxVolunteers = new String[1];
+                final String[] jobDescription = new String[1];
+                final String[] contactName = new String[1];
+                final String[] contactEmail = new String[1];
+                final String[] contactNumber = new String[1];
 
                 subController.jobTitle.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
                     jobTitle[0] = (s.get());
-                });
-                subController.location.textProperty().addListener(e ->{
-                    StringProperty s = (StringProperty) e;
-                    location[0] = (s.get());
                 });
                 subController.startDate.valueProperty().addListener(e ->{
                     ObjectProperty o = (ObjectProperty) e;
@@ -406,33 +464,38 @@ public class CalenderAppController implements Initializable {
                     ObjectProperty o = (ObjectProperty) e;
                     endDate[0] = (o.get().toString());
                 });
-                subController.jobDescription.textProperty().addListener(e ->{
+                subController.location.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    jobDescription[0] = (s.get());
-                });
-                subController.maxVolunteers.textProperty().addListener(e ->{
-                    StringProperty s = (StringProperty) e;
-                    maxVolunteers[0] = (s.get());
-                });
-                subController.contactName.textProperty().addListener(e ->{
-                    StringProperty s = (StringProperty) e;
-                    contactName[0] = (s.get());
-                });
-                subController.contactNumber.textProperty().addListener(e ->{
-                    StringProperty s = (StringProperty) e;
-                    contactNumber[0] = (s.get());
-                });
-                subController.contactEmail.textProperty().addListener(e ->{
-                    StringProperty s = (StringProperty) e;
-                    contactEmail[0] = (s.get());
+                    location[0] = (s.get());
                 });
                 subController.jobRole.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
                     jobRole[0] = (s.get());
                 });
-                subController.jobRoleDescription.textProperty().addListener(e ->{
+                subController.maxVolunteers.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    jobRoleDescription[0] = (s.get());
+                    maxVolunteers[0] = (s.get());
+                });
+                subController.jobDescription.textProperty().addListener(e ->{
+                    StringProperty s = (StringProperty) e;
+                    jobDescription[0] = (s.get());
+                });
+                subController.contactName.textProperty().addListener(e ->{
+                    StringProperty s = (StringProperty) e;
+                    contactName[0] = (s.get());
+                });
+                subController.contactEmail.textProperty().addListener(e ->{
+                    StringProperty s = (StringProperty) e;
+                    contactEmail[0] = (s.get());
+                });
+                subController.contactNumber.textProperty().addListener(e ->{
+                    StringProperty s = (StringProperty) e;
+                    contactNumber[0] = (s.get());
+                });
+
+                subController.cancelButton.setOnAction(event -> {
+                    rightMenuAnimation();
+                    backgroundEnable();
                 });
                 subController.submitButton.setOnAction(event -> {
                     System.out.println("Right");
@@ -440,16 +503,12 @@ public class CalenderAppController implements Initializable {
                             startDate[0], endDate[0], jobDescription[0],
                             maxVolunteers[0], contactName[0],
                             contactNumber[0], contactEmail[0],
-                            jobRole[0], jobRoleDescription[0]);
+                            jobRole[0]);
                     parkManagerUser.addCreatedJob(newJob);
-                    jobSubmittedAnimation();
+                    jobSubmittedAnimation("Job Submitted!");
                     observable_SystemJobs.add(newJob);
                     rightMenuAnimation();
 
-                });
-                subController.cancelButton.setOnAction(event -> {
-                    rightMenuAnimation();
-                    backgroundEnable();
                 });
 
             } else if (accessLevel == 0) {
@@ -459,15 +518,15 @@ public class CalenderAppController implements Initializable {
                 rightSideChild = fxml.load();
                 VolunteerController subController = fxml.getController();
                 // Add functionality
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation();
-                    rightMenuAnimation();
-                });
                 subController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightMenuAnimation();
                     backgroundEnable();
+                });
+                subController.submitButton.setOnAction(event -> {
+                    System.out.println("Right");
+                    jobSubmittedAnimation("");
+                    rightMenuAnimation();
                 });
             }
         } catch (IOException e) {
@@ -541,16 +600,16 @@ public class CalenderAppController implements Initializable {
         leftClose.setToX(-(rightSideChild.getWidth()));
     }
 
-    private void jobSubmittedAnimation() {
+    private void jobSubmittedAnimation(String whatLabelToShow) {
         try {
             FXMLLoader fxmlLoad = new FXMLLoader(getClass().getResource("showSuccess.fxml"));
             Pane fxml = fxmlLoad.load();
 
             ShowSuccessLabelController subController = fxmlLoad.getController();
             if (accessLevel == 2 ) { // Vol
-                subController.showLabel.setText("Applied to Job!");
+                subController.showLabel.setText(whatLabelToShow);
             } else if (accessLevel == 1 ) { // PM
-                subController.showLabel.setText("Job Submitted!");
+                subController.showLabel.setText(whatLabelToShow);
             }
             rootPane.getChildren().add(fxml);
             fxml.setLayoutX(-fxml.getPrefWidth()*2);
@@ -635,6 +694,12 @@ public class CalenderAppController implements Initializable {
             officeStaffUser = (OfficeStaff) mySystemCoordinator.getUser(userName);
 //            staffTestButton.setDisable(false);
         }
+    }
+
+    private void addJobFromSystemToUser() {
+        volunteerUser.signUpForJob(selectedJobFromSystem);
+        observable_UserJobs.add(selectedJobFromSystem);
+        updateJobLabels();
     }
 
     @FXML

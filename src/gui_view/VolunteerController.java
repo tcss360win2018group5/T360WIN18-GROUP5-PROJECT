@@ -1,6 +1,8 @@
 package gui_view;
 
 import java.net.URL;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -10,6 +12,26 @@ import javafx.scene.control.Label;
 
 public class VolunteerController implements Initializable {
 
+    @FXML
+    Label jobTitle;
+    @FXML
+    Label location;
+    @FXML
+    Label startDate;
+    @FXML
+    Label endDate;
+    @FXML
+    Label jobDescription;
+    @FXML
+    Label maxVolunteers;
+    @FXML
+    Label contactName;
+    @FXML
+    Label contactNumber;
+    @FXML
+    Label contactEmail;
+    @FXML
+    Label jobRole;
     @FXML
     Button submitButton;
 
@@ -27,5 +49,14 @@ public class VolunteerController implements Initializable {
     @FXML
     private void submitInfo() {
         System.out.println("sub");
+    }
+
+    /**
+     * Prints date of job in correct format that matches the GUI format
+     */
+    public String printJobDate(final GregorianCalendar theJob) {
+        return ((theJob.get(Calendar.MONTH) + 1) + "-" +
+                theJob.get(Calendar.DAY_OF_MONTH) + "-" +
+                theJob.get(Calendar.YEAR));
     }
 }

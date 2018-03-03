@@ -36,8 +36,6 @@ public class ParkManagerController implements Initializable {
     @FXML
     TextField jobRole;
     @FXML
-    TextArea jobRoleDescription;
-    @FXML
     Button submitButton;
     @FXML
     Button cancelButton;
@@ -56,7 +54,6 @@ public class ParkManagerController implements Initializable {
         contactNumber.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
         contactEmail.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
         jobRole.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        jobRoleDescription.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
     }
 
     @FXML
@@ -73,8 +70,7 @@ public class ParkManagerController implements Initializable {
                                     String contactName,
                                     String contactNumber,
                                     String contactEmail,
-                                    String jobRole,
-                                    String jobRoleDescription) {
+                                    String jobRole) {
         Job newJob = new Job(jobTitle);
         newJob.setMyJobLocation(location);
         // 01234567890
@@ -101,7 +97,6 @@ public class ParkManagerController implements Initializable {
         newJob.setMyContactNumber(contactNumber);
         newJob.setMyContactEmail(contactEmail);
         newJob.setMyJobRole(jobRole);
-        newJob.setMyJobRoleDescription(jobRoleDescription);
         return newJob;
     }
 }
