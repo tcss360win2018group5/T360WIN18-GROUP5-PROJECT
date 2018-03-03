@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.VolunteerController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.ParkManagerController">
    <children>
       <BorderPane layoutX="20.0" layoutY="175.0" prefHeight="800.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -260,7 +260,7 @@
                               </Label>
                            </children>
                         </GridPane>
-                        <Label alignment="BOTTOM_CENTER" prefHeight="41.0" prefWidth="399.0" text="Apply To Job" textAlignment="CENTER">
+                        <Label alignment="BOTTOM_CENTER" prefHeight="41.0" prefWidth="399.0" text="Current Submitted Job" textAlignment="CENTER">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -285,7 +285,7 @@
                      </font>
                   </Label>
                   <Button fx:id="cancelButton" mnemonicParsing="false" opacity="0.0" prefHeight="72.0" prefWidth="200.0" text="Button" />
-                  <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Apply" textAlignment="CENTER" GridPane.columnIndex="1">
+                  <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Remove" textAlignment="CENTER" GridPane.columnIndex="1">
                      <font>
                         <Font size="36.0" />
                      </font>

@@ -81,6 +81,9 @@ public class CalenderAppController implements Initializable {
     private VolunteerController volunteerJobSystemController;
     private VolunteerController volunteerUserJobController;
 
+    private ParkManagerController parkManagerUserJobController;
+
+
 
 
     @FXML
@@ -155,7 +158,7 @@ public class CalenderAppController implements Initializable {
             observable_UserJobs.addAll(volunteerUser.getCurrentJobs());
         } else if (accessLevel == 1) {
             observable_SystemJobs.addAll(myJobCoordinator.getPendingJobs());
-            observable_UserJobs.addAll(parkManagerUser.getCreatedJobs());
+            observable_UserJobs.addAll(parkManagerUser.getSubmittedJobs());
         } else if (accessLevel == 0) {
             // pass
         }
@@ -173,7 +176,7 @@ public class CalenderAppController implements Initializable {
                 System.out.println(selectedJobFromSystem.getJobTitle());
                 System.out.println(selectedJobFromSystem);
             } else {
-                System.out.println("NULL Job selected (probably all system jobs gone?).");
+                System.out.println("NULL (System) Job selected - (probably all system jobs gone?).");
             }
         });
 
@@ -209,7 +212,7 @@ public class CalenderAppController implements Initializable {
                 System.out.println(selectedJobFromUser);
                 updateJobUserLabels();
             } else {
-                System.out.println("NULL selected job (probably unapplied all from all jobs in user?)");
+                System.out.println("NULL selected (user) job - (probably unapplied all from all jobs in user?)");
             }
         });
         // Double Click
@@ -234,25 +237,25 @@ public class CalenderAppController implements Initializable {
 
     private void updateJobSystemLabels() {
         if (accessLevel == 2) {
-            volunteerJobSystemController.jobTitle.
-                    setText(selectedJobFromSystem.getJobTitle());
-            volunteerJobSystemController.startDate
+            volunteerJobSystemController.jobTitleLabel
+                    .setText(selectedJobFromSystem.getJobTitle());
+            volunteerJobSystemController.startDateLabel
                     .setText(volunteerJobSystemController.printJobDate(selectedJobFromSystem.getStartDate()));
-            volunteerJobSystemController.endDate
+            volunteerJobSystemController.endDateLabel
                     .setText(volunteerJobSystemController.printJobDate(selectedJobFromSystem.getEndDate()));
-            volunteerJobSystemController.location
+            volunteerJobSystemController.locationLabel
                     .setText(selectedJobFromSystem.getMyJobLocation());
-            volunteerJobSystemController.jobRole
+            volunteerJobSystemController.jobRoleLabel
                     .setText(selectedJobFromSystem.getMyJobRole());
-            volunteerJobSystemController.maxVolunteers
+            volunteerJobSystemController.maxVolunteersLabel
                     .setText(String.valueOf(selectedJobFromSystem.getCurrentNumberOfVolunteers()));
-            volunteerJobSystemController.jobDescription
+            volunteerJobSystemController.jobDescriptionLabel
                     .setText(selectedJobFromSystem.getMyJobDescription());
-            volunteerJobSystemController.contactName
+            volunteerJobSystemController.contactNameLabel
                     .setText(selectedJobFromSystem.getMyContactName());
-            volunteerJobSystemController.contactEmail
+            volunteerJobSystemController.contactEmailLabel
                     .setText(selectedJobFromSystem.getMyContactEmail());
-            volunteerJobSystemController.contactNumber
+            volunteerJobSystemController.contactNumberLabel
                     .setText(selectedJobFromSystem.getMyContactNumber());
         }
 
@@ -260,25 +263,46 @@ public class CalenderAppController implements Initializable {
 
     private void updateJobUserLabels() {
         if (accessLevel == 2) {
-            volunteerUserJobController.jobTitle.
-                    setText(selectedJobFromUser.getJobTitle());
-            volunteerUserJobController.startDate
+            volunteerUserJobController.jobTitleLabel
+                    .setText(selectedJobFromUser.getJobTitle());
+            volunteerUserJobController.startDateLabel
                     .setText(volunteerUserJobController.printJobDate(selectedJobFromUser.getStartDate()));
-            volunteerUserJobController.endDate
+            volunteerUserJobController.endDateLabel
                     .setText(volunteerUserJobController.printJobDate(selectedJobFromUser.getEndDate()));
-            volunteerUserJobController.location
+            volunteerUserJobController.locationLabel
                     .setText(selectedJobFromUser.getMyJobLocation());
-            volunteerUserJobController.jobRole
+            volunteerUserJobController.jobRoleLabel
                     .setText(selectedJobFromUser.getMyJobRole());
-            volunteerUserJobController.maxVolunteers
+            volunteerUserJobController.maxVolunteersLabel
                     .setText(String.valueOf(selectedJobFromUser.getCurrentNumberOfVolunteers()));
-            volunteerUserJobController.jobDescription
+            volunteerUserJobController.jobDescriptionLabel
                     .setText(selectedJobFromUser.getMyJobDescription());
-            volunteerUserJobController.contactName
+            volunteerUserJobController.contactNameLabel
                     .setText(selectedJobFromUser.getMyContactName());
-            volunteerUserJobController.contactEmail
+            volunteerUserJobController.contactEmailLabel
                     .setText(selectedJobFromUser.getMyContactEmail());
-            volunteerUserJobController.contactNumber
+            volunteerUserJobController.contactNumberLabel
+                    .setText(selectedJobFromUser.getMyContactNumber());
+        } else if (accessLevel == 1) {
+            parkManagerUserJobController.jobTitleLabel
+                    .setText(selectedJobFromUser.getJobTitle());
+            parkManagerUserJobController.startDateLabel
+                    .setText(parkManagerUserJobController.printJobDate(selectedJobFromUser.getStartDate()));
+            parkManagerUserJobController.endDateLabel
+                    .setText(parkManagerUserJobController.printJobDate(selectedJobFromUser.getEndDate()));
+            parkManagerUserJobController.locationLabel
+                    .setText(selectedJobFromUser.getMyJobLocation());
+            parkManagerUserJobController.jobRoleLabel
+                    .setText(selectedJobFromUser.getMyJobRole());
+            parkManagerUserJobController.maxVolunteersLabel
+                    .setText(String.valueOf(selectedJobFromUser.getCurrentNumberOfVolunteers()));
+            parkManagerUserJobController.jobDescriptionLabel
+                    .setText(selectedJobFromUser.getMyJobDescription());
+            parkManagerUserJobController.contactNameLabel
+                    .setText(selectedJobFromUser.getMyContactName());
+            parkManagerUserJobController.contactEmailLabel
+                    .setText(selectedJobFromUser.getMyContactEmail());
+            parkManagerUserJobController.contactNumberLabel
                     .setText(selectedJobFromUser.getMyContactNumber());
         }
 
@@ -352,7 +376,7 @@ public class CalenderAppController implements Initializable {
 
     private void createJobUserMenu() {
         try {
-            if (accessLevel == 2) { // Volunteer - Unvolunteer
+            if (accessLevel == 2) { // Volunteer - Unvolunteer Job
 
                 // Create the side bar
                 FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowOwnJob.fxml"));
@@ -371,22 +395,22 @@ public class CalenderAppController implements Initializable {
                     rightJobUserMenuAnimation();
                 });
 
-            } else if (accessLevel == 1) { // PM
+            } else if (accessLevel == 1) { // PM - Unsubmit Job
 
-                // CHANGE ALL
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteerShowOwnJob.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManagerUnsubmitJob.fxml"));
                 rightJobUserSideChild = fxml.load();
-                VolunteerController subController = fxml.getController();
+                parkManagerUserJobController = fxml.getController();
                 // Add functionality
-                subController.cancelButton.setOnAction(event -> {
+                parkManagerUserJobController.cancelButton.setOnAction(event -> {
                     System.out.println("Right");
                     rightJobUserMenuAnimation();
                     backgroundEnable();
                 });
-                subController.submitButton.setOnAction(event -> {
+                parkManagerUserJobController.submitButton.setOnAction(event -> {
                     System.out.println("Right");
-                    jobSubmittedAnimation("");
+                    jobSubmittedAnimation("Removed Job!");
+                    unsubmitJob();
                     rightJobUserMenuAnimation();
                 });
 
@@ -504,9 +528,8 @@ public class CalenderAppController implements Initializable {
                             maxVolunteers[0], contactName[0],
                             contactNumber[0], contactEmail[0],
                             jobRole[0]);
-                    parkManagerUser.addCreatedJob(newJob);
+                    addJob(newJob);
                     jobSubmittedAnimation("Job Submitted!");
-                    observable_SystemJobs.add(newJob);
                     rightMenuAnimation();
 
                 });
@@ -754,6 +777,34 @@ public class CalenderAppController implements Initializable {
             if (selectedJobFromUser != null) {
                 volunteerUser.unvolunteerJob(selectedJobFromUser);
                 observable_UserJobs.remove(selectedJobFromUser);
+            }
+        }
+        updateJobLabels();
+    }
+
+    @FXML
+    private void addJob(Job theJob) {
+        if (accessLevel == 1) {
+            parkManagerUser.addCreatedJob(theJob);
+            parkManagerUser.addSubmittedJob(theJob);
+            observable_UserJobs.add(theJob);
+            // Add to jobCoor. as well
+            observable_SystemJobs.add(theJob);
+            myJobCoordinator.submitJob(theJob);
+        }
+        updateJobLabels();
+    }
+
+    @FXML
+    private void unsubmitJob() {
+        if (accessLevel == 1) {
+            if (selectedJobFromUser != null) {
+                Job selectedJob = selectedJobFromUser;
+//                parkManagerUser.removeSubmittedJob(selectedJobFromUser);
+                observable_UserJobs.remove(selectedJob);
+                // Add to jobCoor. as well
+                observable_SystemJobs.remove(selectedJob);
+                myJobCoordinator.unsubmitJob(selectedJob, parkManagerUser);
             }
         }
         updateJobLabels();

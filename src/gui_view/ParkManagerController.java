@@ -1,6 +1,7 @@
 package gui_view;
 
 import java.net.URL;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
@@ -42,18 +43,39 @@ public class ParkManagerController implements Initializable {
     @FXML
     Label submitLabel;
 
+    @FXML
+    Label jobTitleLabel;
+    @FXML
+    Label locationLabel;
+    @FXML
+    Label startDateLabel;
+    @FXML
+    Label endDateLabel;
+    @FXML
+    Label jobDescriptionLabel;
+    @FXML
+    Label maxVolunteersLabel;
+    @FXML
+    Label contactNameLabel;
+    @FXML
+    Label contactNumberLabel;
+    @FXML
+    Label contactEmailLabel;
+    @FXML
+    Label jobRoleLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        jobTitle.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        this.location.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        startDate.setStyle("-fx-border: 0; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        endDate.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        jobDescription.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        maxVolunteers.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        contactName.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        contactNumber.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        contactEmail.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-        jobRole.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        jobTitle.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        this.location.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        startDate.setStyle("-fx-border: 0; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        endDate.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        jobDescription.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        maxVolunteers.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        contactName.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        contactNumber.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        contactEmail.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+//        jobRole.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
     }
 
     @FXML
@@ -98,5 +120,14 @@ public class ParkManagerController implements Initializable {
         newJob.setMyContactEmail(contactEmail);
         newJob.setMyJobRole(jobRole);
         return newJob;
+    }
+
+    /**
+     * Prints date of job in correct format that matches the GUI format
+     */
+    public String printJobDate(final GregorianCalendar theJob) {
+        return ((theJob.get(Calendar.MONTH) + 1) + "-" +
+                theJob.get(Calendar.DAY_OF_MONTH) + "-" +
+                theJob.get(Calendar.YEAR));
     }
 }

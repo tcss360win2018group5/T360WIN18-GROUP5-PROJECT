@@ -13,31 +13,30 @@ import javafx.scene.control.Label;
 public class VolunteerController implements Initializable {
 
     @FXML
-    Label jobTitle;
+    Label jobTitleLabel;
     @FXML
-    Label location;
+    Label locationLabel;
     @FXML
-    Label startDate;
+    Label startDateLabel;
     @FXML
-    Label endDate;
+    Label endDateLabel;
     @FXML
-    Label jobDescription;
+    Label jobDescriptionLabel;
     @FXML
-    Label maxVolunteers;
+    Label maxVolunteersLabel;
     @FXML
-    Label contactName;
+    Label contactNameLabel;
     @FXML
-    Label contactNumber;
+    Label contactNumberLabel;
     @FXML
-    Label contactEmail;
+    Label contactEmailLabel;
     @FXML
-    Label jobRole;
+    Label jobRoleLabel;
+
     @FXML
     Button submitButton;
-
     @FXML
     Button cancelButton;
-
     @FXML
     Label submitLabel;
 

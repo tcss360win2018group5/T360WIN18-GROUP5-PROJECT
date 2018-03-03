@@ -56,7 +56,7 @@
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="jobTitle" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
+                              <Label fx:id="jobTitleLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -72,7 +72,7 @@
                                     <Insets left="5.0" right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="startDate" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="startDateLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -88,7 +88,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="endDate" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <Label fx:id="endDateLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -104,7 +104,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="location" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <Label fx:id="locationLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -125,7 +125,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="contactName" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
+                              <Label fx:id="contactNameLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -157,7 +157,7 @@
                                     <Insets left="5.0" right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="contactEmail" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="contactEmailLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -165,7 +165,7 @@
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="contactNumber" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <Label fx:id="contactNumberLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -210,7 +210,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="jobDescription" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <Label fx:id="jobDescriptionLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -218,7 +218,7 @@
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="jobRole" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
+                              <Label fx:id="jobRoleLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -226,7 +226,7 @@
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="maxVolunteers" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="maxVolunteersLabel" prefHeight="76.0" prefWidth="249.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

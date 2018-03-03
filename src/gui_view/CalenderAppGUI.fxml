@@ -22,12 +22,12 @@
             <Pane fx:id="topPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="802.0" stroke="BLACK" strokeType="INSIDE" width="1282.0" x="-1.0" y="-1.0" />
-                  <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="481.0" layoutY="216.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Open Left Menu" textAlignment="CENTER" />
-                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="615.0" layoutY="214.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu" textAlignment="CENTER" />
+                  <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="388.0" layoutY="170.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Open Left Menu" textAlignment="CENTER" />
+                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="584.0" layoutY="170.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu / Submit Job for PM" textAlignment="CENTER" />
                   <Button fx:id="staffTestButton" alignment="CENTER" layoutX="496.0" layoutY="289.0" mnemonicParsing="false" onAction="#applyToJob" text="Apply To Job" />
                   <Button fx:id="testListButton" layoutX="662.0" layoutY="379.0" mnemonicParsing="false" onAction="#populateListWithJobs" text="Add Job To Test 1" />
                   <Button fx:id="testListButton1" layoutX="662.0" layoutY="425.0" mnemonicParsing="false" onAction="#populateListWithJobs2" text="Add Job To Test 2" />
-                  <Label layoutX="910.0" layoutY="450.0" text="Applied Jobs" />
+                  <Label layoutX="834.0" layoutY="450.0" text="Volunteer Applied Jobs / Park Manager Submitted Jobs" />
                   <Label layoutX="276.0" layoutY="450.0" text="All jobs" />
                   <Button fx:id="staffTestButton1" alignment="CENTER" layoutX="619.0" layoutY="289.0" mnemonicParsing="false" onAction="#unvolunteerFromJob" text="UnVol From Job" />
                   <GridPane layoutY="473.0" prefHeight="327.0" prefWidth="1281.0">
