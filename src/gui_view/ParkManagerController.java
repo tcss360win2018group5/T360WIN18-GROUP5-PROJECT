@@ -36,12 +36,6 @@ public class ParkManagerController implements Initializable {
     TextField contactEmail;
     @FXML
     TextField jobRole;
-    @FXML
-    Button submitButton;
-    @FXML
-    Button cancelButton;
-    @FXML
-    Label submitLabel;
 
     @FXML
     Label jobTitleLabel;
@@ -63,6 +57,13 @@ public class ParkManagerController implements Initializable {
     Label contactEmailLabel;
     @FXML
     Label jobRoleLabel;
+
+    @FXML
+    Button submitButton;
+    @FXML
+    Button cancelButton;
+    @FXML
+    Label submitLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

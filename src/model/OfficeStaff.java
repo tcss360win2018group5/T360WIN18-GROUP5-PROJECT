@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public final class OfficeStaff extends User implements Serializable {
+
+	private int tempMaxPendingJobs = 5;
+
 	/**
 	 * Creates a park manager with the given username.
 	 * 
@@ -35,7 +38,7 @@ public final class OfficeStaff extends User implements Serializable {
 	    }
 	}
 	
-	public void setMaxPendingJobs(Object newMaxPendingJobs) throws Exception {
+	public void setMaxPendingJobs(int newMaxPendingJobs) throws Exception {
 		
 		if (!isInputInteger(newMaxPendingJobs)) {
 			throw new NonIntegerInputException();
@@ -60,7 +63,14 @@ public final class OfficeStaff extends User implements Serializable {
 //		newValue.setInt(oldValue, oldValue.getModifiers() & ~ Modifier.FINAL);
 //
 //		oldValue.set(ProgramConstants.class, (int) newMaxPendingJobs);
-        
+
+		// TEMP var to implement the GUI <- REMOVE when implemented
+		tempMaxPendingJobs = newMaxPendingJobs;
+	}
+
+	public int getMaxPendingJobs() {
+		// Calling to display current value on GUI
+		return tempMaxPendingJobs;
 	}
 
 	public boolean isInputEqualZero(int input) {

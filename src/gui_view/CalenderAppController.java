@@ -83,6 +83,9 @@ public class CalenderAppController implements Initializable {
 
     private ParkManagerController parkManagerUserJobController;
 
+    private OfficeStaffController officeStaffChangeSystemConstController;
+
+
 
 
 
@@ -233,6 +236,7 @@ public class CalenderAppController implements Initializable {
         createJobUserMenu();
 
         updateJobLabels();
+        updateOfficeLabel();
     }
 
     private void updateJobSystemLabels() {
@@ -429,7 +433,7 @@ public class CalenderAppController implements Initializable {
                 });
                 subController.submitButton.setOnAction(event -> {
                     System.out.println("Right");
-                    jobSubmittedAnimation("");
+                    jobSubmittedAnimation("Test");
                     rightJobUserMenuAnimation();
                 });
 
@@ -460,7 +464,7 @@ public class CalenderAppController implements Initializable {
                     rightMenuAnimation();
                 });
 
-            } else if (accessLevel == 1) { // Park Manager
+            } else if (accessLevel == 1) { // Park Manager - Display Submit Job
                 FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutManager.fxml"));
                 rightSideChild = fxml.load();
                 ParkManagerController subController = fxml.getController();
@@ -522,7 +526,7 @@ public class CalenderAppController implements Initializable {
                     backgroundEnable();
                 });
                 subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
+                    System.out.println("Manager");
                     Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
                             startDate[0], endDate[0], jobDescription[0],
                             maxVolunteers[0], contactName[0],
@@ -534,21 +538,33 @@ public class CalenderAppController implements Initializable {
 
                 });
 
-            } else if (accessLevel == 0) {
+            } else if (accessLevel == 0) { // Staff - Change System Constants
                 // CHANGE ALL THIS
                 // Create the side bar
-                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutVolunteer.fxml"));
+                FXMLLoader fxml = new FXMLLoader(getClass().getResource("SlideoutStaffChangeConstants.fxml"));
                 rightSideChild = fxml.load();
-                VolunteerController subController = fxml.getController();
+                officeStaffChangeSystemConstController = fxml.getController();
                 // Add functionality
-                subController.cancelButton.setOnAction(event -> {
-                    System.out.println("Right");
+                final int[] maxPendingJobs = new int[1];
+                officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty().addListener(e ->{
+                    StringProperty s = (StringProperty) e;
+                    maxPendingJobs[0] = Integer.parseInt((s.get()));
+                });
+
+                officeStaffChangeSystemConstController.cancelButton.setOnAction(event -> {
+                    System.out.println("Staff");
                     rightMenuAnimation();
                     backgroundEnable();
                 });
-                subController.submitButton.setOnAction(event -> {
-                    System.out.println("Right");
-                    jobSubmittedAnimation("");
+                officeStaffChangeSystemConstController.submitButton.setOnAction(event -> {
+                    System.out.println("Staff");
+                    try {
+                        officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    jobSubmittedAnimation("System Changes Accepted!");
+                    updateOfficeLabel();
                     rightMenuAnimation();
                 });
             }
@@ -629,11 +645,13 @@ public class CalenderAppController implements Initializable {
             Pane fxml = fxmlLoad.load();
 
             ShowSuccessLabelController subController = fxmlLoad.getController();
-            if (accessLevel == 2 ) { // Vol
-                subController.showLabel.setText(whatLabelToShow);
-            } else if (accessLevel == 1 ) { // PM
-                subController.showLabel.setText(whatLabelToShow);
-            }
+//            if (accessLevel == 2 ) { // Vol
+//                subController.showLabel.setText(whatLabelToShow);
+//            } else if (accessLevel == 1 ) { // PM
+//                subController.showLabel.setText(whatLabelToShow);
+//            }
+            subController.showLabel.setText(whatLabelToShow);
+
             rootPane.getChildren().add(fxml);
             fxml.setLayoutX(-fxml.getPrefWidth()*2);
             fxml.setLayoutY(rootPane.getPrefHeight()/3);
@@ -860,6 +878,13 @@ public class CalenderAppController implements Initializable {
         if (accessLevel == 2) {
             int numberOfJobs = volunteerUser.getCurrentJobs().size();
             numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+        }
+    }
+
+    private void updateOfficeLabel() {
+        if (accessLevel == 0) {
+            officeStaffChangeSystemConstController.currentMaxPendingJobs
+                    .setText(String.valueOf(officeStaffUser.getMaxPendingJobs()));
         }
     }
 

@@ -23,7 +23,7 @@
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="802.0" stroke="BLACK" strokeType="INSIDE" width="1282.0" x="-1.0" y="-1.0" />
                   <Button fx:id="volunteerTestButton" alignment="CENTER" layoutX="388.0" layoutY="170.0" mnemonicParsing="false" onAction="#leftMenuAnimation" text="Open Left Menu" textAlignment="CENTER" />
-                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="584.0" layoutY="170.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu / Submit Job for PM" textAlignment="CENTER" />
+                  <Button fx:id="managerTestButton" alignment="CENTER" layoutX="569.0" layoutY="123.0" mnemonicParsing="false" onAction="#rightMenuAnimation" text="Open Right Menu / Submit Job for PM / Change Staff Constants" textAlignment="CENTER" />
                   <Button fx:id="staffTestButton" alignment="CENTER" layoutX="496.0" layoutY="289.0" mnemonicParsing="false" onAction="#applyToJob" text="Apply To Job" />
                   <Button fx:id="testListButton" layoutX="662.0" layoutY="379.0" mnemonicParsing="false" onAction="#populateListWithJobs" text="Add Job To Test 1" />
                   <Button fx:id="testListButton1" layoutX="662.0" layoutY="425.0" mnemonicParsing="false" onAction="#populateListWithJobs2" text="Add Job To Test 2" />
