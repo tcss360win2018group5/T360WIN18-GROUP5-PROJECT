@@ -160,13 +160,7 @@ public class CalenderAppController implements Initializable {
             observable_SystemJobs.addAll(myJobCoordinator.getPendingJobs());
             observable_UserJobs.addAll(parkManagerUser.getSubmittedJobs());
         } else if (accessLevel == 0) {
-            try {
-//                officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()).forEach(System.out::println);
-//                observable_SystemJobs.addAll(officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            // Pass
         }
 
         ///////// System Jobs /////////
@@ -908,13 +902,9 @@ public class CalenderAppController implements Initializable {
                     .setText(printJobDate(officeStaffUser.getStartDate()));
             officeStaffChangeSystemConstController.currentEndDate
                     .setText(printJobDate(officeStaffUser.getEndDate()));
-            try {
-                observable_SystemJobs.clear();
-                observable_SystemJobs.addAll(officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
+            observable_SystemJobs.clear();
+            observable_SystemJobs.addAll(officeStaffUser.getJobsBetween2Dates(myJobCoordinator.getPendingJobs()));
         }
     }
 

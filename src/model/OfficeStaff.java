@@ -19,6 +19,7 @@ public final class OfficeStaff extends User implements Serializable {
 	 */
 	public OfficeStaff(String theUsername) {
 		super(theUsername, SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL);
+		// Default Vals.
 		startDate = new GregorianCalendar(2000, 00, 01);
 		endDate = new GregorianCalendar(3000, 11, 01);
 	}
@@ -70,7 +71,7 @@ public final class OfficeStaff extends User implements Serializable {
 //
 //		oldValue.set(ProgramConstants.class, (int) newMaxPendingJobs);
 
-		// TEMP var to implement the GUI <- REMOVE when implemented
+		// TEMP var to implement the GUI <- REMOVE when properly implemented
 		tempMaxPendingJobs = newMaxPendingJobs;
 	}
 
@@ -91,7 +92,7 @@ public final class OfficeStaff extends User implements Serializable {
 		return newMaxPendingJobs instanceof Integer;
 	}
 
-	// Required methods for GUI & User story
+	// Required methods for GUI & User story - Allows Returning Restricted JobList
 	public void setStartDate(GregorianCalendar theStartDate) {
 		startDate = theStartDate;
 	}
@@ -105,16 +106,13 @@ public final class OfficeStaff extends User implements Serializable {
 		return endDate;
 	}
 
-	public ArrayList<Job> getJobsBetween2Dates(ArrayList<Job> listOfJobs) throws Exception {
+	public ArrayList<Job> getJobsBetween2Dates(ArrayList<Job> listOfJobs) {
 		
 		final ArrayList<Job> jobs = new ArrayList<Job>();
 
-		System.out.println((listOfJobs.size()));
-		
 		for (int index = 0; index < listOfJobs.size(); index++) {
 			
 			Job job = listOfJobs.get(index);
-			System.out.println(job);
 
 			if (getDifferenceInDays(startDate, job.getStartDate()) >= 0 &&
 					getDifferenceInDays(job.getEndDate(), endDate) >= 0) {
@@ -124,7 +122,7 @@ public final class OfficeStaff extends User implements Serializable {
 		
 		return jobs;
 	}
-	
+
 	// private helpers
 	private int getDifferenceInDays(GregorianCalendar theFirstDate,
 									GregorianCalendar theSecondDate) {
