@@ -37,15 +37,15 @@
          <center>
             <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label alignment="TOP_RIGHT" layoutY="7.0" prefHeight="79.0" prefWidth="250.0" text="...">
+                  <Label alignment="TOP_RIGHT" layoutY="2.0" prefHeight="79.0" prefWidth="250.0" text="Click to go back ...">
                      <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                      <padding>
                         <Insets right="10.0" />
                      </padding>
                   </Label>
-                  <Button fx:id="hideButton" layoutX="208.0" layoutY="14.0" mnemonicParsing="false" opacity="0.0" prefHeight="27.0" prefWidth="42.0" text="Button" />
+                  <Button fx:id="hideButton" layoutX="92.0" layoutY="1.0" mnemonicParsing="false" opacity="0.0" prefHeight="27.0" prefWidth="157.0" text="Button" />
                </children>
             </Pane>
          </center>

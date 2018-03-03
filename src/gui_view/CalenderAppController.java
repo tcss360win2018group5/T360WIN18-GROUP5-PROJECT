@@ -10,13 +10,9 @@ import java.util.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -106,13 +102,34 @@ public class CalenderAppController implements Initializable {
     @FXML
     Button volunteerTestButton;
     @FXML
-    Button managerTestButton;
+    Button openRightMenu;
     @FXML
     Button staffTestButton;
     @FXML
     Button testListButton;
+
     @FXML
-    Label numberOfJobsLabel;
+    Label topLabel_welcomeUser;
+    @FXML
+    Label topLabel_displayDate;
+
+    @FXML
+    Label rightLabel_upperTextLabel;
+    @FXML
+    Label rightLabel_numberOfJobsLabel;
+    @FXML
+    Label rightLabel_lowerTextLabel;
+    @FXML
+    Label rightLabel_bottomLabel;
+
+    @FXML
+    Label leftLabel_upperTextLabel;
+    @FXML
+    Label leftLabel_numberOfAvailableJobsLabel;
+    @FXML
+    Label leftLabel_lowerTextLabel;
+    @FXML
+    Label leftLabel_bottomLabel;
 
     // 2: // Volunteer
     // 1: // Park Manager
@@ -144,7 +161,7 @@ public class CalenderAppController implements Initializable {
     }
     public void reInitializeWithUser() {
 //        volunteerTestButton.setDisable(true);
-//        managerTestButton.setDisable(true);
+//        openRightMenu.setDisable(true);
 //        staffTestButton.setDisable(true);
 //        volunteerTestButton.setVisible(false);
         rootPane.setStyle("-fx-background-color: black;");
@@ -222,6 +239,10 @@ public class CalenderAppController implements Initializable {
                 rightJobUserMenuAnimation();
             }
         });
+
+        // Set Top User Label
+        topLabel_welcomeUser.setText("... | Welcome back to Urban Parks " + userName + "!");
+        topLabel_displayDate.setText("Today: " + printJobDate(new GregorianCalendar()));
 
 
         // Create Right Menu
@@ -412,6 +433,7 @@ public class CalenderAppController implements Initializable {
                     System.out.println("Right");
                     jobSubmittedAnimation("Removed Job!");
                     unsubmitJob();
+                    updateJobLabels();
                     rightJobUserMenuAnimation();
                 });
 
@@ -531,6 +553,7 @@ public class CalenderAppController implements Initializable {
                             jobRole[0]);
                     addJob(newJob);
                     jobSubmittedAnimation("Job Submitted!");
+                    updateJobLabels();
                     rightMenuAnimation();
 
                 });
@@ -578,6 +601,7 @@ public class CalenderAppController implements Initializable {
                     officeStaffUser.setEndDate(endDate[0]);
 
                     updateOfficeLabel();
+                    updateJobLabels();
                     rightMenuAnimation();
                 });
             }
@@ -732,14 +756,14 @@ public class CalenderAppController implements Initializable {
             volunteerUser = (Volunteer) mySystemCoordinator.getUser(userName);
 //            volunteerTestButton.setDisable(false);
 //            volunteerTestButton.setVisible(true);
-//            managerTestButton.setDisable(false);
+//            openRightMenu.setDisable(false);
         }
     }
 
     private void managerInit() {
         if (accessLevel == 1) {
             parkManagerUser = (ParkManager) mySystemCoordinator.getUser(userName);
-//            managerTestButton.setDisable(false);
+//            openRightMenu.setDisable(false);
         }
     }
 
@@ -835,7 +859,10 @@ public class CalenderAppController implements Initializable {
                 observable_UserJobs.remove(selectedJob);
                 // Add to jobCoor. as well
                 observable_SystemJobs.remove(selectedJob);
+                parkManagerUser.unSubmitJob(selectedJob);
+                parkManagerUser.removeSubmittedJob(selectedJob);
                 myJobCoordinator.unsubmitJob(selectedJob, parkManagerUser);
+
             }
         }
         updateJobLabels();
@@ -888,9 +915,66 @@ public class CalenderAppController implements Initializable {
     }
 
     private void updateJobLabels() {
-        if (accessLevel == 2) {
+        if (accessLevel == 2) { // Vol
+            leftLabel_upperTextLabel.setText("There are");
+            // Change to - change - the number of volunteer jobs that can be applied
+            int numberOfAvailableJobs = myJobCoordinator.getPendingJobs().size();
+            leftLabel_numberOfAvailableJobsLabel.setText(String.valueOf(numberOfAvailableJobs));
+            leftLabel_lowerTextLabel.setText("Jobs available");
+            leftLabel_bottomLabel.setText("Double click below to apply");
+
+            rightLabel_upperTextLabel.setText("You are applied to");
             int numberOfJobs = volunteerUser.getCurrentJobs().size();
-            numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_lowerTextLabel.setText("Jobs");
+            rightLabel_bottomLabel.setText("Double click below to view details");
+
+            openRightMenu.setDisable(true);
+
+            if (numberOfJobs == 0) {
+                listviewListOfJobs.setDisable(true);
+            } else {
+                listviewListOfJobs.setDisable(false);
+            }
+
+
+        } else if (accessLevel == 1) { // PM
+            leftLabel_upperTextLabel.setText("There are");
+            // Change to - change - the number of volunteer jobs that can be applied
+            int numberOfAvailableJobs = myJobCoordinator.getPendingJobs().size();
+            leftLabel_numberOfAvailableJobsLabel.setText(String.valueOf(numberOfAvailableJobs));
+            leftLabel_lowerTextLabel.setText("Jobs available");
+            leftLabel_bottomLabel.setText("");
+
+            rightLabel_upperTextLabel.setText("You submitted");
+            int numberOfJobs = parkManagerUser.getSubmittedJobs().size();
+            rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_lowerTextLabel.setText("Jobs");
+            rightLabel_bottomLabel.setText("Click here to add a job");
+
+            if (numberOfJobs == 0) {
+                listviewListOfJobs.setDisable(true);
+            } else {
+                listviewListOfJobs.setDisable(false);
+            }
+
+
+        } else if (accessLevel == 0) { // Office
+            leftLabel_upperTextLabel.setText("There are");
+            // Change to - change - the number of volunteer jobs that can be applied
+            int numberOfAvailableJobs = myJobCoordinator.getPendingJobs().size();
+            leftLabel_numberOfAvailableJobsLabel.setText(String.valueOf(numberOfAvailableJobs));
+            leftLabel_numberOfAvailableJobsLabel.setText(String.valueOf(numberOfAvailableJobs));
+            leftLabel_lowerTextLabel.setText("Jobs available");
+            leftLabel_bottomLabel.setText("");
+
+            rightLabel_upperTextLabel.setText("Max Pending Jobs");
+            int numberOfJobs = officeStaffUser.getMaxPendingJobs();
+            rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
+            rightLabel_lowerTextLabel.setText("");
+            rightLabel_bottomLabel.setText("Click here make system changes");
         }
     }
 
