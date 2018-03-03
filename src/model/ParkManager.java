@@ -141,6 +141,10 @@ public final class ParkManager extends User implements Serializable {
 	public boolean isFutureJob(Job theJob) {
 		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
 	}
+	
+	public void unSubmitJob(Job job) {
+		job.setUnSubmitJob(true);
+	}
 
     @SuppressWarnings("unchecked")
     @Override
