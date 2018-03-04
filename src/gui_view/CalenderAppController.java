@@ -486,12 +486,15 @@ public class CalenderAppController implements Initializable {
                 rightSideChild = fxml.load();
                 ParkManagerController subController = fxml.getController();
                 // Add functionality
+                final boolean numberErrorInput[] = new boolean[1];
+                numberErrorInput[0] = false;
+
                 final String[] jobTitle = new String[1];
                 final String[] startDate = new String[1];
                 final String[] endDate = new String[1];
                 final String[] location = new String[1];
                 final String[] jobRole = new String[1];
-                final String[] maxVolunteers = new String[1];
+                final int[] maxVolunteers = new int[1];
                 final String[] jobDescription = new String[1];
                 final String[] contactName = new String[1];
                 final String[] contactEmail = new String[1];
@@ -519,7 +522,12 @@ public class CalenderAppController implements Initializable {
                 });
                 subController.maxVolunteers.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    maxVolunteers[0] = (s.get());
+                    try {
+                        maxVolunteers[0] = Integer.parseInt((s.get()));
+                        numberErrorInput[0] = false;
+                    } catch (NumberFormatException error) {
+                        numberErrorInput[0] = true;
+                    }
                 });
                 subController.jobDescription.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
@@ -543,16 +551,29 @@ public class CalenderAppController implements Initializable {
                     backgroundEnable();
                 });
                 subController.submitButton.setOnAction(event -> {
-                    Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
-                            startDate[0], endDate[0], jobDescription[0],
-                            maxVolunteers[0], contactName[0],
-                            contactNumber[0], contactEmail[0],
-                            jobRole[0]);
-                    addJob(newJob);
-                    jobSubmittedAnimation("Job Submitted!");
-                    updateJobLabels();
-                    rightMenuAnimation();
 
+                    // Error Checking
+                    if (startDate[0] == null || endDate[0] == null ||
+                            maxVolunteers[0] < 1 || numberErrorInput[0] ||
+                            jobTitle[0] == null) {
+                        subController.playErrorMessage();
+                    } else if (jobTitle[0].length() <= 0) {
+                        subController.playErrorMessage();
+                    } else { // Submit if passes checks
+                        subController.topErrorMessage
+                                .setText("");
+                        subController.bottomErrorMessage
+                                .setText("");
+                        Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
+                                startDate[0], endDate[0], jobDescription[0],
+                                maxVolunteers[0], contactName[0],
+                                contactNumber[0], contactEmail[0],
+                                jobRole[0]);
+                        addJob(newJob);
+                        jobSubmittedAnimation("Job Submitted!");
+                        updateJobLabels();
+                        rightMenuAnimation();
+                    }
                 });
 
             } else if (accessLevel == 0) { // Staff - Change System Constants
@@ -593,9 +614,10 @@ public class CalenderAppController implements Initializable {
                 });
                 officeStaffChangeSystemConstController.submitButton.setOnAction(event -> {
                     try {
+                        // Error Checking
                         if (maxPendingJobs[0] < 1 || numberErrorInput[0]) {
                             officeStaffChangeSystemConstController.playErrorMessage();
-                        } else {
+                        } else { // Submit if passes checks
                             officeStaffChangeSystemConstController.topErrorMessage
                                     .setText("");
                             officeStaffChangeSystemConstController.bottomErrorMessage

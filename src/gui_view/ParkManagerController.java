@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import model.Job;
 
 public class ParkManagerController implements Initializable {
@@ -59,6 +62,11 @@ public class ParkManagerController implements Initializable {
     Label jobRoleLabel;
 
     @FXML
+    Label topErrorMessage;
+    @FXML
+    Label bottomErrorMessage;
+
+    @FXML
     Button submitButton;
     @FXML
     Button cancelButton;
@@ -89,7 +97,7 @@ public class ParkManagerController implements Initializable {
                                     String startDateString,
                                     String endDateString,
                                     String jobDescription,
-                                    String maxVolunteers,
+                                    int maxVolunteers,
                                     String contactName,
                                     String contactNumber,
                                     String contactEmail,
@@ -115,12 +123,39 @@ public class ParkManagerController implements Initializable {
         newJob.setStartDate(startDate);
         newJob.setEndDate(endDate);
         newJob.setMyJobDescription(jobDescription);
-        newJob.setMaxVolunteers(Integer.parseInt(maxVolunteers));
+        newJob.setMaxVolunteers(maxVolunteers);
         newJob.setMyContactName(contactName);
         newJob.setMyContactNumber(contactNumber);
         newJob.setMyContactEmail(contactEmail);
         newJob.setMyJobRole(jobRole);
         return newJob;
+    }
+
+    public void playErrorMessage() {
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.0),
+                event -> {
+                    topErrorMessage
+                            .setText("Try Again");
+                    bottomErrorMessage
+                            .setText("Please enter a valid information above");
+                }));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.2),
+                event -> {
+                    topErrorMessage
+                            .setText("");
+                    bottomErrorMessage
+                            .setText("Please enter a valid information above");
+                }));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.4),
+                event -> {
+                    topErrorMessage
+                            .setText("Try Again");
+                    bottomErrorMessage
+                            .setText("Please enter a valid information above");
+                }));
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     /**
