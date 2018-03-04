@@ -53,7 +53,7 @@ public class UserInterfaceConsole {
         }
         else {
             mySystemCoordinator = new SystemCoordinator();
-            myJobCoordinator = new JobCoordinator();
+            myJobCoordinator = new JobCoordinator(mySystemCoordinator);
         }
     }
 
@@ -238,7 +238,7 @@ public class UserInterfaceConsole {
         displaySeperator();
         displayGreeting(theUserName);
         displayDate();
-        theVolunteer.setCurrentDay(myJobCoordinator.getCurrentDate());
+        theVolunteer.setCurrentDate(myJobCoordinator.getCurrentDate());
         displayVolunteerMenu();
         boolean menuTrue = true;
         do {
@@ -564,10 +564,10 @@ public class UserInterfaceConsole {
 
             switch (userSelection) {
                 case "1":
-                    int canAddToJob = theVolunteer.canSignUpForJob(theJob);
+                    int canAddToJob = theVolunteer.canApplyToJob(theJob);
                     if (canAddToJob == 0) {
                         System.out.println("Congrats! " + theJob.getJobTitle() + " is added!");
-                        theVolunteer.signUpForJob(theJob);
+                        theVolunteer.applyToJob(theJob);
                         theJob.addVolunteer(theVolunteer);
                         successfulSignup = true;
                     }
@@ -719,8 +719,7 @@ public class UserInterfaceConsole {
 
 	private boolean tryToAddJob(Job theJob) {
 		boolean canAddJob = false;
-		int result = myJobCoordinator.checkIfLegalToAddJob(theJob, 
-				(ParkManager) mySystemCoordinator.getUser(myUserName)); // SOMETHING UP WITH THIS
+		int result = myJobCoordinator.canSubmitJob(theJob);
 		if (result == 1) {
 			System.out.println("Sorry, this job already exists!\n");
 		}
@@ -732,11 +731,15 @@ public class UserInterfaceConsole {
 			System.out.println("This job is further away than the maximum allowed "
 					+ JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB
 					+ " days from today");
-		} else if (result == 4) {
+		} 
+		else if (result == 4) {
 			System.out.println("Sorry, there is already the maximum allowed jobs in the system");
-		} else {
-			myJobCoordinator.submitJob(theJob);
-			((ParkManager) mySystemCoordinator.getUser(myUserName)).addCreatedJob(theJob); // SOMETHING UP WITH THISS
+		} 
+		else if (result == 0){
+		    ParkManager thePM = (ParkManager) mySystemCoordinator.getUser(myUserName);
+			myJobCoordinator.submitJob(thePM, theJob);
+			thePM.addCreatedJob(theJob); // SOMETHING UP WITH THISS
+			thePM.addSubmittedJob(theJob);
 			canAddJob = true;
 		}
 		return canAddJob;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public final class OfficeStaff extends User implements Serializable {
@@ -137,6 +138,32 @@ public final class OfficeStaff extends User implements Serializable {
     @Override
     public Object clone() {
         OfficeStaff cloneOfficeStaff = new OfficeStaff(this.getUsername());
+        cloneOfficeStaff.tempMaxPendingJobs = this.tempMaxPendingJobs;
+        cloneOfficeStaff.startDate = (GregorianCalendar) this.startDate.clone();
+        cloneOfficeStaff.endDate = (GregorianCalendar) this.endDate.clone();
+        
         return cloneOfficeStaff;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), startDate, endDate);
+    }
+    
+    @Override
+    public boolean equals(Object theObject) {
+        boolean result = false;
+        if (this == theObject) {
+            result = true;
+        } else if (theObject == null) {
+            result = false;
+        } else if (this.getClass() == theObject.getClass()) {
+            OfficeStaff theOtherOS = (OfficeStaff) theObject;
+            result = super.equals(theObject) &&
+                            Objects.equals(this.startDate, theOtherOS.startDate) &&
+                            Objects.equals(this.endDate, theOtherOS.endDate);
+        }
+        
+        return result;
     }
 }

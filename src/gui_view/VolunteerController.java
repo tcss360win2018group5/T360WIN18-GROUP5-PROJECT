@@ -47,7 +47,7 @@ public class VolunteerController implements Initializable {
 
     @FXML
     private void submitInfo() {
-        System.out.println("sub");
+        //System.out.println("sub");
     }
 
     /**

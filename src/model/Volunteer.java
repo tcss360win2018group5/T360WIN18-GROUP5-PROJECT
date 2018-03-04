@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public final class Volunteer extends User implements Serializable {
@@ -13,7 +14,7 @@ public final class Volunteer extends User implements Serializable {
     /** The current jobs this Volunteer is signed up for. */
     private ArrayList<Job> myCurrentJobs;
 
-    private GregorianCalendar myCurrentDay;
+    private GregorianCalendar myCurrentDate;
 
     /**
      * Constructs a volunteer based on the specified name
@@ -23,12 +24,12 @@ public final class Volunteer extends User implements Serializable {
     public Volunteer(String theName) {
         super(theName, SystemCoordinator.VOLUNTEER_ACCESS_LEVEL);
         this.myCurrentJobs = new ArrayList<Job>();
-        this.myCurrentDay = new GregorianCalendar();
+        this.myCurrentDate = new GregorianCalendar();
     }
 
     // mutator's
-    public void setCurrentDay(GregorianCalendar theCurrentDay) {
-        myCurrentDay = theCurrentDay;
+    public void setCurrentDate(GregorianCalendar theCurrentDay) {
+        myCurrentDate = theCurrentDay;
     }
 
     /**
@@ -39,66 +40,37 @@ public final class Volunteer extends User implements Serializable {
      *
      * @return True if job was successfully added, false otherwise.
      */
-    public void signUpForJob(final Job theJob) {
+    public void applyToJob(final Job theJob) {
         myCurrentJobs.add(theJob);
     }
 
-
-    /*
-        Move the 3 job tests: To Job.java -NOT JOB COORDINATOR
-
+    /**
+     * Allows the volunteer to unapply for a job.
+     * 
+     * PRECONDITION: canUnapplyFromJob(theJob) == 0
      */
-
-
-    public boolean doesJobStartOnCurrentDay(final Job theJob) {
-        int is_difference_of_day_zero = getDifferenceInDaysAgainstToday(theJob.getStartDate());
-        return is_difference_of_day_zero == 0;
-    }
-
-    public boolean doesMultiJobStartPriorToCurrentDay(final Job theJob) {
-        int is_difference_of_day_one = getDifferenceInDaysAgainstToday(theJob.getStartDate());
-        return is_difference_of_day_one == -1;
-    }
-
-    public boolean doesJobStartMoreThanMinDay(final Job theJob) {
-        int is_difference_greater_than_min = getDifferenceInDaysAgainstToday(theJob.getStartDate());
-        return is_difference_greater_than_min >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
-    }
-
-    /*
-    000 - No Error
-    001 - Job Starts @ Current Day
-    010 - Job Starts Prior to current day
-    100 - Job is less than Min days
-    ??? - Any Combination of the error codes above
-     */
-    public int unvolunteerJob(final Job theJob) {
-        int job_starts_on_current_day = doesJobStartOnCurrentDay(theJob) ? 1 : 0;
-        int job_starts_prior_to_current_day = doesMultiJobStartPriorToCurrentDay(theJob) ? 10 : 0;
-        int job_starts_more_than_min = doesJobStartMoreThanMinDay(theJob) ? 0 : 100;
-        int total_error_code = job_starts_on_current_day + job_starts_prior_to_current_day + job_starts_more_than_min;
-        System.out.println(job_starts_on_current_day);
-        System.out.println(job_starts_prior_to_current_day);
-        System.out.println(job_starts_more_than_min);
-        if (total_error_code == 0) myCurrentJobs.remove(theJob);
-        return total_error_code;
+    public void unapplyForJob(final Job theJob) {
+        myCurrentJobs.remove(theJob);
     }
 
     // queries
     /**
      * Retrieves the current list of applied to jobs.
      */
-    @SuppressWarnings("unchecked")
     public ArrayList<Job> getCurrentJobs() {
         return (ArrayList<Job>) this.myCurrentJobs.clone();
     }
+    
+    public GregorianCalendar getCurrentDate() {
+        return this.myCurrentDate;
+    }
 
     // testers
-    public int canSignUpForJob(final Job theApplyingJob) {
+    public int canApplyToJob(final Job theApplyingJob) {
         int returnInt = 0;
         boolean is_there_conflict = myCurrentJobs.stream()
                         .anyMatch(aJobFromList -> aJobFromList.hasOverlap(theApplyingJob));
-        boolean is_outside_timeframe = (getDifferenceInDays(myCurrentDay, theApplyingJob
+        boolean is_outside_timeframe = (differenceInDays(myCurrentDate, theApplyingJob
                         .getStartDate()) < MINIMUM_DAYS_BEFORE_JOB_START);
         // System.out.println("CurrentDate " + myCurrentDay.getTime() + "
         // JobDate " + theApplyingJob.getStartDate().getTime());
@@ -115,41 +87,70 @@ public final class Volunteer extends User implements Serializable {
 
         return returnInt;
     }
+    
+    public int canUnapplyFromJob(final Job theUnapplyingJob) {
+        int returnInt = 0;
+        boolean is_not_currently_applied = !myCurrentJobs.contains(theUnapplyingJob);
+        boolean is_outside_timeframe = daysFromToday(theUnapplyingJob.getStartDate()) 
+                        < MINIMUM_DAYS_BEFORE_JOB_START;
+        
+        if (is_not_currently_applied) {
+            returnInt = 1;
+        } else if (is_outside_timeframe) {
+            returnInt = 2;
+        }
+        
+        return returnInt;
+    }
 
-    // private helpers
-    private int getDifferenceInDays(GregorianCalendar theFirstDate,
+    // helpers
+    /**
+     * @return the difference in days relative to the first date: theSecondDate - theFirstDate
+     * if the second date is chronologically before the first date, then the difference will be
+     * negative, if the second date is chronologically after the first date, then the difference
+     * will be positive. 
+     */
+    public int differenceInDays(GregorianCalendar theFirstDate,
                                     GregorianCalendar theSecondDate) {
         long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
                                                    TimeUnit.MILLISECONDS)
                              - TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
                                                      TimeUnit.MILLISECONDS);
 
-        return Math.abs((int) convertedTime);
+        return (int) convertedTime;
     }
 
-    private int getDifferenceInDaysAgainstToday(GregorianCalendar jobDate) {
-        // All jobs are init. with only year, month, day
-        // Because of that, issues with time happen when it account for seconds
-        // The (today) & (today) job can result showing a day difference
-        // if seconds are accounted for (today)
-        GregorianCalendar init_today = (GregorianCalendar) GregorianCalendar.getInstance();
-        GregorianCalendar today = new GregorianCalendar(init_today.get(Calendar.YEAR),
-                init_today.get(Calendar.MONTH),
-                init_today.get(Calendar.DAY_OF_MONTH));
-        long convertedTime = TimeUnit.DAYS.convert(jobDate.getTimeInMillis(),
-                TimeUnit.MILLISECONDS)
-                - TimeUnit.DAYS.convert(today.getTimeInMillis(),
-                TimeUnit.MILLISECONDS);
-        return (int) convertedTime;
+    public int daysFromToday(GregorianCalendar jobDate) {
+        return this.differenceInDays(myCurrentDate, jobDate);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         Volunteer cloneVolunteer = new Volunteer(this.getUsername());
-        cloneVolunteer.myCurrentDay = (GregorianCalendar) this.myCurrentDay.clone();
+        cloneVolunteer.myCurrentDate = (GregorianCalendar) this.myCurrentDate.clone();
         cloneVolunteer.myCurrentJobs = (ArrayList<Job>) this.myCurrentJobs.clone();
         return cloneVolunteer;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), myCurrentDate);
+    }
+
+    @Override
+    public boolean equals(Object theObject) {
+        boolean result = false;
+        if (this == theObject) {
+            result = true;
+        } else if (theObject == null) {
+            result = false;
+        } else if (this.getClass() == theObject.getClass()) {
+            Volunteer theOtherVol = (Volunteer) theObject;
+            result = super.equals(theObject);
+        }
+        
+        return result;
     }
 
 }

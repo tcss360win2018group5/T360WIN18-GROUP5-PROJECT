@@ -21,21 +21,23 @@ public final class Job implements Serializable, Cloneable {
 
 	/** Calendar for start date. */
 	private GregorianCalendar myStartDate;
-	
-	/** boolean for unsubmitting job*/
-	private boolean isUnsubmit;
 
 	/** Calendar for end date. */
 	private GregorianCalendar myEndDate;
+	
 	private String myJobLocation = "";
+	
 	private String myContactName = "";
 	private String myContactNumber = "";
 	private String myContactEmail = "";
+	
 	private int myJobDifficulty = 0;
+	
 	private String myJobDescription = "";
+	
 	private String myJobRole = "";
 	private String myJobRoleDescription = "";
-
+	
 	/**
 	 * Creates a job given the specified information.
 	 * 
@@ -75,15 +77,15 @@ public final class Job implements Serializable, Cloneable {
 	 * @param theVolunteer to be added to this job.
 	 */
 	public void addVolunteer(final Volunteer theVolunteer) {
-		if (myVolunteers.contains(theVolunteer)) {
-			// volunteer already applied
+		if (!myVolunteers.contains(theVolunteer)) {
+	        myVolunteers.add(theVolunteer);
 		}
-		else if (theVolunteer.canSignUpForJob(this) != 0) {
-			// if there exists conflicts with volunteer's current jobs
-			// volunteer automatically gets added to job if there doesnt exist
-			// conflicts
-		}
-		myVolunteers.add(theVolunteer);
+	}
+	
+	public void removeVolunteer(final Volunteer theVolunteer) {
+	    if (myVolunteers.contains(theVolunteer)) {
+	        myVolunteers.remove(theVolunteer);
+	    }
 	}
 
 	// **Tests for business rules**
@@ -183,9 +185,8 @@ public final class Job implements Serializable, Cloneable {
 		return myVolunteers.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	public ArrayList<Volunteer> getCurrentVolunteers() {
-		return (ArrayList<Volunteer>) this.myVolunteers.clone();
+		return this.myVolunteers;
 	}
 	
 	public void setEndDate(GregorianCalendar theDate) {
@@ -255,14 +256,18 @@ public final class Job implements Serializable, Cloneable {
 		this.myJobRoleDescription = myJobRoleDescription;
 	}
 	
-	public boolean getUnSubmitJob() {
-		return isUnsubmit;
-	}
-	
-	public void setUnSubmitJob(boolean isUnsubmit) {
-		this.isUnsubmit = isUnsubmit;
-	}
-	
+	/**
+     * Calculates the difference in days relative to the day this job STARTS.
+     */
+    public int getDifferenceInDays(GregorianCalendar theDate) {
+        long convertedTime = TimeUnit.DAYS.convert(theDate.getTimeInMillis(),
+                TimeUnit.MILLISECONDS)
+                - TimeUnit.DAYS.convert(this.myStartDate.getTimeInMillis(),
+                        TimeUnit.MILLISECONDS);
+
+        return (int) convertedTime;
+    }
+    
 	/* Java object implementation methods. */
 	
 	/** 
@@ -287,7 +292,7 @@ public final class Job implements Serializable, Cloneable {
 	    
 	    return jobClone;
 	}
-	
+	    
 	/** 
 	 * Simple implementation and override of equals method for checking pure equality between
 	 * objects.
@@ -306,7 +311,6 @@ public final class Job implements Serializable, Cloneable {
                         && Objects.equals(this.myMaxVolunteers, theOtherJob.myMaxVolunteers)
                         && Objects.equals(this.myStartDate, theOtherJob.myStartDate)
                         && Objects.equals(this.myEndDate, theOtherJob.myEndDate)
-                        && Objects.equals(this.myVolunteers, theOtherJob.myVolunteers)
                         && Objects.equals(this.myJobLocation, theOtherJob.myJobLocation)
                         && Objects.equals(this.myContactName, theOtherJob.myContactName)
                         && Objects.equals(this.myContactNumber, theOtherJob.myContactNumber)
@@ -326,10 +330,19 @@ public final class Job implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(this.myJobTitle, this.myMaxVolunteers, this.myStartDate, 
-                            this.myEndDate, this.myVolunteers, this.myJobLocation,
+                            this.myEndDate, this.myJobLocation,
                             this.myContactName, this.myContactNumber, this.myContactEmail,
                             this.myJobDifficulty, this.myJobDescription, this.myJobRole,
                             this.myJobRoleDescription);
+    }
+    
+    @Override
+    public String toString() {
+        return "" + this.myJobTitle + "," + this.myMaxVolunteers + "," + this.myStartDate.getTimeInMillis() + "," + 
+                        this.myEndDate.getTimeInMillis() + "," + this.myVolunteers + "," + this.myJobLocation + "," +
+                        this.myContactName + "," + this.myContactNumber + "," + this.myContactEmail + "," +
+                        this.myJobDifficulty + "," + this.myJobDescription + "," + this.myJobRole + "," +
+                        this.myJobRoleDescription;
     }
 	
 }

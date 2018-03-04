@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import model.Job;
 import model.JobCoordinator;
 import model.ParkManager;
+import model.SystemCoordinator;
 import model.Volunteer;
 
 /**
@@ -23,6 +25,7 @@ import model.Volunteer;
 public class ParkManagerTest {
 	
 		public JobCoordinator globalJobCoordinator;
+		public SystemCoordinator globalSystemCoordinator;
 	    public ParkManager anyParkManager;
 	    public GregorianCalendar testDateToday;
 	    public GregorianCalendar testDatePriorToCurrentDay;
@@ -39,7 +42,8 @@ public class ParkManagerTest {
 
 	    @Before
 	    public void setUp() {
-	        globalJobCoordinator = new JobCoordinator();
+	        globalSystemCoordinator = new SystemCoordinator();
+	        globalJobCoordinator = new JobCoordinator(globalSystemCoordinator);
 	        anyParkManager = new ParkManager("SomeOldParkManager");
 	        
 	        john_doe_the_park_manager = new ParkManager("John Doe");
@@ -167,22 +171,22 @@ public class ParkManagerTest {
 	     */
 	    @Test
 	    public void canUnsubmitJob_jobStartsOnCurrentDay_False() {
-	    	assertFalse(anyParkManager.isMaxDistanceAwayToAddOrRemove(jobStartsOnCurrentDay));
+	    	fail("unimplemented");
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsPriorToCurrentDay_False() {
-	    	assertTrue(anyParkManager.isJobInPast(jobStartsPriorToCurrentDay.getStartDate()));
+	        fail("unimplemented");
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsMoreThanMinDaysAway_True() {
-	    	assertFalse(anyParkManager.isTooFarFromToday(jobStartsMoreThanMinDaysAway));
+	        fail("unimplemented");
 	    }
 	    
 	    @Test
 	    public void canUnsubmitJob_jobStartsExactlyMinDaysAway_True() {
-	    	assertFalse(anyParkManager.isTooFarFromToday(jobStartsExactlyMinDaysAway));
+	        fail("unimplemented");
 	    }
 
 }

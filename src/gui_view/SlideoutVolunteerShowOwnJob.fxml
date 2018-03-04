@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.VolunteerController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.VolunteerController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="780.0" opacity="0.7" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" width="380.0" x="10.0" y="10.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="28.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" width="380.0" x="10.0" y="10.0" />
@@ -312,7 +312,7 @@
                               <Insets left="10.0" />
                            </GridPane.margin>
                         </Rectangle>
-                        <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Remove" textAlignment="CENTER" textFill="WHITE">
+                        <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Unapply" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font size="36.0" />
                            </font>

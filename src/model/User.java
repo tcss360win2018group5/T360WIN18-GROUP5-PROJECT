@@ -2,6 +2,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class User implements Serializable, Cloneable {
     /** The access level of the user. */
@@ -36,9 +37,31 @@ public abstract class User implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return myUsername;
+        return myUsername + "," + myAccessLevel + "," + this.hashCode();
     }
     
     @Override
     public abstract Object clone();
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(myAccessLevel, myUsername);
+    }
+    
+    @Override
+    public boolean equals(Object theObject) {
+        boolean result = false;
+        if (this == theObject) {
+            result = true;
+        } else if (theObject == null) {
+            result = false;
+        } else if (this.getClass() == theObject.getClass()) {
+            User theOtherUser = (User) theObject;
+            
+            result = Objects.equals(this.myAccessLevel, theOtherUser.myAccessLevel) &&
+                            Objects.equals(this.myUsername, theOtherUser.myUsername);
+        }
+        
+        return result;
+    }
 }

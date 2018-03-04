@@ -18,6 +18,8 @@ public final class JobCoordinator implements Serializable {
     
     /** The current list of pending jobs. */
     private final ArrayList<Job> myJobList;
+    
+    private final SystemCoordinator mySystem;
 
     /** The current date as a calendar. */
     private GregorianCalendar myCurrentDate;
@@ -25,10 +27,11 @@ public final class JobCoordinator implements Serializable {
     /**
      * Creates a new instance with empty job lists and the current date.
      */
-    public JobCoordinator() {
+    public JobCoordinator(SystemCoordinator theSystem) {
         myPropertyChangeHandler = new PropertyChangeSupport(this);
         myJobList = new ArrayList<Job>();
         myCurrentDate = new GregorianCalendar();
+        this.mySystem = theSystem;
     }
     
     /** Method to allow attachment of listeners to the instance of this object. */
@@ -39,14 +42,26 @@ public final class JobCoordinator implements Serializable {
     
     /* mutators */
     /**
-     * Adds a job to the pending list of jobs.
-     * Preconditions: 1) checkBusinessRules(theJob) == 0
-     * @param theJob job to be added.
+     * Submits a job to the system.
+     * 
+     * PRECONDITION: canSubmitJob(theJob) == 0
+     *               hasSpaceToAddJob() == true
      */
-    public void submitJob(final Job theJob) {
-        myJobList.add(theJob);
-        myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
-                                                   null, null);
+    public void submitJob(final User theUser, final Job theJob) {
+        if (theUser.getAccessLevel() != SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL 
+                        || !(theUser instanceof ParkManager)) {
+            throw new IllegalArgumentException();
+        }
+        
+        ParkManager theParkManager = (ParkManager) theUser;
+        System.out.println("TRY TO SUBMIT: " + theJob + "\nTHE USER JOBS: " + theParkManager.getSubmittedJobs() + "\nCAN?" + canSubmitJob(theJob));
+        if (canSubmitJob(theJob) == 0) {
+            theParkManager.addCreatedJob(theJob);
+            theParkManager.addSubmittedJob(theJob);
+            myJobList.add(theJob);
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
+                                                       null, null);
+        }
     }
     
     /**
@@ -56,21 +71,22 @@ public final class JobCoordinator implements Serializable {
      * @param theParkManager
      * @return an integer representation of -> broken business rules XOR the job can be legally removed
      */
-    public int unsubmitJob(final Job theJob, ParkManager theParkManager) {
-        int isRemoved = 0;
-        if (theParkManager.isMaxDistanceAwayToAddOrRemove(theJob)) {
-            isRemoved = 1;
-        } else if (!theParkManager.getCreatedJobs().contains(theJob)) {
-            isRemoved = 2;
-        } else {
-            theParkManager.getCreatedJobs().remove(theJob);
-            if (myJobList.contains(theJob)) {
-                myJobList.remove(theJob);
-                myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
-                                                           null, null);
-            }
+    public void unsubmitJob(final User theUser, final Job theJob) {
+        if (theUser.getAccessLevel() != SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL 
+                        || !(theUser instanceof ParkManager)) {
+            throw new IllegalArgumentException();
         }
-        return isRemoved;
+        
+        Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
+        ParkManager theParkManager = (ParkManager) theUser;
+        
+        if (canUnsubmitJob(theSystemJob) == 0) {
+            theParkManager.removeSubmittedJob(theSystemJob);
+            myJobList.remove(theSystemJob);
+            theSystemJob.getCurrentVolunteers().stream().forEach(vol -> ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob));
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
+                                                       null, null);
+        }
     }
 
     /**
@@ -78,24 +94,44 @@ public final class JobCoordinator implements Serializable {
      * @param theJob
      */
     public void applyToJob(User theUser, Job theJob) {
-        if (theUser.getAccessLevel() != 1) {
-            // warning, user applying is not a volunteer
+        if (theUser.getAccessLevel() != SystemCoordinator.VOLUNTEER_ACCESS_LEVEL 
+                        || !(theUser instanceof Volunteer)) {
+            throw new IllegalArgumentException();
         }
+        
+        Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
         Volunteer theVolunteer = (Volunteer) theUser;
 
-        if (theJob.canAcceptVolunteers() && theVolunteer.canSignUpForJob(theJob) == 0) {
-            theJob.addVolunteer(theVolunteer);
-            theVolunteer.signUpForJob(theJob);
+        if (theSystemJob.canAcceptVolunteers() && theVolunteer.canApplyToJob(theSystemJob) == 0) {
+            theSystemJob.addVolunteer(theVolunteer);
+            theVolunteer.applyToJob(theSystemJob);
             myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
+                                                       null, null);
+        }
+    }
+    
+    /**
+     *  Removes a specified user from a job.
+     */
+    public void unapplyFromJob(User theUser, Job theJob) {
+        if (theUser.getAccessLevel() != SystemCoordinator.VOLUNTEER_ACCESS_LEVEL
+                        || !(theUser instanceof Volunteer)){
+            throw new IllegalArgumentException();
+        }        
+
+        Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
+        Volunteer theVolunteer = (Volunteer) theUser;
+        if (theVolunteer.canUnapplyFromJob(theSystemJob) == 0) {
+            theSystemJob.removeVolunteer(theVolunteer);
+            theVolunteer.unapplyForJob(theSystemJob);
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.UNAPPLY_JOB.name(), 
                                                        null, null);
         }
     }
 
     // queries
-    /* DEPRECATED, PLEASE USE getJobListing(User) */
-    @SuppressWarnings("unchecked")
     public ArrayList<Job> getPendingJobs() {
-        return (ArrayList<Job>) myJobList.clone();
+        return myJobList;
     }
     
     /**
@@ -114,12 +150,12 @@ public final class JobCoordinator implements Serializable {
      *      For OfficeStaff: All jobs will be listed. 
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<Job> getJobListing(User theUser) {
+    public ArrayList<Job> getSystemJobListing(User theUser) {
         ArrayList<Job> theModifiedList = new ArrayList<Job>();
         if (theUser instanceof Volunteer) {
             Volunteer theVolunteer = (Volunteer) theUser;
             for (Job aJob : this.myJobList) {
-                if (theVolunteer.canSignUpForJob(aJob) == 0 &&
+                if (theVolunteer.canApplyToJob(aJob) == 0 &&
                                 aJob.canAcceptVolunteers()) {
                     theModifiedList.add(aJob);
                 }
@@ -132,13 +168,52 @@ public final class JobCoordinator implements Serializable {
                 }
             }
         } else if (theUser instanceof OfficeStaff) {
-            theModifiedList = (ArrayList<Job>) this.myJobList.clone();
+            theModifiedList.addAll(this.myJobList);
         }
         
-        return theModifiedList;
+        return (ArrayList<Job>) theModifiedList.clone();
     }
-   
 
+    
+    /**
+     * Job Query for determining specific jobs to make visible to the user who is requesting
+     * the job list. 
+     * 
+     * Precondition: theUser is a user of subclass Volunteer, ParkManager, or OfficeStaff
+     * 
+     * @return a job listing that shows the relevant jobs to the specific type of user 
+     * as follows:
+     *      For Volunteer: A list of jobs that they can currently sign up for which excludes
+     *                     any jobs in the past, or jobs that overlap with currently signed
+     *                     up for jobs.
+     *      For ParkManager: A list of current and upcoming jobs that could potentially
+     *                       conflict with a new job submission.
+     *      For OfficeStaff: All jobs will be listed. 
+     */
+    @SuppressWarnings("unchecked")
+    public ArrayList<Job> getUserJobListing(User theUser) {
+        ArrayList<Job> theModifiedList = new ArrayList<Job>();
+        if (theUser instanceof Volunteer) {
+            Volunteer theVolunteer = (Volunteer) theUser;
+            for (Job aJob : this.myJobList) {
+                if (aJob.getCurrentVolunteers().contains(theVolunteer)) {
+                    theModifiedList.add(aJob);
+                }
+            }
+        } else if (theUser instanceof ParkManager) {
+            ParkManager thePM = (ParkManager) theUser;
+            for (Job aJob : this.myJobList) {
+                if (thePM.getSubmittedJobs().contains(aJob)) {
+                    theModifiedList.add(aJob);
+                }
+            }
+        } else if (theUser instanceof OfficeStaff) {
+            theModifiedList.addAll(this.myJobList);
+        }
+        
+        return (ArrayList<Job>) theModifiedList.clone();
+    }
+    
     public GregorianCalendar getCurrentDate() {
         return (GregorianCalendar) this.myCurrentDate.clone();
     }
@@ -150,74 +225,54 @@ public final class JobCoordinator implements Serializable {
     }
 
     /**
-     * Job to be submitted must follow the business rules
-     * as outlined below.
-     * 
-     * PreCondition: User is logged in as Park Manager and
-     * 
      * 
      * @param theJob
-     * @return and integer representation of the 
-     *         broken business rule XOR successfully able to add.
+     * @return integer representation of the broken business rule as follows:
      */
-    public int checkIfLegalToAddJob(Job candidateJob, ParkManager theParkManager) {
-		int businessRuleCheck = 0;
-		if (theParkManager.doesJobAlreadyExist(candidateJob, myJobList)) {
-			businessRuleCheck = 1;
-		} else if (theParkManager.isJobInPast(candidateJob.getStartDate())) {
-			businessRuleCheck = 2;
-		} else if (theParkManager.isTooFarFromToday(candidateJob)) {
-			businessRuleCheck = 3;
-		} else if (theParkManager.isLessJobsThanMaxInSystem(myJobList)) {
-			businessRuleCheck = 4;
-		} else if (theParkManager.isMaximumJobDuration(candidateJob)) {
-			businessRuleCheck = 5;
-		}
-		
-		return businessRuleCheck;
-    }
-    
-    // Methods on chopping block but still in use.
-
-    /**
-     * @param theJob
-     * @return and integer representation of the 
-     *         broken business rule XOR successfully able to add.
-     */
-    public int canAddJob(Job theJob) {
+    public int canSubmitJob(Job theJob) {
         int returnInt = 0;
+        
         if (myJobList.contains(theJob)) {
             // warning, job already exists
             returnInt = 1;
-        }
-        else if (theJob.getJobLength() > JobCoordinator.MAXIMUM_JOB_LENGTH) {
+        } else if (theJob.getJobLength() > JobCoordinator.MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
             returnInt = 2;
-        }
-        else if (getDifferenceInDays(this.myCurrentDate, theJob
-                        .getEndDate()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
+        } else if (daysFromToday(theJob.getStartDate()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
             returnInt = 3;
-            // warning, job is further than 75 days away
+            // warning, job is further than max days away
+        } else if (daysFromToday(theJob.getStartDate()) < Volunteer.MINIMUM_DAYS_BEFORE_JOB_START) {
+            returnInt = 4;
+            // warning, job starts before any volunteer can sign up
         }
 
         return returnInt;
     }
+    
+    public int canUnsubmitJob(Job theJob) {
+        int returnInt = 0;
+        
+        if (!myJobList.contains(theJob)) {
+            returnInt = 1;
+            // warning job does not exist in systme to unsubmit
+        } else if (daysFromToday(theJob.getStartDate()) < Volunteer.MINIMUM_DAYS_BEFORE_JOB_START) {
+            returnInt = 2;
+            // warning job starts sooner than the allowed minimum days before starts for unsubmission
+        }
+        
+        return returnInt;
+    }
 
     /**
-     * Helper method to calculate the difference in days of two calendar dates.
-     *
-     * @param theFirstDate The first date chronologically.
-     * @param theSecondDate The second date chronologically.
-     *
-     * @return The positive difference in days.
+     * Calculates the days theDate is from myCurrentDate, so < 0 days if theDate is prior
+     * to the current date, >= 0 otherwise.
      */
-    public static int getDifferenceInDays(GregorianCalendar theFirstDate,
-                                          GregorianCalendar theSecondDate) {
-        long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
+    public int daysFromToday(GregorianCalendar theDate) {
+        long convertedTime = TimeUnit.DAYS.convert(theDate.getTimeInMillis(),
                                                    TimeUnit.MILLISECONDS)
-                             - TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
+                             - TimeUnit.DAYS.convert(this.myCurrentDate.getTimeInMillis(),
                                                      TimeUnit.MILLISECONDS);
 
-        return Math.abs((int) convertedTime);
+        return (int) convertedTime;
     }
 }

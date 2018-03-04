@@ -33,27 +33,12 @@ public final class SystemCoordinator implements Serializable {
         for (User u : this.myUsers) {
             if (u.getUsername().equals(theUsername)) {
                 isUser = 0;
-                fireSignInEvent(u);
+                myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(),
+                                                           null, u.getUsername());
             }
         }
 
         return isUser;
-    }
-    
-    public void fireSignInEvent(User u) {
-        if (u.getAccessLevel() == SystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
-            Volunteer theVolunteer = (Volunteer) u;
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
-                                                   null, theVolunteer.clone());
-        } else if (u.getAccessLevel() == SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL ) {
-            ParkManager theParkManager = (ParkManager) u;
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
-                                                       null, theParkManager.clone());
-        } else if (u.getAccessLevel() == SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL) {
-            OfficeStaff theOfficeStaff = (OfficeStaff) u;
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.SIGNIN.name(), 
-                                                       null, theOfficeStaff.clone());
-        }
     }
     
     /***
@@ -94,9 +79,8 @@ public final class SystemCoordinator implements Serializable {
                         .get();
     }
 
-    @SuppressWarnings("unchecked")
     public ArrayList<User> getUsers() {
-        return (ArrayList<User>) myUsers.clone();
+        return myUsers;
     }
     
     

@@ -20,7 +20,7 @@ public class RepopulateJobAndUser {
     private static final String SYSTEM_COORDINATOR_NAME = "data/SystemCoordinator.ser";
     private static final String JOB_COORDINATOR_NAME = "data/JobCoordinator.ser";
     private final SystemCoordinator mySystemCoordinator = new SystemCoordinator();
-    private final JobCoordinator myJobCoordinator = new JobCoordinator();
+    private final JobCoordinator myJobCoordinator = new JobCoordinator(mySystemCoordinator);
 
     public RepopulateJobAndUser() {
         if (doesFileExist(SYSTEM_COORDINATOR_NAME) && doesFileExist(JOB_COORDINATOR_NAME)) {
@@ -61,23 +61,32 @@ public class RepopulateJobAndUser {
 
 
     private void tryToAddJob(Job theJob) {
-        int result = myJobCoordinator.canAddJob(theJob);
+        int result = myJobCoordinator.canSubmitJob(theJob);        
+        if (result == 0){ 
+            ParkManager thePM = (ParkManager) mySystemCoordinator.getUser("test_pm");
+            myJobCoordinator.submitJob(thePM, theJob);
+            System.out.println("Job Submitted! " + theJob.getJobTitle());
+        }
         if (result == 1) {
-            System.out.println("This job already exists!\n");
+            System.out.println("This job already exists!" +  theJob.getJobTitle());
         }
         else if (result == 2) {
             System.out.println("This job is longer than the maximum allowed job of "
                     + JobCoordinator.MAXIMUM_JOB_LENGTH + " days");
         }
         else if (result == 3) {
+            System.out.println(theJob.getStartDate().getTime());
+            System.out.println(myJobCoordinator.getCurrentDate().getTime());
             System.out.println("This job is further away than the maximum allowed "
                     + JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB
                     + " days from today");
         }
-        else {
-            myJobCoordinator.submitJob(theJob);
-            System.out.println("Job Submitted!\n");
+        else if (result == 4) {
+            System.out.println("This job is closer than the minimum allowed " 
+                               + Volunteer.MINIMUM_DAYS_BEFORE_JOB_START
+                               + " days from today");
         }
+
     }
 
     private void createUserLogin(String userName, int accessLevel) {
@@ -86,13 +95,18 @@ public class RepopulateJobAndUser {
             System.out.println("Username " + userName + " is created!");
             switch (accessLevel) {
                 case 0:    // 0: // Urban Parks Staff Member
-                    mySystemCoordinator.addUser(new OfficeStaff(userName));
+                    OfficeStaff os = new OfficeStaff(userName);
+                    mySystemCoordinator.addUser(os);
                     break;
                 case 1:    // 1: // Park Manager
-                    mySystemCoordinator.addUser(new ParkManager(userName));
+                    ParkManager pm = new ParkManager(userName);
+                    pm.setCurrentDate(myJobCoordinator.getCurrentDate());
+                    mySystemCoordinator.addUser(pm);
                     break;
                 case 2:    // 2: // Volunteer
-                    mySystemCoordinator.addUser(new Volunteer(userName));
+                    Volunteer vol = new Volunteer(userName);
+                    vol.setCurrentDate(myJobCoordinator.getCurrentDate());
+                    mySystemCoordinator.addUser(vol);
                     break;
                 default:
                     System.out.println("Invalid system access " +
@@ -180,8 +194,8 @@ public class RepopulateJobAndUser {
     public void createJob_03022018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/02/2018",
-                "03/02/2018",
+                "03/24/2018",
+                "03/24/2018",
                 "4503 Beach Dr SW, Seattle, WA 98116",
                 "Rio Del Montana",
                 "555-555-4503",
@@ -197,8 +211,8 @@ public class RepopulateJobAndUser {
     public void createJob_03032018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/03/2018",
-                "03/03/2018",
+                "03/25/2018",
+                "03/25/2018",
                 "10505 35th Ave NE, Seattle WA 98125",
                 "Lucy Weinberg",
                 "555-555-1050",
@@ -214,8 +228,8 @@ public class RepopulateJobAndUser {
     public void createJob_03032018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/03/2018",
-                "03/03/2018",
+                "03/25/2018",
+                "03/25/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Sharon Baker",
                 "555-555-8011",

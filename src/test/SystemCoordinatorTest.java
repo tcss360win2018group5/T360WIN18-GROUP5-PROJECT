@@ -33,7 +33,7 @@ public class SystemCoordinatorTest {
     @Test
     public final void signIn_isVolunteerInSystem_ShouldBeTrue() {
         Volunteer aValidRegisterdVolunteer = new Volunteer("Jane Doe");
-        aValidRegisterdVolunteer.setCurrentDay(theCurrentDate);
+        aValidRegisterdVolunteer.setCurrentDate(theCurrentDate);
         globalSystemCoordinator.addUser(aValidRegisterdVolunteer);
         assertTrue(globalSystemCoordinator
                         .signIn(aValidRegisterdVolunteer.getUsername()) == 0);

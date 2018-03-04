@@ -14,9 +14,9 @@ import model.SystemCoordinator;
 import model.Volunteer;
 
 public final class TestingObjectsCreator {
-    private static Volunteer volunteerTest = new Volunteer("test_volunteer");
-    private static ParkManager parkManagerTest = new ParkManager("test_park_manager");
-    private static OfficeStaff officeStaffTest = new OfficeStaff("test_officeStf");
+    private static Volunteer volunteerTest = new Volunteer("test_vol");
+    private static ParkManager parkManagerTest = new ParkManager("test_pm");
+    private static OfficeStaff officeStaffTest = new OfficeStaff("test_os");
 
     public static void main(String[] args) {
         createTestUsers();
@@ -47,9 +47,11 @@ public final class TestingObjectsCreator {
         officeStaffTest = new OfficeStaff("test_officeStf");
     }
 
-    private static void createMaxJobs() {
+    private static void createMaxJobs() {        
+        String scFileName = "data/testdata/MAX_JOBS.SystemCoordinator.ser";
+        SystemCoordinator scObject = new SystemCoordinator();
         String jcFileName = "data/testdata/MAX_JOBS.JobCoordinator.ser";
-        JobCoordinator jcObject = new JobCoordinator();
+        JobCoordinator jcObject = new JobCoordinator(scObject);
         GregorianCalendar date = new GregorianCalendar();
 
         for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS; i++) {
@@ -57,13 +59,12 @@ public final class TestingObjectsCreator {
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
             genericJob.setEndDate(date);
-            jcObject.submitJob(genericJob);
+            jcObject.submitJob(parkManagerTest, genericJob);
         }
         
         writeObjectToDisk(jcFileName, jcObject);
         
-        String scFileName = "data/testdata/MAX_JOBS.SystemCoordinator.ser";
-        SystemCoordinator scObject = new SystemCoordinator();
+
         scObject.addUser(volunteerTest);
         scObject.addUser(parkManagerTest);
         scObject.addUser(officeStaffTest);
@@ -71,8 +72,10 @@ public final class TestingObjectsCreator {
     }
 
     private static void createOneLessThanMaxJobs() {
+        String scFileName = "data/testdata/ONE_LESS_THAN_MAX_JOBS.SystemCoordinator.ser";
+        SystemCoordinator scObject = new SystemCoordinator();
         String jcFileName = "data/testdata/ONE_LESS_THAN_MAX_JOBS.JobCoordinator.ser";
-        JobCoordinator jcObject = new JobCoordinator();
+        JobCoordinator jcObject = new JobCoordinator(scObject);
         GregorianCalendar date = new GregorianCalendar();
 
         for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS - 1; i++) {
@@ -80,13 +83,11 @@ public final class TestingObjectsCreator {
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
             genericJob.setEndDate(date);
-            jcObject.submitJob(genericJob);
+            jcObject.submitJob(parkManagerTest, genericJob);
         }
 
         writeObjectToDisk(jcFileName, jcObject);
         
-        String scFileName = "data/testdata/ONE_LESS_THAN_MAX_JOBS.SystemCoordinator.ser";
-        SystemCoordinator scObject = new SystemCoordinator();
         scObject.addUser(volunteerTest);
         scObject.addUser(parkManagerTest);
         scObject.addUser(officeStaffTest);
@@ -94,12 +95,12 @@ public final class TestingObjectsCreator {
     }
 
     private static void createNoJobs() {
-        String jcFileName = "data/testdata/NO_JOBS.JobCoordinator.ser";
-        JobCoordinator jcObject = new JobCoordinator();
-
-        writeObjectToDisk(jcFileName, jcObject);        
         String scFileName = "data/testdata/NO_JOBS.SystemCoordinator.ser";
         SystemCoordinator scObject = new SystemCoordinator();
+        String jcFileName = "data/testdata/NO_JOBS.JobCoordinator.ser";
+        JobCoordinator jcObject = new JobCoordinator(scObject);
+
+        writeObjectToDisk(jcFileName, jcObject);        
         scObject.addUser(volunteerTest);
         scObject.addUser(parkManagerTest);
         scObject.addUser(officeStaffTest);
@@ -110,7 +111,7 @@ public final class TestingObjectsCreator {
         String scFileName = "data/testdata/VOLUNTEER_SIGNED_UP_FOR_JOB.SystemCoordinator.ser";
         SystemCoordinator scObject = new SystemCoordinator();
         String jcFileName = "data/testdata/VOLUNTEER_SIGNED_UP_FOR_JOB.JobCoordinator.ser";
-        JobCoordinator jcObject = new JobCoordinator();
+        JobCoordinator jcObject = new JobCoordinator(scObject);
 
         scObject.addUser(volunteerTest);
         scObject.addUser(parkManagerTest);
@@ -121,12 +122,12 @@ public final class TestingObjectsCreator {
         validDate.add(GregorianCalendar.DAY_OF_YEAR, 10);
         validJob.setStartDate(validDate);
         validJob.setEndDate(validDate);
-        volunteerTest.signUpForJob(validJob);
-        jcObject.submitJob(validJob);
+        volunteerTest.applyToJob(validJob);
+        jcObject.submitJob(parkManagerTest, validJob);
         Job validJobOverlapsWithOtherJob = new Job("AnotherValidJob");
         validJobOverlapsWithOtherJob.setStartDate(validDate);
         validJobOverlapsWithOtherJob.setEndDate(validDate);
-        jcObject.submitJob(validJobOverlapsWithOtherJob);
+        jcObject.submitJob(parkManagerTest, validJobOverlapsWithOtherJob);
 
         writeObjectToDisk(scFileName, scObject);
         writeObjectToDisk(jcFileName, jcObject);

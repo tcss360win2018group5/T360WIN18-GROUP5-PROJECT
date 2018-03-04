@@ -66,7 +66,7 @@ public class LoginController implements Initializable {
         }
         else {
             mySystemCoordinator = new SystemCoordinator();
-            myJobCoordinator = new JobCoordinator();
+            myJobCoordinator = new JobCoordinator(mySystemCoordinator);
         }
     }
 
@@ -89,7 +89,7 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            mySystemCoordinator.getUsers().stream().forEach(u -> System.out.println(u.getUsername()));
+            // mySystemCoordinator.getUsers().stream().forEach(u -> System.out.println(u.getUsername()));
             Timeline timeline = new Timeline();
             timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.0),
                     event -> {
