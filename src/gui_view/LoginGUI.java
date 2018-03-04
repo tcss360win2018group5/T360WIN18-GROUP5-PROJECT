@@ -17,6 +17,7 @@ public class LoginGUI extends Application {
         Parent main = FXMLLoader.load(getClass().getResource(fxmlFile));
         Scene mainScene = new Scene(main);
         theStage.setScene(mainScene);
+        theStage.setResizable(false);
         theStage.show();
         centerTheScreen(theStage);
     }

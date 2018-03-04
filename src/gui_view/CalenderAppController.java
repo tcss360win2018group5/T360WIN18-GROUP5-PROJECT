@@ -315,6 +315,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
 
     private void updateJobUserLabels() {
         if (accessLevel == 2) {
+            // Add job to volunteer controller to check for unvolunteer error.
+            volunteerUserJobController.setSelectedJob(selectedJobFromUser);
             volunteerUserJobController.jobTitleLabel
                     .setText(selectedJobFromUser.getJobTitle());
             volunteerUserJobController.startDateLabel
@@ -335,6 +337,10 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                     .setText(selectedJobFromUser.getMyContactEmail());
             volunteerUserJobController.contactNumberLabel
                     .setText(selectedJobFromUser.getMyContactNumber());
+            volunteerUserJobController.topErrorMessage
+                    .setText("");
+            volunteerUserJobController.bottomErrorMessage
+                    .setText("");
         } else if (accessLevel == 1) {
             parkManagerUserJobController.jobTitleLabel
                     .setText(selectedJobFromUser.getJobTitle());
@@ -419,13 +425,25 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 rightJobUserSideChild = fxml.load();
                 volunteerUserJobController = fxml.getController();
                 // Add functionality
+
                 volunteerUserJobController.cancelButton.setOnAction(event -> {
                     rightJobUserMenuAnimation();
                     backgroundEnable();
                 });
                 volunteerUserJobController.submitButton.setOnAction(event -> {
-                    unapplyFromJob();
-                    rightJobUserMenuAnimation();
+//                    System.out.println(volunteerUserJobController.getSelectedJob());
+                    // Error check to unvolunteer from job.
+                    if (volunteerUser.canUnapplyFromJob(
+                            volunteerUserJobController.getSelectedJob()) != 0) {
+                        volunteerUserJobController.playErrorMessage();
+                    } else {
+                        volunteerUserJobController.topErrorMessage
+                                .setText("");
+                        volunteerUserJobController.bottomErrorMessage
+                                .setText("");
+                        unapplyFromJob();
+                        rightJobUserMenuAnimation();
+                    }
                 });
 
             } else if (accessLevel == 1) { // PM - Unsubmit Job
@@ -492,12 +510,15 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 rightSideChild = fxml.load();
                 ParkManagerController subController = fxml.getController();
                 // Add functionality
+                final boolean numberErrorInput[] = new boolean[1];
+                numberErrorInput[0] = false;
+
                 final String[] jobTitle = new String[1];
                 final String[] startDate = new String[1];
                 final String[] endDate = new String[1];
                 final String[] location = new String[1];
                 final String[] jobRole = new String[1];
-                final String[] maxVolunteers = new String[1];
+                final int[] maxVolunteers = new int[1];
                 final String[] jobDescription = new String[1];
                 final String[] contactName = new String[1];
                 final String[] contactEmail = new String[1];
@@ -525,7 +546,12 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 });
                 subController.maxVolunteers.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    maxVolunteers[0] = (s.get());
+                    try {
+                        maxVolunteers[0] = Integer.parseInt((s.get()));
+                        numberErrorInput[0] = false;
+                    } catch (NumberFormatException error) {
+                        numberErrorInput[0] = true;
+                    }
                 });
                 subController.jobDescription.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
@@ -549,16 +575,27 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                     backgroundEnable();
                 });
                 subController.submitButton.setOnAction(event -> {
-                    Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
-                            startDate[0], endDate[0], jobDescription[0],
-                            maxVolunteers[0], contactName[0],
-                            contactNumber[0], contactEmail[0],
-                            jobRole[0]);
-                    submitJob(newJob);
-                    System.out.println("HEY? SUBMITTED!");
-                    updateJobLabels();
-                    rightMenuAnimation();
-
+                    // Error Checking
+                    if (startDate[0] == null || endDate[0] == null ||
+                            maxVolunteers[0] < 1 || numberErrorInput[0] ||
+                            jobTitle[0] == null) {
+                        subController.playErrorMessage();
+                    } else if (jobTitle[0].length() <= 0) {
+                        subController.playErrorMessage();
+                    } else { // Submit if passes checks
+                        subController.topErrorMessage
+                                .setText("");
+                        subController.bottomErrorMessage
+                                .setText("");
+                        Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
+                                startDate[0], endDate[0], jobDescription[0],
+                                maxVolunteers[0], contactName[0],
+                                contactNumber[0], contactEmail[0],
+                                jobRole[0]);
+                        submitJob(newJob);
+                        updateJobLabels();
+                        rightMenuAnimation();
+                    }
                 });
 
             } else if (accessLevel == 0) { // Staff - Change System Constants
@@ -568,12 +605,19 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 rightSideChild = fxml.load();
                 officeStaffChangeSystemConstController = fxml.getController();
                 // Add functionality
+                final boolean numberErrorInput[] = new boolean[1];
+                numberErrorInput[0] = false;
                 final int[] maxPendingJobs = new int[1];
                 final GregorianCalendar[] startDate = new GregorianCalendar[1];
                 final GregorianCalendar[] endDate = new GregorianCalendar[1];
                 officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    maxPendingJobs[0] = Integer.parseInt((s.get()));
+                    try {
+                        maxPendingJobs[0] = Integer.parseInt((s.get()));
+                        numberErrorInput[0] = false;
+                    } catch (NumberFormatException error) {
+                        numberErrorInput[0] = true;
+                    }
                 });
                 officeStaffChangeSystemConstController.startDate.valueProperty().addListener(e ->{
                     ObjectProperty o = (ObjectProperty) e;
@@ -592,22 +636,31 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 });
                 officeStaffChangeSystemConstController.submitButton.setOnAction(event -> {
                     try {
-                        officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+                        // Error Checking
+                        if (maxPendingJobs[0] < 1 || numberErrorInput[0]) {
+                            officeStaffChangeSystemConstController.playErrorMessage();
+                        } else { // Submit if passes checks
+                            officeStaffChangeSystemConstController.topErrorMessage
+                                    .setText("");
+                            officeStaffChangeSystemConstController.bottomErrorMessage
+                                    .setText("");
+                            officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+
+                            if (startDate[0] != null) {
+                                officeStaffUser.setStartDate(startDate[0]);
+                            }
+                            if (endDate[0] != null) {
+                                officeStaffUser.setEndDate(endDate[0]);
+                            }
+
+                            jobConfirmationAnimation("System Changes Accepted!");
+                            updateOfficeLabel();
+                            updateJobLabels();
+                            rightMenuAnimation();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    jobConfirmationAnimation("System Changes Accepted!");
-                    
-                    if (startDate[0] != null) {
-                        officeStaffUser.setStartDate(startDate[0]);
-                    }
-                    if (endDate[0] != null) {
-                        officeStaffUser.setEndDate(endDate[0]);
-                    }
-
-                    updateOfficeLabel();
-                    updateJobLabels();
-                    rightMenuAnimation();
                 });
             }
         } catch (IOException e) {
