@@ -31,7 +31,26 @@ public class OfficeStaffController implements Initializable{
     @FXML
     DatePicker endDate;
 
-
+    @FXML
+    Label jobTitleLabel;
+    @FXML
+    Label locationLabel;
+    @FXML
+    Label startDateLabel;
+    @FXML
+    Label endDateLabel;
+    @FXML
+    Label jobDescriptionLabel;
+    @FXML
+    Label maxVolunteersLabel;
+    @FXML
+    Label contactNameLabel;
+    @FXML
+    Label contactNumberLabel;
+    @FXML
+    Label contactEmailLabel;
+    @FXML
+    Label jobRoleLabel;
 
     @FXML
     Button submitButton;
