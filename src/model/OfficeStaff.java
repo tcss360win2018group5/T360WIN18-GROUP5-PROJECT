@@ -1,16 +1,19 @@
 package model;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
+
+import java.util.Scanner;
+
 
 public final class OfficeStaff extends User implements Serializable {
+	
 
-	private int tempMaxPendingJobs = 5;
-	private GregorianCalendar startDate;
-	private GregorianCalendar endDate;
+	private static final int DEFAULT_MAX_PENDING_JOBS = 20;
+	private static int maxPendingJobs;
+	private static final String fileName = "ConstantsFile.txt";
 
 	/**
 	 * Creates a park manager with the given username.
@@ -19,124 +22,55 @@ public final class OfficeStaff extends User implements Serializable {
 	 */
 	public OfficeStaff(String theUsername) {
 		super(theUsername, SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL);
-		// Default Vals.
-		startDate = new GregorianCalendar(2000, 00, 01);
-		endDate = new GregorianCalendar(3000, 11, 01);
+
 	}
 
-	public class ZeroInputException extends Exception {
-		public ZeroInputException() {}
-	    public ZeroInputException(String message) {
-	        super(message);
-	    }
+	
+	/**
+	 * Load the data from the text file and store it into the variables.
+	 * 
+	 * @return the status of the load true if it was successful and false otherwise.
+	 */
+	public static void loadData() throws FileNotFoundException {
+		Scanner scanner = new Scanner(new File(fileName));
+		maxPendingJobs = scanner.nextInt();
+		scanner.close();
 	}
 	
-	public class NegativeInputException extends Exception {
-		public NegativeInputException() {}
-	    public NegativeInputException(String message) {
-	        super(message);
-	    }
-	}
-	
-	public class NonIntegerInputException extends Exception {
-		public NonIntegerInputException() {}
-	    public NonIntegerInputException(String message) {
-	        super(message);
-	    }
-	}
-	
-	public void setMaxPendingJobs(int newMaxPendingJobs) throws Exception {
-		
-		if (!isInputInteger(newMaxPendingJobs)) {
-			throw new NonIntegerInputException();
-		}
-
-		if (isInputEqualZero((int) newMaxPendingJobs)) {
-			throw new ZeroInputException();
-		}
-
-		if (isInputNegative((int) newMaxPendingJobs)) {
-			throw new NegativeInputException();
-		}
-		
-		// TODO: I need a way to change the maximum pending jobs.
-
-//		Field oldValue = ProgramConstants.class.getDeclaredField("MAX_PENDING_JOBS");
-//		oldValue.setAccessible(true);
-//
-//		Field newValue = Field.class.getDeclaredField("modifiers");
-//		newValue.setAccessible(true);
-//
-//		newValue.setInt(oldValue, oldValue.getModifiers() & ~ Modifier.FINAL);
-//
-//		oldValue.set(ProgramConstants.class, (int) newMaxPendingJobs);
-
-		// TEMP var to implement the GUI <- REMOVE when properly implemented
-		tempMaxPendingJobs = newMaxPendingJobs;
+	/**
+	 * Save the current date to a file.
+	 * 
+	 * @return the status of the saving true if it was successful and false otherwise.
+	 */
+	public static void saveData() throws FileNotFoundException {
+		PrintStream printStream = new PrintStream(new File(fileName));
+		printStream.print(maxPendingJobs);
+		printStream.close();
 	}
 
-	public int getMaxPendingJobs() {
-		// Calling to display current value on GUI
-		return tempMaxPendingJobs;
+	public static int getMaxPendingJobs() {
+		return maxPendingJobs;
 	}
 
-	public boolean isInputEqualZero(int input) {
-		return input == 0;
-	}
-	
-	public boolean isInputNegative(int input) {
-		return input < 0;
-	}
-	
-	public boolean isInputInteger(Object newMaxPendingJobs) {
-		return newMaxPendingJobs instanceof Integer;
+	/**
+	 * Change the maximum pending jobs value to the given one.
+	 * Precondition: the given value should be integer greater than 0.
+	 */
+	public static void setMaxPendingJobs(int theMaxPendingJobs) {
+		maxPendingJobs = theMaxPendingJobs;
 	}
 
-	// Required methods for GUI & User story - Allows Returning Restricted JobList
-	public void setStartDate(GregorianCalendar theStartDate) {
-		startDate = theStartDate;
-	}
-	public void setEndDate(GregorianCalendar theEendDate) {
-		endDate = theEendDate;
-	}
-	public GregorianCalendar getStartDate() {
-		return startDate;
-	}
-	public GregorianCalendar getEndDate() {
-		return endDate;
+	/**
+	 * Change the maximum pending jobs value to the default value.
+	 */
+	public static void setDefaultMaxPendingJobs() {
+		maxPendingJobs = DEFAULT_MAX_PENDING_JOBS;
 	}
 
-	public ArrayList<Job> getJobsBetween2Dates(ArrayList<Job> listOfJobs) {
-		
-		final ArrayList<Job> jobs = new ArrayList<Job>();
 
-		for (int index = 0; index < listOfJobs.size(); index++) {
-			
-			Job job = listOfJobs.get(index);
-
-			if (getDifferenceInDays(startDate, job.getStartDate()) >= 0 &&
-					getDifferenceInDays(job.getEndDate(), endDate) >= 0) {
-				jobs.add(job);
-			}
-		}
-		
-		return jobs;
+	@Override
+	public Object clone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-
-	// private helpers
-	private int getDifferenceInDays(GregorianCalendar theFirstDate,
-									GregorianCalendar theSecondDate) {
-		long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
-				TimeUnit.MILLISECONDS)
-				- TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
-				TimeUnit.MILLISECONDS);
-
-		return ((int) convertedTime);
-	}
-
-    @Override
-    public Object clone() {
-        OfficeStaff cloneOfficeStaff = new OfficeStaff(this.getUsername());
-        return cloneOfficeStaff;
-    }
 }
