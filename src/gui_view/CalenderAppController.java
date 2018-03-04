@@ -562,12 +562,19 @@ public class CalenderAppController implements Initializable {
                 rightSideChild = fxml.load();
                 officeStaffChangeSystemConstController = fxml.getController();
                 // Add functionality
+                final boolean numberErrorInput[] = new boolean[1];
+                numberErrorInput[0] = false;
                 final int[] maxPendingJobs = new int[1];
                 final GregorianCalendar[] startDate = new GregorianCalendar[1];
                 final GregorianCalendar[] endDate = new GregorianCalendar[1];
                 officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty().addListener(e ->{
                     StringProperty s = (StringProperty) e;
-                    maxPendingJobs[0] = Integer.parseInt((s.get()));
+                    try {
+                        maxPendingJobs[0] = Integer.parseInt((s.get()));
+                        numberErrorInput[0] = false;
+                    } catch (NumberFormatException error) {
+                        numberErrorInput[0] = true;
+                    }
                 });
                 officeStaffChangeSystemConstController.startDate.valueProperty().addListener(e ->{
                     ObjectProperty o = (ObjectProperty) e;
@@ -586,18 +593,30 @@ public class CalenderAppController implements Initializable {
                 });
                 officeStaffChangeSystemConstController.submitButton.setOnAction(event -> {
                     try {
-                        officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+                        if (maxPendingJobs[0] < 1 || numberErrorInput[0]) {
+                            officeStaffChangeSystemConstController.playErrorMessage();
+                        } else {
+                            officeStaffChangeSystemConstController.topErrorMessage
+                                    .setText("");
+                            officeStaffChangeSystemConstController.bottomErrorMessage
+                                    .setText("");
+                            officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+
+                            if (startDate[0] != null) {
+                                officeStaffUser.setStartDate(startDate[0]);
+                            }
+                            if (endDate[0] != null) {
+                                officeStaffUser.setEndDate(endDate[0]);
+                            }
+
+                            jobSubmittedAnimation("System Changes Accepted!");
+                            updateOfficeLabel();
+                            updateJobLabels();
+                            rightMenuAnimation();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    jobSubmittedAnimation("System Changes Accepted!");
-
-                    officeStaffUser.setStartDate(startDate[0]);
-                    officeStaffUser.setEndDate(endDate[0]);
-
-                    updateOfficeLabel();
-                    updateJobLabels();
-                    rightMenuAnimation();
                 });
             }
         } catch (IOException e) {

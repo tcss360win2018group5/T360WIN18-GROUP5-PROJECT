@@ -145,9 +145,9 @@
                            </children>
                         </GridPane>
                         <Label fx:id="rightLabel_bottomLabel" alignment="CENTER" prefHeight="39.0" prefWidth="237.0" text="Double click below to view details" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Button fx:id="openRightMenu" alignment="CENTER" mnemonicParsing="false" onAction="#rightMenuAnimation" opacity="0.0" prefHeight="73.0" prefWidth="237.0" text="--" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
+                  <Button fx:id="openRightMenu" alignment="CENTER" layoutX="842.0" layoutY="177.0" mnemonicParsing="false" onAction="#rightMenuAnimation" opacity="0.0" prefHeight="255.0" prefWidth="237.0" text="--" textAlignment="CENTER" />
                   <GridPane layoutX="196.0" layoutY="140.0" prefHeight="290.0" prefWidth="250.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.2996826171875" minWidth="3.048919677734375" prefWidth="17.599365234375" />

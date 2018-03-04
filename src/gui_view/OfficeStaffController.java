@@ -1,11 +1,14 @@
 package gui_view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Calendar;
@@ -53,6 +56,11 @@ public class OfficeStaffController implements Initializable{
     Label jobRoleLabel;
 
     @FXML
+    Label topErrorMessage;
+    @FXML
+    Label bottomErrorMessage;
+
+    @FXML
     Button submitButton;
     @FXML
     Button cancelButton;
@@ -71,6 +79,33 @@ public class OfficeStaffController implements Initializable{
         return ((theJob.get(Calendar.MONTH) + 1) + "-" +
                 theJob.get(Calendar.DAY_OF_MONTH) + "-" +
                 theJob.get(Calendar.YEAR));
+    }
+
+    public void playErrorMessage() {
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.0),
+                event -> {
+                    topErrorMessage
+                            .setText("Try Again");
+                    bottomErrorMessage
+                            .setText("Please enter a valid number above");
+                }));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.2),
+                event -> {
+                    topErrorMessage
+                            .setText("");
+                    bottomErrorMessage
+                            .setText("Please enter a valid number above");
+                }));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.4),
+                event -> {
+                    topErrorMessage
+                            .setText("Try Again");
+                    bottomErrorMessage
+                            .setText("Please enter a valid number above");
+                }));
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     public GregorianCalendar convertToGregorianCalender(String aDate) {

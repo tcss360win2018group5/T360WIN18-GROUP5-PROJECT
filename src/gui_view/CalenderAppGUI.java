@@ -42,6 +42,7 @@ public class CalenderAppGUI extends AnchorPane {
         // Display
         Scene mainScene = new Scene(main);
         theStage.setScene(mainScene);
+        theStage.setResizable(false);
         theStage.show();
         centerTheScreen(theStage);
     }
