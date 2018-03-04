@@ -306,6 +306,8 @@ public class CalenderAppController implements Initializable {
 
     private void updateJobUserLabels() {
         if (accessLevel == 2) {
+            // Add job to volunteer controller to check for unvolunteer error.
+            volunteerUserJobController.setSelectedJob(selectedJobFromUser);
             volunteerUserJobController.jobTitleLabel
                     .setText(selectedJobFromUser.getJobTitle());
             volunteerUserJobController.startDateLabel
@@ -326,6 +328,10 @@ public class CalenderAppController implements Initializable {
                     .setText(selectedJobFromUser.getMyContactEmail());
             volunteerUserJobController.contactNumberLabel
                     .setText(selectedJobFromUser.getMyContactNumber());
+            volunteerUserJobController.topErrorMessage
+                    .setText("");
+            volunteerUserJobController.bottomErrorMessage
+                    .setText("");
         } else if (accessLevel == 1) {
             parkManagerUserJobController.jobTitleLabel
                     .setText(selectedJobFromUser.getJobTitle());
@@ -411,14 +417,26 @@ public class CalenderAppController implements Initializable {
                 rightJobUserSideChild = fxml.load();
                 volunteerUserJobController = fxml.getController();
                 // Add functionality
+
                 volunteerUserJobController.cancelButton.setOnAction(event -> {
                     rightJobUserMenuAnimation();
                     backgroundEnable();
                 });
                 volunteerUserJobController.submitButton.setOnAction(event -> {
-                    jobSubmittedAnimation("Removed Job!");
-                    unvolunteerFromJob();
-                    rightJobUserMenuAnimation();
+//                    System.out.println(volunteerUserJobController.getSelectedJob());
+                    // Error check to unvolunteer from job.
+                    if (volunteerUser.unvolunteerJob(
+                            volunteerUserJobController.getSelectedJob()) != 0) {
+                        volunteerUserJobController.playErrorMessage();
+                    } else {
+                        volunteerUserJobController.topErrorMessage
+                                .setText("");
+                        volunteerUserJobController.bottomErrorMessage
+                                .setText("");
+                        jobSubmittedAnimation("Removed Job!");
+                        unvolunteerFromJob();
+                        rightJobUserMenuAnimation();
+                    }
                 });
 
             } else if (accessLevel == 1) { // PM - Unsubmit Job

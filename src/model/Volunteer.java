@@ -77,9 +77,9 @@ public final class Volunteer extends User implements Serializable {
         int job_starts_prior_to_current_day = doesMultiJobStartPriorToCurrentDay(theJob) ? 10 : 0;
         int job_starts_more_than_min = doesJobStartMoreThanMinDay(theJob) ? 0 : 100;
         int total_error_code = job_starts_on_current_day + job_starts_prior_to_current_day + job_starts_more_than_min;
-        System.out.println(job_starts_on_current_day);
-        System.out.println(job_starts_prior_to_current_day);
-        System.out.println(job_starts_more_than_min);
+//        System.out.println(job_starts_on_current_day);
+//        System.out.println(job_starts_prior_to_current_day);
+//        System.out.println(job_starts_more_than_min);
         if (total_error_code == 0) myCurrentJobs.remove(theJob);
         return total_error_code;
     }
