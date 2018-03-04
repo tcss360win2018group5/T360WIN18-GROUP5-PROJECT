@@ -14,7 +14,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.LogoutController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="807.0" layoutY="-7.0" opacity="0.7" stroke="BLACK" strokeType="INSIDE" width="250.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="800.0" opacity="0.7" stroke="WHITE" strokeType="OUTSIDE" width="245.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="26.0" layoutX="-1.0" layoutY="-2.0" opacity="0.7" stroke="WHITE" strokeType="OUTSIDE" width="247.0" />
       <BorderPane layoutX="20.0" layoutY="175.0" prefHeight="800.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
             <GridPane prefHeight="66.0" prefWidth="400.0" BorderPane.alignment="CENTER">
@@ -25,10 +26,18 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="252.0" text="Exit" textAlignment="CENTER">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1856a1" height="56.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="160.0">
+                     <GridPane.margin>
+                        <Insets left="40.0" />
+                     </GridPane.margin>
+                  </Rectangle>
+                  <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="252.0" text="Exit" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font size="36.0" />
                      </font>
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
                   </Label>
                   <Button fx:id="exitButton" mnemonicParsing="false" opacity="0.0" prefHeight="66.0" prefWidth="403.0" text="Button" textAlignment="CENTER" />
                </children>
@@ -45,7 +54,7 @@
                         <Insets right="10.0" />
                      </padding>
                   </Label>
-                  <Button fx:id="hideButton" layoutX="92.0" layoutY="1.0" mnemonicParsing="false" opacity="0.0" prefHeight="27.0" prefWidth="157.0" text="Button" />
+                  <Button fx:id="hideButton" layoutY="1.0" mnemonicParsing="false" opacity="0.0" prefHeight="27.0" prefWidth="249.0" text="Button" />
                </children>
             </Pane>
          </center>

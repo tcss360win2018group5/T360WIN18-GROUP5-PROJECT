@@ -197,14 +197,16 @@ public class CalenderAppController implements Initializable {
             }
         });
 
-        // Double Click
-        tableviewListOfJobs.setOnMousePressed(e -> {
-            if (e.getClickCount() == 2 && selectedJobFromSystem != null) {
-                System.out.println("System Jobs Hi!");
-                updateJobSystemLabels();
-                rightJobSystemMenuAnimation();
-            }
-        });
+        if (accessLevel == 2) {
+            // Double Click
+            tableviewListOfJobs.setOnMousePressed(e -> {
+                if (e.getClickCount() == 2 && selectedJobFromSystem != null) {
+                    System.out.println("System Jobs Hi!");
+                    updateJobSystemLabels();
+                    rightJobSystemMenuAnimation();
+                }
+            });
+        }
 
         ///////// User Jobs /////////
         listviewListOfJobs.setItems(observable_UserJobs);

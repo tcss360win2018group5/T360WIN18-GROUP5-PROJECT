@@ -76,7 +76,10 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="309.0" />
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="309.0">
+                                 <GridPane.margin>
+                                    <Insets left="-1.0" />
+                                 </GridPane.margin></Rectangle>
                            </children>
                         </GridPane>
                         <Label alignment="CENTER" prefHeight="35.0" prefWidth="323.0" text="Create Account" textFill="#1856a1" GridPane.rowIndex="3">
@@ -99,7 +102,10 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#32698b" height="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="309.0" />
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#32698b" height="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="309.0">
+                                 <GridPane.margin>
+                                    <Insets left="-1.0" />
+                                 </GridPane.margin></Rectangle>
                            </children>
                         </GridPane>
                         <Label alignment="CENTER" layoutX="10.0" layoutY="82.0" prefHeight="35.0" prefWidth="323.0" text="Go Back" textFill="WHITE" GridPane.rowIndex="5">

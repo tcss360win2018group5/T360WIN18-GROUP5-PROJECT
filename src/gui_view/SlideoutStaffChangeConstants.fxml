@@ -16,11 +16,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui_view.OfficeStaffController">
    <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="780.0" opacity="0.7" stroke="WHITE" strokeType="OUTSIDE" width="380.0" x="10.0" y="10.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="28.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" width="380.0" x="10.0" y="10.0" />
       <BorderPane layoutX="20.0" layoutY="175.0" prefHeight="800.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
             <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="807.0" layoutY="-7.0" opacity="0.7" stroke="BLACK" strokeType="INSIDE" width="400.0" />
                   <GridPane layoutX="-2.0" layoutY="-1.0" prefHeight="737.0" prefWidth="401.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -28,26 +29,27 @@
                     <rowConstraints>
                         <RowConstraints maxHeight="176.50941467285156" minHeight="10.0" prefHeight="38.117305755615234" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="176.50941467285156" minHeight="10.0" prefHeight="59.382694244384766" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="359.3304138183594" minHeight="10.0" prefHeight="190.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="353.7550354003906" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="353.7550354003906" minHeight="10.0" prefHeight="70.20614624023438" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="353.7550354003906" minHeight="10.0" prefHeight="130.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="272.6795349121094" minHeight="10.0" prefHeight="32.5" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="272.6795349121094" minHeight="10.0" prefHeight="62.4703369140625" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="369.3919677734375" minHeight="10.0" prefHeight="116.08770751953125" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="176.50941467285156" minHeight="10.0" prefHeight="59.382694244384766" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="359.3304138183594" minHeight="10.0" prefHeight="154.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="353.7550354003906" minHeight="0.0" prefHeight="49.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="353.7550354003906" minHeight="10.0" prefHeight="27.5" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="353.7550354003906" minHeight="0.0" prefHeight="48.5" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="353.7550354003906" minHeight="10.0" prefHeight="160.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="272.6795349121094" minHeight="0.0" prefHeight="1.5" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="272.6795349121094" minHeight="10.0" prefHeight="29.5" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="369.3919677734375" minHeight="10.0" prefHeight="97.5" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="272.6795349121094" minHeight="10.0" prefHeight="56.91229248046875" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <GridPane GridPane.rowIndex="2">
+                        <GridPane prefHeight="260.0" prefWidth="401.0" GridPane.rowIndex="3">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.29383850097656" minWidth="10.0" prefWidth="172.7630615234375" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="229.41346740722656" minWidth="10.0" prefWidth="228.2369384765625" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="94.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="43.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="37.0" minHeight="2.0" prefHeight="2.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="49.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Label alignment="CENTER_RIGHT" prefHeight="127.0" prefWidth="173.0" text="Current Max Pending Jobs" textAlignment="RIGHT" wrapText="true">
@@ -58,7 +60,7 @@
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label alignment="CENTER_RIGHT" prefHeight="103.0" prefWidth="173.0" text="Change Max Pending Jobs" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="2">
+                              <Label alignment="CENTER_RIGHT" prefHeight="117.0" prefWidth="173.0" text="Change Max Pending Jobs" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="1">
                                  <padding>
                                     <Insets left="5.0" right="10.0" />
                                  </padding>
@@ -68,13 +70,17 @@
                               </Label>
                               <Label fx:id="currentMaxPendingJobs" prefHeight="166.0" prefWidth="229.0" text="-" GridPane.columnIndex="1">
                                  <font>
-                                    <Font size="18.0" />
+                                    <Font size="14.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="setMaxPendingJobs" prefHeight="29.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="setMaxPendingJobs" prefHeight="29.0" prefWidth="200.0" promptText="Enter #" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets right="20.0" />
+                                 </GridPane.margin>
+                              </TextField>
                            </children>
                         </GridPane>
-                        <GridPane GridPane.rowIndex="8">
+                        <GridPane GridPane.rowIndex="10">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.29385375976562" minWidth="10.0" prefWidth="173.9396209716797" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0603790283203" minWidth="10.0" prefWidth="227.0603790283203" />
@@ -85,7 +91,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                         </GridPane>
-                        <Label alignment="BOTTOM_LEFT" prefHeight="68.0" prefWidth="412.0" text="System Constants" GridPane.rowIndex="1">
+                        <Label alignment="BOTTOM_CENTER" prefHeight="68.0" prefWidth="412.0" text="System Constants" GridPane.rowIndex="2">
                            <font>
                               <Font name="System Bold" size="36.0" />
                            </font>
@@ -93,7 +99,7 @@
                               <Insets left="10.0" right="10.0" />
                            </padding>
                         </Label>
-                        <Label alignment="BOTTOM_LEFT" prefHeight="68.0" prefWidth="412.0" text="Adjust Viewing Jobs" GridPane.rowIndex="4">
+                        <Label alignment="BOTTOM_CENTER" prefHeight="68.0" prefWidth="412.0" text="Adjust Viewing Jobs" GridPane.rowIndex="6">
                            <font>
                               <Font size="36.0" />
                            </font>
@@ -101,16 +107,16 @@
                               <Insets left="10.0" right="10.0" />
                            </padding>
                         </Label>
-                        <GridPane prefWidth="401.0" GridPane.rowIndex="5">
+                        <GridPane prefWidth="401.0" GridPane.rowIndex="7">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.1173095703125" minWidth="10.0" prefWidth="173.9396209716797" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="232.94308471679688" minWidth="10.0" prefWidth="227.0603790283203" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="53.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="68.0" minHeight="10.0" prefHeight="49.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Label alignment="CENTER_RIGHT" prefHeight="34.0" prefWidth="183.0" text="End Date" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="3">
@@ -129,32 +135,41 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER_RIGHT" prefHeight="35.0" prefWidth="184.0" text="Current Start Date" textAlignment="RIGHT" wrapText="true">
+                              <Label alignment="CENTER_RIGHT" prefHeight="85.0" prefWidth="174.0" text="Current Start Date" textAlignment="RIGHT" wrapText="true">
                                  <padding>
                                     <Insets left="5.0" right="10.0" />
                                  </padding>
                                  <font>
                                     <Font size="18.0" />
                                  </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
                               </Label>
-                              <Label alignment="CENTER_RIGHT" prefHeight="34.0" prefWidth="183.0" text="Current End Date" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="1">
+                              <Label alignment="CENTER_RIGHT" prefHeight="72.0" prefWidth="174.0" text=" Current End Date" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                                  <padding>
                                     <Insets left="5.0" right="10.0" />
                                  </padding>
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
                               </Label>
-                              <DatePicker fx:id="startDate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <DatePicker fx:id="endDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <DatePicker fx:id="startDate" promptText="Click -&gt;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <DatePicker fx:id="endDate" promptText="Click -&gt;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Label fx:id="currentStartDate" prefHeight="39.0" prefWidth="228.0" text="-" GridPane.columnIndex="1">
                                  <font>
-                                    <Font size="18.0" />
+                                    <Font size="14.0" />
                                  </font>
                               </Label>
                               <Label fx:id="currentEndDate" prefHeight="44.0" prefWidth="228.0" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
-                                    <Font size="18.0" />
+                                    <Font size="14.0" />
                                  </font>
                               </Label>
                            </children>
@@ -163,33 +178,71 @@
                            <font>
                               <Font size="18.0" />
                            </font>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
                         </Label>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="1.0" opacity="0.3" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" width="380.0" y="9.0" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </Rectangle>
                      </children>
                   </GridPane>
                </children></Pane>
          </center>
          <bottom>
-            <GridPane prefHeight="66.0" prefWidth="400.0" BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <GridPane prefHeight="76.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="56.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
+                  <GridPane GridPane.columnIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1856a1" height="56.0" stroke="#1856a1" strokeType="INSIDE" strokeWidth="0.0" width="160.0">
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </Rectangle>
+                        <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Submit" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <padding>
+                              <Insets left="-20.0" />
+                           </padding>
+                        </Label>
+                        <Button fx:id="submitButton" mnemonicParsing="false" opacity="0.0" prefHeight="77.0" prefWidth="198.0" text="Button" />
+                     </children>
+                  </GridPane>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="56.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="160.0">
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </Rectangle>
                   <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Cancel" textAlignment="CENTER">
                      <font>
                         <Font size="36.0" />
                      </font>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
                   </Label>
-                  <Button fx:id="cancelButton" mnemonicParsing="false" opacity="0.0" prefHeight="72.0" prefWidth="200.0" text="Button" />
-                  <Label fx:id="submitLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" prefHeight="74.0" prefWidth="200.0" text="Submit" textAlignment="CENTER" GridPane.columnIndex="1">
-                     <font>
-                        <Font size="36.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="submitButton" mnemonicParsing="false" opacity="0.0" prefHeight="77.0" prefWidth="198.0" text="Button" GridPane.columnIndex="1" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" opacity="0.0" prefHeight="77.0" prefWidth="198.0" text="Button" />
                </children>
             </GridPane>
          </bottom>
