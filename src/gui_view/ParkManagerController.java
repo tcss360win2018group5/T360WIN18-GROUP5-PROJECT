@@ -138,21 +138,21 @@ public class ParkManagerController implements Initializable {
                     topErrorMessage
                             .setText("Try Again");
                     bottomErrorMessage
-                            .setText("Please enter a valid information above");
+                            .setText("Please enter valid information above");
                 }));
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.2),
                 event -> {
                     topErrorMessage
                             .setText("");
                     bottomErrorMessage
-                            .setText("Please enter a valid information above");
+                            .setText("Please enter valid information above");
                 }));
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(.4),
                 event -> {
                     topErrorMessage
                             .setText("Try Again");
                     bottomErrorMessage
-                            .setText("Please enter a valid information above");
+                            .setText("Please enter valid information above");
                 }));
         timeline.setCycleCount(1);
         timeline.play();
