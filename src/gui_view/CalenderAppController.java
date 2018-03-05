@@ -1039,6 +1039,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         String eventName = theEvent.getPropertyName();
         if (eventName == SystemEvents.APPLY_JOB.name()) {
             jobConfirmationAnimation("Applied to Job!");
+            
         } else if (eventName == SystemEvents.UNAPPLY_JOB.name()) {
             jobConfirmationAnimation("Unpplied from Job!");
         } else if (eventName == SystemEvents.SUBMIT_JOB.name()) {

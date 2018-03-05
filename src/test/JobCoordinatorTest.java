@@ -62,7 +62,7 @@ public class JobCoordinatorTest {
     @Test
     public final void hasSpaceToAddJobs__OneLessThanMaximumPendingJobs__ShouldReturnTrue() {
         // add 20 - 1 = 19 jobs to pending
-        for (int i = 0; i < JobCoordinator.DEFAULT_MAXIMUM_JOBS - 1; i++) {
+        for (int i = 0; i < globalJobCoordinator.getCurrentMaximumJobs() - 1; i++) {
             Job generatedValidJob = new Job("generatedValidJob" + i);
             globalJobCoordinator.submitJob(globalParkManagerSam, generatedValidJob);
         }
