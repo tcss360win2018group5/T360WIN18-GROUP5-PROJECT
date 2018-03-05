@@ -130,6 +130,10 @@ public final class JobCoordinator implements Serializable {
     
     /**
      *  Removes a specified user from a job.
+     *  
+     *  PRECONDITION: theUser instanceof Volunteer == true
+     *                theUser.canUnapplyFromJob(theJob) == 0
+     *  
      */
     public void unapplyFromJob(User theUser, Job theJob) {
         if (theUser.getAccessLevel() != SystemCoordinator.VOLUNTEER_ACCESS_LEVEL
@@ -165,12 +169,12 @@ public final class JobCoordinator implements Serializable {
      * 
      * @return a job listing that shows the relevant jobs to the specific type of user 
      * as follows:
-     *      For Volunteer: A list of jobs that they can currently sign up for which excludes
-     *                     any jobs in the past, or jobs that overlap with currently signed
-     *                     up for jobs.
-     *      For ParkManager: A list of current and upcoming jobs that could potentially
-     *                       conflict with a new job submission.
-     *      For OfficeStaff: All jobs will be listed. 
+     *      For Volunteer: A list of upcoming jobs that they can currently sign up for which 
+     *                     excludes any jobs that overlap with currently signed up for jobs.
+     *      For ParkManager: A list of upcoming jobs that could potentially conflict with a 
+     *                       new job submission.
+     *      For OfficeStaff: A list of jobs within the start and end dates specified in the
+     *                       instance of that OfficeStaff user.
      */
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getSystemJobListing(User theUser) {
@@ -192,7 +196,13 @@ public final class JobCoordinator implements Serializable {
                 }
             }
         } else if (theUser instanceof OfficeStaff) {
-            theModifiedList.addAll(this.myJobList);
+            OfficeStaff theStaff = (OfficeStaff) theSystemUser;
+            for (Job aJob : this.myJobList) {
+                if (!theStaff.getStartDate().after(aJob.getStartDate()) &&
+                                !theStaff.getEndDate().before(aJob.getStartDate())) {
+                    theModifiedList.add(aJob);
+                }
+            }
         }
         
         return (ArrayList<Job>) theModifiedList.clone();
@@ -201,18 +211,16 @@ public final class JobCoordinator implements Serializable {
     
     /**
      * Job Query for determining specific jobs to make visible to the user who is requesting
-     * the job list. 
+     * the user job list. 
      * 
-     * Precondition: theUser is a user of subclass Volunteer, ParkManager, or OfficeStaff
+     * PRECONDITION: theUser is a user of subclass Volunteer, ParkManager, or OfficeStaff
      * 
      * @return a job listing that shows the relevant jobs to the specific type of user 
      * as follows:
-     *      For Volunteer: A list of jobs that they can currently sign up for which excludes
-     *                     any jobs in the past, or jobs that overlap with currently signed
-     *                     up for jobs.
-     *      For ParkManager: A list of current and upcoming jobs that could potentially
-     *                       conflict with a new job submission.
-     *      For OfficeStaff: All jobs will be listed. 
+     *      For Volunteer: A list of upcoming jobs which they have applied to.
+     *      For ParkManager: A list of upcoming jobs which they have submitted.
+     *      For OfficeStaff: A list of jobs within the start and end dates specified in the
+     *                       instance of that OfficeStaff user.
      */
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getUserJobListing(User theUser) {
@@ -247,24 +255,34 @@ public final class JobCoordinator implements Serializable {
         return (ArrayList<Job>) theModifiedList.clone();
     }
     
+    /** Provides the reference to the system coupled to this coordinator. */
     public SystemCoordinator getSystem() {
         return mySystem;
     }
     
+    /** Provides the current date. */
     public GregorianCalendar getCurrentDate() {
-        return (GregorianCalendar) this.myCurrentDate.clone();
+        return this.myCurrentDate;
     }
 
     // testers
-
+    /** Determines if the system is currently at max capacity or not. */
     public boolean hasSpaceToAddJobs() {
         return myJobList.size() < this.myCurrentMaximumJobs;
     }
 
     /**
+     * Checks if the job can be submitted into the current state of the system.
      * 
-     * @param theJob
-     * @return integer representation of the broken business rule as follows:
+     * PRECONDITIONS: theJob != NULL
+     *                theJob.getStartDate() != NULL
+     *                theJob.getEndDate() != NULL
+     * 
+     * @return integer representation of the broken business rule as follows, 0 otherwise.
+     *      1 -> job exists in system already
+     *      2 -> job exceeds maximum job length
+     *      3 -> job is further than the maximum allowed days away to submit
+     *      4 -> job is closer than the minimum allowed days away to submit
      */
     public int canSubmitJob(Job theJob) {
         int returnInt = 0;
@@ -286,6 +304,17 @@ public final class JobCoordinator implements Serializable {
         return returnInt;
     }
     
+    /**
+     * Checks if the job can be unsubmitted from the current state of the system.
+     * 
+     * PRECONDITIONS: theJob != NULL
+     *                theJob.getStartDate() != NULL
+     *                theJob.getEndDate() != NULL
+     * 
+     * @return integer representation of the broken business rule as follows, 0 otherwise.
+     *      1 -> job does not exist in system already
+     *      2 -> job is closer than the minimum allowed days away to unsubmit
+     */
     public int canUnsubmitJob(Job theJob) {
         int returnInt = 0;
         

@@ -27,6 +27,11 @@ public final class SystemCoordinator implements Serializable {
     }
     
     
+    /**
+     * Checks to see that the user trying to sign in exists in the system.
+     * 
+     * @return 0 if the user exists in the system, 1 otherwise.
+     */
     public int signIn(String theUsername) {
         int isUser = 1;
 
@@ -41,10 +46,11 @@ public final class SystemCoordinator implements Serializable {
         return isUser;
     }
     
-    /***
+    /**
+     * Adds the specified user to the current list of users.
+     * 
      * PRECONDITION: canAddUser(theUser) must evaluate to TRUE
      * 
-     * @param theUser
      */
     public void addUser(User theUser) {
         for (User u : this.myUsers) {
@@ -52,15 +58,25 @@ public final class SystemCoordinator implements Serializable {
                 // warning user already exists
             }
         }
-//        System.out.println("Success");
         myUsers.add(theUser);
     }
 
+    /**
+     * Checks to see if the user is of the proper subclass.
+     * 
+     * @return true if theUser is of class type Volunteer, ParkManager, or OfficeStaff
+     */
     public boolean canAddUser(User theUser) {
         return theUser instanceof Volunteer || theUser instanceof ParkManager
                || theUser instanceof OfficeStaff;
     }
 
+    /** 
+     * Provides the access level of the user that corresponds with theUsername
+     * 
+     * @return the access level as an integer corresponding to VOLUTNEER_ACCESS_LEVEL, 
+     *         PARK_MANAGER_ACCESS_LEVEL, or OFFICE_STAFF_ACCESS_LEVEL, 99 otherwise
+     */
     public int getAccessLevel(String theUsername) {
         // Number 99 to return if unsuccessful
         int userAccessLevel = 99;
@@ -74,21 +90,28 @@ public final class SystemCoordinator implements Serializable {
         return userAccessLevel;
     }
 
+    /**
+     * Provides the user specified by theUserName.
+     * 
+     * PRECONDITION: signIn(theUserName) == 0
+     * 
+     */
     public User getUser(String theUserName) {
         return myUsers.stream().filter(u -> u.getUsername().equals(theUserName)).findFirst()
                         .get();
     }
 
+    /** Provides the list of current users. */
     public ArrayList<User> getUsers() {
         return myUsers;
     }
     
     
     /* Helper Methods */
-    
-    // This method exists to update the user information
-    // to save job information that the user committed on console
-    // Un-needed - use for testing purposes until deleted
+    /**
+     * This method exists to update the user information to save job information that the user 
+     * committed.
+     */
     public void updateUserInformationOnExit(User theUser) {
         for (int i = 0; i < this.myUsers.size(); i++) {
             if (this.myUsers.get(i).getUsername().equals(theUser.getUsername())) {

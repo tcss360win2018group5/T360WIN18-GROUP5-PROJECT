@@ -24,6 +24,7 @@ public final class OfficeStaff extends User implements Serializable {
 		endDate = new GregorianCalendar(3000, 11, 01);
 	}
 
+	/* Exceptions for input validation. */
 	public class ZeroInputException extends Exception {
 		public ZeroInputException() {}
 	    public ZeroInputException(String message) {
@@ -45,6 +46,16 @@ public final class OfficeStaff extends User implements Serializable {
 	    }
 	}
 	
+	/**
+	 * Sets the maximum pending jobs requested by the Office Staff for further usage in 
+	 * the system. 
+	 * 
+	 * PRECONDITION: newMaxPendingJobs >= current # of jobs in the system.
+	 * 
+	 * @throws ZeroInputException if zero is specified as the value
+	 * @throws NegativeInputException if a negative value is specified
+	 * @throws NonIntegerInputException if anything other than an int is provided
+	 */
 	public void setMaxPendingJobs(int newMaxPendingJobs) throws Exception {
 		
 		if (!isInputInteger(newMaxPendingJobs)) {
@@ -59,24 +70,10 @@ public final class OfficeStaff extends User implements Serializable {
 			throw new NegativeInputException();
 		}
 		
-		// TODO: I need a way to change the maximum pending jobs.
-
-//		Field oldValue = ProgramConstants.class.getDeclaredField("MAX_PENDING_JOBS");
-//		oldValue.setAccessible(true);
-//
-//		Field newValue = Field.class.getDeclaredField("modifiers");
-//		newValue.setAccessible(true);
-//
-//		newValue.setInt(oldValue, oldValue.getModifiers() & ~ Modifier.FINAL);
-//
-//		oldValue.set(ProgramConstants.class, (int) newMaxPendingJobs);
-
-		// TEMP var to implement the GUI <- REMOVE when properly implemented
 		tempMaxPendingJobs = newMaxPendingJobs;
 	}
 
 	public int getMaxPendingJobs() {
-		// Calling to display current value on GUI
 		return tempMaxPendingJobs;
 	}
 
@@ -106,6 +103,11 @@ public final class OfficeStaff extends User implements Serializable {
 		return endDate;
 	}
 
+	/**
+	 * Given a specified list of jobs, provides back the pruned list of jobs corresponding to
+	 * jobs within the time frame [startDate, endDate]
+	 * 
+	 */
 	public ArrayList<Job> getJobsBetween2Dates(ArrayList<Job> listOfJobs) {
 		
 		final ArrayList<Job> jobs = new ArrayList<Job>();
@@ -114,24 +116,13 @@ public final class OfficeStaff extends User implements Serializable {
 			
 			Job job = listOfJobs.get(index);
 
-			if (getDifferenceInDays(startDate, job.getStartDate()) >= 0 &&
-					getDifferenceInDays(job.getEndDate(), endDate) >= 0) {
+			if (JobCoordinator.getDifferenceInDays(startDate, job.getStartDate()) >= 0 &&
+					JobCoordinator.getDifferenceInDays(job.getEndDate(), endDate) >= 0) {
 				jobs.add(job);
 			}
 		}
 		
 		return jobs;
-	}
-
-	// private helpers
-	private int getDifferenceInDays(GregorianCalendar theFirstDate,
-									GregorianCalendar theSecondDate) {
-		long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
-				TimeUnit.MILLISECONDS)
-				- TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
-				TimeUnit.MILLISECONDS);
-
-		return ((int) convertedTime);
 	}
 
     @Override

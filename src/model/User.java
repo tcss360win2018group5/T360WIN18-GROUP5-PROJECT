@@ -35,10 +35,6 @@ public abstract class User implements Serializable, Cloneable {
     public int getAccessLevel() {
         return myAccessLevel;
     }
-
-    public String toString() {
-        return myUsername + "," + myAccessLevel + "," + this.hashCode();
-    }
     
     @Override
     public abstract Object clone();

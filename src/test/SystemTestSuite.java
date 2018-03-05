@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   JobCoordinatorTest.class,
   SystemCoordinatorTest.class,
-  //OfficeStaffTest.class,
+  OfficeStaffTest.class,
   ParkManagerTest.class,
   VolunteerTest.class,
   JobTest.class

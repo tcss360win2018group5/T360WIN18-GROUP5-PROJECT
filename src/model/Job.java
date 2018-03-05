@@ -6,9 +6,14 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+/**
+ * Container for all job entries to hold pertinent information and provide the ability to 
+ * compare against other jobs to determine if there is overlap, as well as whether or not 
+ * the job is in the future.
+ *
+ */
 @SuppressWarnings("serial")
 public final class Job implements Serializable, Cloneable {
-
 	/** String representation of the title for this job. */
 	private String myJobTitle;
 
@@ -24,17 +29,28 @@ public final class Job implements Serializable, Cloneable {
 	/** Calendar for end date. */
 	private GregorianCalendar myEndDate;
 	
+	/** Location for the job. */
 	private String myJobLocation = "";
 	
+	/** Contact name (Park Manager or otherwise). */
 	private String myContactName = "";
+	
+	/** Contact number. */
 	private String myContactNumber = "";
+	
+	/** Contact email. */
 	private String myContactEmail = "";
 	
+	/** Difficulty of the job on a scale from 0 to 3. */
 	private int myJobDifficulty = 0;
 	
+	/** Description of the overall job. */
 	private String myJobDescription = "";
 	
+	/** Job role short description. */
 	private String myJobRole = "";
+	
+	/** Job role long description. */
 	private String myJobRoleDescription = "";
 	
 	/**
@@ -67,12 +83,11 @@ public final class Job implements Serializable, Cloneable {
 
 	// mutators
 	/**
-	 * Adds a volunteer to this job and lets the user know they were added.
+	 * Adds a volunteer to this job.
 	 * 
-	 * Preconditons: 1) Volunteer must not already be applied to this job. 2)
-	 * There must be space for on the job for the volunteer to apply 3) There
-	 * must exist no conflicts with any of the volunteer's current jobs.
-	 * 
+	 * PRECONDITIONS: this.canAcceptVolunteers() == true
+	 *                theVolunteer.canApplyTo(this) == 0
+	 *               
 	 * @param theVolunteer to be added to this job.
 	 */
 	public void addVolunteer(final Volunteer theVolunteer) {
@@ -81,6 +96,13 @@ public final class Job implements Serializable, Cloneable {
 		}
 	}
 	
+	/**
+     * Removes a volunteer from this job.
+     * 
+     * PRECONDITIONS: theVolunteer.canUnapplyFromJob(this) == 0
+     * 
+     * @param theVolunteer to be added to this job.
+     */
 	public void removeVolunteer(final Volunteer theVolunteer) {
 	    if (myVolunteers.contains(theVolunteer)) {
 	        myVolunteers.remove(theVolunteer);
@@ -91,7 +113,6 @@ public final class Job implements Serializable, Cloneable {
 	/**
 	 * Checks to see if this job begins on or after the specified date OR if it 
 	 * ends on or after the specified date.
-	 * 
 	 * 
 	 */
    public boolean isFutureJob(GregorianCalendar theDateToday) {
@@ -109,6 +130,17 @@ public final class Job implements Serializable, Cloneable {
 		return myVolunteers.size() < this.myMaxVolunteers;
 	}
 
+	/**
+	 * Checks to see if this current job's timeframe overlaps in any way with the timeframe
+	 * of the specified job.
+	 * 
+	 * PRECONDITIONS: this.myStartDate != NULL
+	 *                this.myEndDate != NULL
+	 *                theOtherJob.myStartDate != NULL
+	 *                theOtherJob.myEndDate != NULL
+	 * 
+	 * @return true if there is overlap at any point in the timeframes, false otherwise.
+	 */
 	public boolean hasOverlap(Job theOtherJob) {
 		return this.myStartDate.compareTo(theOtherJob.myStartDate) == 0
 				// if listJob starts on the same day that applyingJob ends
@@ -127,7 +159,12 @@ public final class Job implements Serializable, Cloneable {
 	}
 
 	/*
-	 * Getters and setters
+	 * Queries
+	 */
+	/** Provides the difficult of the job based on numeric value and translates that as:
+	 *     0 = "Easy"
+	 *     1 = "Medium"
+	 *     3 = "Hard"
 	 */
 	public String getMyDifficulty() {
 		String retString = "invalid";
@@ -160,13 +197,11 @@ public final class Job implements Serializable, Cloneable {
 	}
 	
 	public GregorianCalendar getStartDate() {
-		// Can't access when it's return as a clone()
-		return (GregorianCalendar) this.myStartDate;
+		return this.myStartDate;
 	}
 
 	public GregorianCalendar getEndDate() {
-		// Can't access when it's return as a clone()
-		return (GregorianCalendar) this.myEndDate;
+		return this.myEndDate;
 	}
 
 	public int getMaxVolunteers() {
@@ -250,6 +285,9 @@ public final class Job implements Serializable, Cloneable {
 	
 	/**
      * Calculates the difference in days relative to the day this job STARTS.
+     * 
+     * PRECONDITIONS: this.myStartDate != NULL
+     *                theDate != NULL
      */
     public int getDifferenceInDays(GregorianCalendar theDate) {
         return JobCoordinator.getDifferenceInDays(myStartDate, theDate);
@@ -322,14 +360,4 @@ public final class Job implements Serializable, Cloneable {
                             this.myJobDifficulty, this.myJobDescription, this.myJobRole,
                             this.myJobRoleDescription);
     }
-    
-    @Override
-    public String toString() {
-        return "" + this.myJobTitle + "," + this.myMaxVolunteers + "," + this.myStartDate.getTimeInMillis() + "," + 
-                        this.myEndDate.getTimeInMillis() + "," + this.myVolunteers + "," + this.myJobLocation + "," +
-                        this.myContactName + "," + this.myContactNumber + "," + this.myContactEmail + "," +
-                        this.myJobDifficulty + "," + this.myJobDescription + "," + this.myJobRole + "," +
-                        this.myJobRoleDescription;
-    }
-	
 }

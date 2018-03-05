@@ -31,7 +31,7 @@ public final class ParkManager extends User implements Serializable {
 	}
 
 	public ArrayList<Job> getCreatedJobs() {
-		return (ArrayList<Job>) myJobsCreated.clone();
+		return myJobsCreated;
 	}
 	
 	/**
@@ -46,10 +46,10 @@ public final class ParkManager extends User implements Serializable {
 	 * Provides the list of submitted jobs.
 	 */
 	public ArrayList<Job> getSubmittedJobs() {
-		return (ArrayList<Job>) mySubmittedJobs.clone();
+		return mySubmittedJobs;
 	}
 
-	/*
+	/**
 	 * Provides a copy of list of FUTURE submitted jobs relative to myCurrentDate
 	 */
 	public ArrayList<Job> getFutureSubmittedJobs() {
@@ -77,10 +77,13 @@ public final class ParkManager extends User implements Serializable {
 		myCurrentDate = theDate;
 	}
 	
+	/**
+	 * Checks if the specified job is in the past relative to theCurrentDate.
+	 */
 	public boolean isJobInPast(Job theJob) {
 	    return theJob.getStartDate().before(myCurrentDate);
 	}
-
+	
     @SuppressWarnings("unchecked")
     @Override
     public Object clone() {

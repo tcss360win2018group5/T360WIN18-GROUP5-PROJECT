@@ -64,17 +64,22 @@ public final class Volunteer extends User implements Serializable {
     }
 
     // testers
+    /**
+     * Checks to see if the volunteer can apply to the specified job.
+     * 
+     * PRECONDITION: theApplyingJob.getStartDate() != NULL
+     *               theApplyingJob.getEndDate() != NULL
+     * @return 1 if there is an overlap of this job and a job the volunteer is currently
+     *         applied to
+     *         2 if the job is closer than the minimum number of days away
+     *         0 otherwise
+     */
     public int canApplyToJob(final Job theApplyingJob) {
         int returnInt = 0;
         boolean is_there_conflict = myCurrentJobs.stream()
                         .anyMatch(aJobFromList -> aJobFromList.hasOverlap(theApplyingJob));
         boolean is_outside_timeframe = (daysFromToday(theApplyingJob.getStartDate()) 
                         < MINIMUM_DAYS_BEFORE_JOB_START);
-        // System.out.println("CurrentDate " + myCurrentDay.getTime() + "
-        // JobDate " + theApplyingJob.getStartDate().getTime());
-        // System.out.println("Difference = " +
-        // getDifferenceInDays(myCurrentDay, theApplyingJob.getStartDate()));
-
         if (is_there_conflict) {
             returnInt = 1; // job was overlapping with another job on this day
         }
@@ -86,6 +91,15 @@ public final class Volunteer extends User implements Serializable {
         return returnInt;
     }
     
+    /**
+     * Chekcs to see if the user can unapply from the specified job.
+     * 
+     * PRECONDITION: theUnapplyingJob.getStartDate() != NULL
+     *               theUnapplyingJob.getEndDate() != NULL
+     * @return 1 if the volunteer is not currently applied to the job
+     *         2 if the job is closer than the minimum days away
+     *         0 otherwise
+     */
     public int canUnapplyFromJob(final Job theUnapplyingJob) {
         int returnInt = 0;
         boolean is_not_currently_applied = !myCurrentJobs.contains(theUnapplyingJob);
@@ -102,6 +116,7 @@ public final class Volunteer extends User implements Serializable {
     }
 
     // helpers
+    /** Calculates the days the jobDate is from myCurrentDate */
     public int daysFromToday(GregorianCalendar jobDate) {
         return JobCoordinator.getDifferenceInDays(myCurrentDate, jobDate);
     }
