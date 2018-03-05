@@ -194,8 +194,8 @@ public class RepopulateJobAndUser {
     public void createJob_03022018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/24/2018",
-                "03/24/2018",
+                "02/24/2018",
+                "02/24/2018",
                 "4503 Beach Dr SW, Seattle, WA 98116",
                 "Rio Del Montana",
                 "555-555-4503",
@@ -211,8 +211,8 @@ public class RepopulateJobAndUser {
     public void createJob_03032018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/25/2018",
-                "03/25/2018",
+                "02/25/2018",
+                "02/25/2018",
                 "10505 35th Ave NE, Seattle WA 98125",
                 "Lucy Weinberg",
                 "555-555-1050",
@@ -228,8 +228,8 @@ public class RepopulateJobAndUser {
     public void createJob_03042018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/14/2018",
-                "03/16/2018",
+                "02/14/2018",
+                "02/16/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Tommy Johnson",
                 "555-555-8011",
@@ -245,8 +245,8 @@ public class RepopulateJobAndUser {
     public void createJob_03052018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "04/16/2018",
-                "04/18/2018",
+                "02/16/2018",
+                "02/18/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Babs McGee",
                 "555-555-8011",
@@ -259,32 +259,15 @@ public class RepopulateJobAndUser {
                 5);
     }
     
-    public void createJob_03036018_conflict(String theJobTitle) {
+    public void createJob_03032018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "03/28/2018",
-                "03/28/2018",
+                "02/28/2018",
+                "02/28/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Big Tuna",
                 "555-555-8011",
                 "tuna@gmail.com",
-                "Lincoln Park Volunteer Work Party",
-                "Join us for a restoration work party at Lincoln Park",
-                "Work",
-                "Work Party",
-                "easy",
-                5);
-    }
-    
-    public void createJob_03032018_conflict(String theJobTitle) {
-        // (MM/DD/YYYY)
-        submitJobs(theJobTitle,
-                "03/25/2018",
-                "03/25/2018",
-                "8011 Fauntleroy Way, Seattle, WA, 98136",
-                "Sharon Baker",
-                "555-555-8011",
-                "shar@gmail.com",
                 "Lincoln Park Volunteer Work Party",
                 "Join us for a restoration work party at Lincoln Park",
                 "Work",
@@ -301,6 +284,35 @@ public class RepopulateJobAndUser {
         re.createJob_03022018("Test Job 1");
         re.createJob_03032018("Test Job 2");
         re.createJob_03032018_conflict("Test Job 3");
+        re.generateJobsManyJobs();
         re.saveSystem();
+    }
+
+    private void generateJobsManyJobs() {
+        ParkManager testPM = (ParkManager) mySystemCoordinator.getUser("test_pm");
+        GregorianCalendar firstOfApril = new GregorianCalendar(2018, 3, 1);
+        int numJobsInSystem = myJobCoordinator.getPendingJobs().size();
+        for (int i = 0; i < myJobCoordinator.getCurrentMaximumJobs() - numJobsInSystem; i++) {
+            Job newJob = new Job("generatedJob" + i);
+            GregorianCalendar newDate = (GregorianCalendar) firstOfApril.clone();
+            newDate.add(GregorianCalendar.DAY_OF_YEAR, i);
+            newJob.setStartDate(newDate);
+            newJob.setEndDate(newDate);
+            newJob.setMaxVolunteers(10);
+            newJob.setMyContactEmail("test_pm@test.com");
+            newJob.setMyContactName("test_pm");
+            newJob.setMyContactNumber("1234567890");
+            newJob.setMyDifficulty(1);
+            newJob.setMyJobDescription("A new generated job in april");
+            newJob.setMyJobLocation("City" + i);
+            newJob.setMyJobRole("someRole" + i);
+            newJob.setMyJobRoleDescription("someRole" + i + " generated");
+            if (myJobCoordinator.hasSpaceToAddJobs() && myJobCoordinator.canSubmitJob(newJob) == 0) {
+                myJobCoordinator.submitJob(testPM, newJob);
+                System.out.println("Submitted generatedJob" + i + "!");
+            } else {
+                System.out.println("Could not submit ! Error Code: " + myJobCoordinator.canSubmitJob(newJob));
+            }
+        }
     }
 }

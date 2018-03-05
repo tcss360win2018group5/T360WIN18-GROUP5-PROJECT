@@ -157,9 +157,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     public void initialize(URL location, ResourceBundle resources) {
         // Leave blank, cannot load side menu with stuff here.
         tableviewListOfJobs.setStyle("-fx-table-cell-border-color: transparent;");
-        tableviewUserListOfJobs.setStyle("-fx-table-cell-border-color: transparent;");
-
-        
+        tableviewUserListOfJobs.setStyle("-fx-table-cell-border-color: transparent;");       
     }
 
     // Methods to Init GUI variables
@@ -250,7 +248,15 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         });
 
         // Set Top User Label
-        topLabel_welcomeUser.setText("... | Welcome back to Urban Parks " + userName + "!");
+        String type = "";
+        if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL) {
+            type = "an Office Staff user!";
+        } else if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.PARK_MANAGER_ACCESS_LEVEL) {
+            type = "a Park Manager user!";
+        } else if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
+            type = "a Volunteer user!";
+        }
+        topLabel_welcomeUser.setText("... | Welcome back to Urban Parks " + userName + "! You are " + type );
         topLabel_displayDate.setText("Today: " + printJobDate(new GregorianCalendar()));
 
 
@@ -380,8 +386,15 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                     backgroundEnable();
                 });
                 volunteerJobSystemController.submitButton.setOnAction(event -> {
-                    applyToJob();
-                    rightJobSystemMenuAnimation();
+                    if (selectedJobFromSystem.canAcceptVolunteers() && 
+                                    volunteerUser.canApplyToJob(selectedJobFromSystem) == 0) {
+                        volunteerJobSystemController.topErrorMessage.setText("");
+                        volunteerJobSystemController.bottomErrorMessage.setText("");
+                        applyToJob();
+                        rightJobSystemMenuAnimation();
+                    } else {
+                        volunteerJobSystemController.playErrorMessage();
+                    }
                 });
 
             } else if (accessLevel == 1) { // PM
@@ -437,10 +450,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                             volunteerUserJobController.getSelectedJob()) != 0) {
                         volunteerUserJobController.playErrorMessage();
                     } else {
-                        volunteerUserJobController.topErrorMessage
-                                .setText("");
-                        volunteerUserJobController.bottomErrorMessage
-                                .setText("");
+                        volunteerUserJobController.topErrorMessage.setText("");
+                        volunteerUserJobController.bottomErrorMessage.setText("");
                         unapplyFromJob();
                         rightJobUserMenuAnimation();
                     }
@@ -458,9 +469,15 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                     backgroundEnable();
                 });
                 parkManagerUserJobController.submitButton.setOnAction(event -> {
-                    unsubmitJob();
-                    updateJobLabels();
-                    rightJobUserMenuAnimation();
+                    if (myJobCoordinator.canUnsubmitJob(selectedJobFromUser) != 0) {
+                        parkManagerUserJobController.playErrorMessage();   
+                    } else {
+                        parkManagerUserJobController.topErrorMessage.setText("");
+                        parkManagerUserJobController.bottomErrorMessage.setText("");
+                        unsubmitJob();
+                        updateJobLabels();
+                        rightJobUserMenuAnimation();
+                    }
                 });
 
             } else if (accessLevel == 0) { // Office
@@ -590,7 +607,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                             contactNumber[0], contactEmail[0],
                             jobRole[0]);
                     // Second error check
-                    if (myJobCoordinator.canSubmitJob(newJob) != 0) {
+                    if (myJobCoordinator.canSubmitJob(newJob) != 0 || !myJobCoordinator.hasSpaceToAddJobs()) {
                         subController.playErrorMessage();
                     } else if (newJob.getStartDate().after(newJob.getEndDate())) { // date input wrong
                         subController.playErrorMessage();
@@ -966,12 +983,18 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
             } else {
                 rightLabel_lowerTextLabel.setText("Jobs");
             }
-            rightLabel_bottomLabel.setText("Click here to add a job");
-
             if (numberOfJobs == 0) {
                 tableviewUserListOfJobs.setDisable(true);
             } else {
                 tableviewUserListOfJobs.setDisable(false);
+            }
+            
+            if (myJobCoordinator.hasSpaceToAddJobs()) {
+                openRightMenu.setDisable(false);
+                rightLabel_bottomLabel.setText("Click here to add a job");
+            } else {
+                openRightMenu.setDisable(true);
+                rightLabel_bottomLabel.setText("System is full of jobs");
             }
 
             tableviewListOfJobs.setDisable(true);
@@ -1039,7 +1062,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         String eventName = theEvent.getPropertyName();
         if (eventName == SystemEvents.APPLY_JOB.name()) {
             jobConfirmationAnimation("Applied to Job!");
-            
         } else if (eventName == SystemEvents.UNAPPLY_JOB.name()) {
             jobConfirmationAnimation("Unpplied from Job!");
         } else if (eventName == SystemEvents.SUBMIT_JOB.name()) {

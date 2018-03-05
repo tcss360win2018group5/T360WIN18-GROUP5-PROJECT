@@ -70,23 +70,18 @@ public final class JobCoordinator implements Serializable {
         }
         
         ParkManager theParkManager = (ParkManager) theUser;
-        if (this.hasSpaceToAddJobs() && canSubmitJob(theJob) == 0) {
-            theParkManager.addCreatedJob(theJob);
-            theParkManager.addSubmittedJob(theJob);
-            myJobList.add(theJob);
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
+        theParkManager.addCreatedJob(theJob);
+        theParkManager.addSubmittedJob(theJob);
+        myJobList.add(theJob);
+        myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
                                                        null, null);
-        } else {
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
-                                                       null, null);
-        }
     }
     
     /**
      * Unsubmits the jobs if the business rule criteria are met.
      * 
-     * @param theJob
-     * @param theParkManager
+     * PRECONDITON: canUnsubmitJob(theJob) == 0
+     * 
      * @return an integer representation of -> broken business rules XOR the job can be legally removed
      */
     public void unsubmitJob(final User theUser, final Job theJob) {
@@ -97,21 +92,20 @@ public final class JobCoordinator implements Serializable {
         
         Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
         ParkManager theParkManager = (ParkManager) theUser;
-        
-        if (canUnsubmitJob(theSystemJob) == 0) {
-            theParkManager.removeSubmittedJob(theSystemJob);
-            myJobList.remove(theSystemJob);
-            theSystemJob.getCurrentVolunteers().stream().forEach(vol -> ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob));
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
-                                                       null, null);
-        } else {
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
-                                                       null, null);
-        }
+        theParkManager.removeSubmittedJob(theSystemJob);
+        myJobList.remove(theSystemJob);
+        theSystemJob.getCurrentVolunteers().stream().forEach(vol -> ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob));
+        myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
+                                                   null, null);
     }
 
     /**
      * Adds a specified user to a job.
+     * 
+     * PRECONDITION: theUser instanceof Volunteer == true
+     *               theUser.canApplyToJob(theJob) == 0
+     *               theJob.canAcceptVolunteers() == true
+     * 
      * @param theJob
      */
     public void applyToJob(User theUser, Job theJob) {
@@ -123,15 +117,10 @@ public final class JobCoordinator implements Serializable {
         Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
         Volunteer theVolunteer = (Volunteer) theUser;
 
-        if (theSystemJob.canAcceptVolunteers() && theVolunteer.canApplyToJob(theSystemJob) == 0) {
-            theSystemJob.addVolunteer(theVolunteer);
-            theVolunteer.applyToJob(theSystemJob);
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
+        theSystemJob.addVolunteer(theVolunteer);
+        theVolunteer.applyToJob(theSystemJob);
+        myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
                                                        null, null);
-        } else {
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
-                                                       null, null);
-        }
     }
     
     /**

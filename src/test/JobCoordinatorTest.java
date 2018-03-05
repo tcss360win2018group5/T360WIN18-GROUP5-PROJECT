@@ -36,10 +36,9 @@ public class JobCoordinatorTest {
         globalVolunteerJane.setCurrentDate(globalJobCoordinator.getCurrentDate());
         
         globalParkManagerSam = new ParkManager("Sam");
-        globalVolunteerJane.setCurrentDate(globalJobCoordinator.getCurrentDate());
+        globalParkManagerSam.setCurrentDate(globalJobCoordinator.getCurrentDate());
         
         globalOfficeStaffAlex = new OfficeStaff("Alex");
-        globalVolunteerJane.setCurrentDate(globalJobCoordinator.getCurrentDate());
         
         anyOldValidJob = new Job("anyOldValidJob");
         anyParkManager = new ParkManager("anyOldPM");
@@ -73,9 +72,15 @@ public class JobCoordinatorTest {
     // The system has exactly the maximum number of pending jobs
     @Test
     public final void hasSpaceToAddJobs__ExactlyMaximumPendingJobs__ShouldReturnFalse() {
-        // add exactly 20 (maximum) jobs to pending
-        for (int i = 0; i < 20; i++) {
+        GregorianCalendar weekFromToday = new GregorianCalendar();
+        weekFromToday.add(GregorianCalendar.DAY_OF_YEAR, 7);
+        
+        for (int i = 0; i < globalJobCoordinator.getCurrentMaximumJobs(); i++) {
             Job generatedValidJob = new Job("generatedValidJob" + i);
+            GregorianCalendar newDate = (GregorianCalendar) weekFromToday.clone(); 
+            newDate.add(GregorianCalendar.DAY_OF_YEAR, i);
+            generatedValidJob.setStartDate(newDate);
+            generatedValidJob.setEndDate(newDate);
             globalJobCoordinator.submitJob(globalParkManagerSam, generatedValidJob);
         }
 
@@ -322,35 +327,4 @@ public class JobCoordinatorTest {
         assertTrue(globalJobCoordinator.getSystemJobListing(globalOfficeStaffAlex).contains(futureJob));
     }
     
-    @Test
-    public final void getJobListing_OnePastJobWithOfficeStaff_ShouldOnlyHavePastJob() {
-        Job pastJob = new Job("Job in the Past");
-        GregorianCalendar pastDate = new GregorianCalendar();
-        pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
-        pastJob.setStartDate(pastDate);
-        pastJob.setEndDate(pastDate);
-        globalJobCoordinator.submitJob(globalParkManagerSam, pastJob);
-
-        assertTrue(globalJobCoordinator.getSystemJobListing(globalOfficeStaffAlex).contains(pastJob));
-    }
-    
-    @Test
-    public final void getJobListing_OneFutureOnePastJobWithOfficeStaff_ShouldHaveBothJobs() {
-        Job futureJob = new Job("Job in the Future");
-        GregorianCalendar futureDate = new GregorianCalendar();
-        futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
-        futureJob.setStartDate(futureDate);
-        futureJob.setEndDate(futureDate);
-        globalJobCoordinator.submitJob(globalParkManagerSam, futureJob);
-        
-        Job pastJob = new Job("Job in the Past");
-        GregorianCalendar pastDate = new GregorianCalendar();
-        pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
-        pastJob.setStartDate(pastDate);
-        pastJob.setEndDate(pastDate);
-        globalJobCoordinator.submitJob(globalParkManagerSam, pastJob);
-
-        assertTrue(globalJobCoordinator.getSystemJobListing(globalOfficeStaffAlex).contains(pastJob));
-        assertTrue(globalJobCoordinator.getSystemJobListing(globalOfficeStaffAlex).contains(futureJob));
-    }
 }
