@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class OfficeStaff extends User implements Serializable {
 
-	private int tempMaxPendingJobs = 20;
+	private int tempMaxPendingJobs = 10;
 	private GregorianCalendar startDate;
 	private GregorianCalendar endDate;
 
