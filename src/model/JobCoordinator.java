@@ -9,9 +9,10 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 public final class JobCoordinator implements Serializable {
-    public static final int DEFAULT_MAXIMUM_JOBS = 20;
-    public static final int MAXIMUM_JOB_LENGTH = 3;
-    public static final int MAXIMUM_DAYS_AWAY_TO_POST_JOB = 75;
+    public static final int DEFAULT_MAXIMUM_JOBS = 10;
+    public static final int MAXIMUM_JOB_LENGTH = 4;
+    public static final int MAXIMUM_DAYS_AWAY_TO_POST_JOB = 60;
+    
     
     /** To allow listening of updates via observer design pattern. */
     private final PropertyChangeSupport myPropertyChangeHandler;

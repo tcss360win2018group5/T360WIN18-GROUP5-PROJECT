@@ -225,6 +225,57 @@ public class RepopulateJobAndUser {
                 5);
     }
 
+    public void createJob_03042018_conflict(String theJobTitle) {
+        // (MM/DD/YYYY)
+        submitJobs(theJobTitle,
+                "03/14/2018",
+                "03/16/2018",
+                "8011 Fauntleroy Way, Seattle, WA, 98136",
+                "Tommy Johnson",
+                "555-555-8011",
+                "tim@gmail.com",
+                "Lincoln Park Volunteer Work Party",
+                "Join us for a restoration work party at Lincoln Park",
+                "Work",
+                "Work Party",
+                "easy",
+                5);
+    }
+    
+    public void createJob_03052018_conflict(String theJobTitle) {
+        // (MM/DD/YYYY)
+        submitJobs(theJobTitle,
+                "04/16/2018",
+                "04/18/2018",
+                "8011 Fauntleroy Way, Seattle, WA, 98136",
+                "Babs McGee",
+                "555-555-8011",
+                "babs@gmail.com",
+                "Lincoln Park Volunteer Work Party",
+                "Join us for a restoration work party at Lincoln Park",
+                "Work",
+                "Work Party",
+                "easy",
+                5);
+    }
+    
+    public void createJob_03036018_conflict(String theJobTitle) {
+        // (MM/DD/YYYY)
+        submitJobs(theJobTitle,
+                "03/28/2018",
+                "03/28/2018",
+                "8011 Fauntleroy Way, Seattle, WA, 98136",
+                "Big Tuna",
+                "555-555-8011",
+                "tuna@gmail.com",
+                "Lincoln Park Volunteer Work Party",
+                "Join us for a restoration work party at Lincoln Park",
+                "Work",
+                "Work Party",
+                "easy",
+                5);
+    }
+    
     public void createJob_03032018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,

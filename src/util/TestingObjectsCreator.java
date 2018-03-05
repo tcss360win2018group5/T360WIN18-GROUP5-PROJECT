@@ -54,7 +54,7 @@ public final class TestingObjectsCreator {
         JobCoordinator jcObject = new JobCoordinator(scObject);
         GregorianCalendar date = new GregorianCalendar();
 
-        for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS; i++) {
+        for (int i = 0; i < JobCoordinator.DEFAULT_MAXIMUM_JOBS; i++) {
             Job genericJob = new Job("Job " + (i + 1));
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
@@ -78,7 +78,7 @@ public final class TestingObjectsCreator {
         JobCoordinator jcObject = new JobCoordinator(scObject);
         GregorianCalendar date = new GregorianCalendar();
 
-        for (int i = 0; i < JobCoordinator.MAXIMUM_JOBS - 1; i++) {
+        for (int i = 0; i < JobCoordinator.DEFAULT_MAXIMUM_JOBS - 1; i++) {
             Job genericJob = new Job("Job " + (i + 1));
             date.add(GregorianCalendar.DAY_OF_YEAR, 1);
             genericJob.setStartDate(date);
