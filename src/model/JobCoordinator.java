@@ -75,6 +75,9 @@ public final class JobCoordinator implements Serializable {
             myJobList.add(theJob);
             myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
                                                        null, null);
+        } else {
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
+                                                       null, null);
         }
     }
     
@@ -100,6 +103,9 @@ public final class JobCoordinator implements Serializable {
             theSystemJob.getCurrentVolunteers().stream().forEach(vol -> ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob));
             myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
                                                        null, null);
+        } else {
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
+                                                       null, null);
         }
     }
 
@@ -121,6 +127,9 @@ public final class JobCoordinator implements Serializable {
             theVolunteer.applyToJob(theSystemJob);
             myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
                                                        null, null);
+        } else {
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
+                                                       null, null);
         }
     }
     
@@ -139,6 +148,9 @@ public final class JobCoordinator implements Serializable {
             theSystemJob.removeVolunteer(theVolunteer);
             theVolunteer.unapplyForJob(theSystemJob);
             myPropertyChangeHandler.firePropertyChange(SystemEvents.UNAPPLY_JOB.name(), 
+                                                       null, null);
+        } else {
+            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
                                                        null, null);
         }
     }

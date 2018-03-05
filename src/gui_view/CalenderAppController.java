@@ -1047,6 +1047,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
             jobConfirmationAnimation("Removed Job!");
         } else if (eventName == SystemEvents.MAX_JOBS_CHANGE.name()) {
             jobConfirmationAnimation("System Changes Accepted!");
+        } else if (eventName == SystemEvents.ERROR.name()) {
+            jobConfirmationAnimation("Unable to complete action!");
         }
     }
 
