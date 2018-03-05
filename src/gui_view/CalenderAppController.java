@@ -582,16 +582,22 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                         subController.playErrorMessage();
                     } else if (jobTitle[0].length() <= 0) {
                         subController.playErrorMessage();
-                    } else { // Submit if passes checks
+                    }
+                    // Passes first error check - can now create job info
+                    Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
+                            startDate[0], endDate[0], jobDescription[0],
+                            maxVolunteers[0], contactName[0],
+                            contactNumber[0], contactEmail[0],
+                            jobRole[0]);
+                    // Second error check
+                    if (myJobCoordinator.canSubmitJob(newJob) != 0) {
+                        subController.playErrorMessage();
+                    } else { // Submit if passes all error checks
                         subController.topErrorMessage
                                 .setText("");
                         subController.bottomErrorMessage
                                 .setText("");
-                        Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
-                                startDate[0], endDate[0], jobDescription[0],
-                                maxVolunteers[0], contactName[0],
-                                contactNumber[0], contactEmail[0],
-                                jobRole[0]);
+
                         submitJob(newJob);
                         updateJobLabels();
                         rightMenuAnimation();
