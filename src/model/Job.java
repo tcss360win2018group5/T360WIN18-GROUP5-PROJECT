@@ -116,24 +116,6 @@ public final class Job implements Serializable, Cloneable {
 						&& (this.myStartDate.compareTo(theOtherJob.myEndDate) < 0));
 	}
 
-	/**
-	 * Helper method to calculate the difference in days of two calendar dates.
-	 *
-	 * @param theFirstDate The first date chronologically.
-	 * @param theSecondDate The second date chronologically.
-	 *
-	 * @return The positive difference in days.
-	 */
-	public static int getDifferenceInDays(GregorianCalendar theFirstDate,
-			GregorianCalendar theSecondDate) {
-		long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
-				TimeUnit.MILLISECONDS)
-				- TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
-						TimeUnit.MILLISECONDS);
-
-		return Math.abs((int) convertedTime);
-	}
-
 	/*
 	 * Getters and setters
 	 */
@@ -160,7 +142,7 @@ public final class Job implements Serializable, Cloneable {
 	}
 
 	public int getJobLength() {
-		return getDifferenceInDays(this.myStartDate, this.myEndDate);
+		return getDifferenceInDays(this.myEndDate);
 	}
 	
 	public void setStartDate(GregorianCalendar theDate) {
@@ -260,12 +242,7 @@ public final class Job implements Serializable, Cloneable {
      * Calculates the difference in days relative to the day this job STARTS.
      */
     public int getDifferenceInDays(GregorianCalendar theDate) {
-        long convertedTime = TimeUnit.DAYS.convert(theDate.getTimeInMillis(),
-                TimeUnit.MILLISECONDS)
-                - TimeUnit.DAYS.convert(this.myStartDate.getTimeInMillis(),
-                        TimeUnit.MILLISECONDS);
-
-        return (int) convertedTime;
+        return JobCoordinator.getDifferenceInDays(myStartDate, theDate);
     }
     
 	/* Java object implementation methods. */

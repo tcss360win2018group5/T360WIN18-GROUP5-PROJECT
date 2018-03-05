@@ -84,7 +84,7 @@ public final class ParkManager extends User implements Serializable {
 	}
 
 	public boolean isFutureJob(Job theJob) {
-		return theJob.getStartDate().after(myCurrentDate) || theJob.getStartDate().equals(myCurrentDate);
+		return JobCoordinator.getDifferenceInDays(myCurrentDate, theJob.getStartDate()) >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
 	}
 
     @SuppressWarnings("unchecked")

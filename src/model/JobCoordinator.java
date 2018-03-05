@@ -184,7 +184,7 @@ public final class JobCoordinator implements Serializable {
         } else if (theUser instanceof ParkManager) {
             ParkManager thePM = (ParkManager) theUser;
             for (Job aJob : this.myJobList) {
-                if (thePM.isFutureJob(aJob)) {
+                if (!thePM.isJobInPast(aJob)) {
                     theModifiedList.add(aJob);
                 }
             }
@@ -269,6 +269,9 @@ public final class JobCoordinator implements Serializable {
             returnInt = 3;
             // warning, job is further than max days away
         } else if (daysFromToday(theJob.getStartDate()) < Volunteer.MINIMUM_DAYS_BEFORE_JOB_START) {
+            System.out.println("TODAY: " + myCurrentDate.getTime() 
+            + "\nJOB DAY: " + theJob.getStartDate().getTime() 
+            + "\nDAYS FROM TODAY: " + daysFromToday(theJob.getStartDate()));
             returnInt = 4;
             // warning, job starts before any volunteer can sign up
         }
@@ -295,11 +298,17 @@ public final class JobCoordinator implements Serializable {
      * to the current date, >= 0 otherwise.
      */
     public int daysFromToday(GregorianCalendar theDate) {
-        long convertedTime = TimeUnit.DAYS.convert(theDate.getTimeInMillis(),
-                                                   TimeUnit.MILLISECONDS)
-                             - TimeUnit.DAYS.convert(this.myCurrentDate.getTimeInMillis(),
-                                                     TimeUnit.MILLISECONDS);
-
-        return (int) convertedTime;
+        return JobCoordinator.getDifferenceInDays(myCurrentDate, theDate);
+    }
+    
+    /**
+     * Helper method to calculate the difference in days of two calendar dates relative to the
+     * first date.
+     *
+     * @return The difference in days.
+     */
+    public static int getDifferenceInDays(GregorianCalendar theFirstDate, GregorianCalendar theSecondDate) {
+          long milliBetweenDays = theSecondDate.getTimeInMillis() - theFirstDate.getTimeInMillis();
+          return (int) Math.ceil(milliBetweenDays / (1.0*1000*60*60*24));
     }
 }

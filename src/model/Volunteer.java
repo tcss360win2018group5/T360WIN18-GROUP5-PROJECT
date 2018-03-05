@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public final class Volunteer extends User implements Serializable {
-    public static final int MINIMUM_DAYS_BEFORE_JOB_START = 2;
+    public static final int MINIMUM_DAYS_BEFORE_JOB_START = 3;
 
     /** The current jobs this Volunteer is signed up for. */
     private ArrayList<Job> myCurrentJobs;
@@ -70,8 +70,8 @@ public final class Volunteer extends User implements Serializable {
         int returnInt = 0;
         boolean is_there_conflict = myCurrentJobs.stream()
                         .anyMatch(aJobFromList -> aJobFromList.hasOverlap(theApplyingJob));
-        boolean is_outside_timeframe = (differenceInDays(myCurrentDate, theApplyingJob
-                        .getStartDate()) < MINIMUM_DAYS_BEFORE_JOB_START);
+        boolean is_outside_timeframe = (daysFromToday(theApplyingJob.getStartDate()) 
+                        < MINIMUM_DAYS_BEFORE_JOB_START);
         // System.out.println("CurrentDate " + myCurrentDay.getTime() + "
         // JobDate " + theApplyingJob.getStartDate().getTime());
         // System.out.println("Difference = " +
@@ -104,24 +104,8 @@ public final class Volunteer extends User implements Serializable {
     }
 
     // helpers
-    /**
-     * @return the difference in days relative to the first date: theSecondDate - theFirstDate
-     * if the second date is chronologically before the first date, then the difference will be
-     * negative, if the second date is chronologically after the first date, then the difference
-     * will be positive. 
-     */
-    public int differenceInDays(GregorianCalendar theFirstDate,
-                                    GregorianCalendar theSecondDate) {
-        long convertedTime = TimeUnit.DAYS.convert(theSecondDate.getTimeInMillis(),
-                                                   TimeUnit.MILLISECONDS)
-                             - TimeUnit.DAYS.convert(theFirstDate.getTimeInMillis(),
-                                                     TimeUnit.MILLISECONDS);
-
-        return (int) convertedTime;
-    }
-
     public int daysFromToday(GregorianCalendar jobDate) {
-        return this.differenceInDays(myCurrentDate, jobDate);
+        return JobCoordinator.getDifferenceInDays(myCurrentDate, jobDate);
     }
 
     @SuppressWarnings("unchecked")

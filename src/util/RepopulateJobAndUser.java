@@ -307,16 +307,17 @@ public class RepopulateJobAndUser {
         re.createJob_04012018("Test Job 4");
         re.createJob_03282018("Test Job 5");
         re.createJob_03252018("Test Job 6");
+        re.generateJobsManyJobs();
         re.saveSystem();
     }
 
     private void generateJobsManyJobs() {
         ParkManager testPM = (ParkManager) mySystemCoordinator.getUser("test_pm");
-        GregorianCalendar firstOfApril = new GregorianCalendar(2018, 3, 1);
+        GregorianCalendar seventhOfMarch = new GregorianCalendar(2018, 2, 7);
         int numJobsInSystem = myJobCoordinator.getPendingJobs().size();
         for (int i = 0; i < myJobCoordinator.getCurrentMaximumJobs() - numJobsInSystem; i++) {
             Job newJob = new Job("generatedJob" + i);
-            GregorianCalendar newDate = (GregorianCalendar) firstOfApril.clone();
+            GregorianCalendar newDate = (GregorianCalendar) seventhOfMarch.clone();
             newDate.add(GregorianCalendar.DAY_OF_YEAR, i);
             newJob.setStartDate(newDate);
             newJob.setEndDate(newDate);
