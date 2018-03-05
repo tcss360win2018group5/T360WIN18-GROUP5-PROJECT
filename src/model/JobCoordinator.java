@@ -124,8 +124,6 @@ public final class JobCoordinator implements Serializable {
         theSystemJob.addVolunteer(theVolunteer);
         theVolunteer.applyToJob(theSystemJob);
         mySystem.updateUserInformationOnExit(theVolunteer);
-        System.out.println("RIGHT AFTER APPLY IN COORDINATOR: " + theVolunteer.getCurrentJobs());
-        System.out.println("RIGHT AFTER APPLY IN COORDINATOR: " + ((Volunteer) mySystem.getUser(theUser.getUsername())).getCurrentJobs());
         myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
                                                        null, null);
     }
@@ -142,7 +140,6 @@ public final class JobCoordinator implements Serializable {
         Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
         Volunteer theVolunteer = (Volunteer) mySystem.getUser(theUser.getUsername());
 
-        System.out.println("RIGHT IN UNAPPLY IN COORDINATOR: " + theVolunteer.getCurrentJobs());
         theSystemJob.removeVolunteer(theVolunteer);
         theVolunteer.unapplyForJob(theSystemJob);
         mySystem.updateUserInformationOnExit(theVolunteer);
@@ -282,9 +279,6 @@ public final class JobCoordinator implements Serializable {
             returnInt = 3;
             // warning, job is further than max days away
         } else if (daysFromToday(theJob.getStartDate()) < Volunteer.MINIMUM_DAYS_BEFORE_JOB_START) {
-            System.out.println("TODAY: " + myCurrentDate.getTime() 
-            + "\nJOB DAY: " + theJob.getStartDate().getTime() 
-            + "\nDAYS FROM TODAY: " + daysFromToday(theJob.getStartDate()));
             returnInt = 4;
             // warning, job starts before any volunteer can sign up
         }

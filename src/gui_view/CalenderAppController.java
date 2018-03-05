@@ -436,10 +436,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 volunteerUserJobController.submitButton.setOnAction(event -> {
                     // Error check to unvolunteer from job.
                     if (volunteerUser.canUnapplyFromJob(volunteerUserJobController.getSelectedJob()) != 0) {
-                        
-                        System.out.println(volunteerUser.canUnapplyFromJob(volunteerUserJobController.getSelectedJob()));
-                        System.out.println(volunteerUser.getCurrentJobs());
-                        System.out.println( ((Volunteer) mySystemCoordinator.getUser(userName)).getCurrentJobs());
                         volunteerUserJobController.playErrorMessage();
                     } else {
                         volunteerUserJobController.topErrorMessage.setText("");
@@ -627,7 +623,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                 final int[] maxPendingJobs = new int[1];
                 final GregorianCalendar[] startDate = new GregorianCalendar[1];
                 final GregorianCalendar[] endDate = new GregorianCalendar[1];
-                officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty().addListener(e ->{
+                officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty()
+                    .addListener(e ->{
                     StringProperty s = (StringProperty) e;
                     try {
                         maxPendingJobs[0] = Integer.parseInt((s.get()));
@@ -636,6 +633,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                         numberErrorInput[0] = true;
                     }
                 });
+                officeStaffChangeSystemConstController.setMaxPendingJobs.textProperty()
+                .set(("" + myJobCoordinator.getCurrentMaximumJobs()));
                 officeStaffChangeSystemConstController.startDate.valueProperty().addListener(e ->{
                     ObjectProperty o = (ObjectProperty) e;
                     startDate[0] = officeStaffChangeSystemConstController
@@ -1003,7 +1002,13 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
             leftLabel_bottomLabel.setText("");
 
             rightLabel_upperTextLabel.setText("Max Pending Jobs");
-            int numberOfJobs = officeStaffUser.getMaxPendingJobs();
+            int numberOfJobs = myJobCoordinator.getCurrentMaximumJobs();
+            try {
+                officeStaffUser.setMaxPendingJobs(numberOfJobs);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
             rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
             rightLabel_numberOfJobsLabel.setText(String.valueOf(numberOfJobs));
             rightLabel_lowerTextLabel.setText("");
