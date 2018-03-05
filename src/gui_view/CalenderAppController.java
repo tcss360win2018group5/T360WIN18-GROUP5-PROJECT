@@ -582,7 +582,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                         subController.playErrorMessage();
                     } else if (jobTitle[0].length() <= 0) {
                         subController.playErrorMessage();
-                    }
+                    } 
                     // Passes first error check - can now create job info
                     Job newJob = ParkManagerController.gatherJobInfo(jobTitle[0], location[0],
                             startDate[0], endDate[0], jobDescription[0],
@@ -591,6 +591,8 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                             jobRole[0]);
                     // Second error check
                     if (myJobCoordinator.canSubmitJob(newJob) != 0) {
+                        subController.playErrorMessage();
+                    } else if (newJob.getStartDate().after(newJob.getEndDate())) { // date input wrong
                         subController.playErrorMessage();
                     } else { // Submit if passes all error checks
                         subController.topErrorMessage
