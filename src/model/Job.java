@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public final class Job implements Serializable, Cloneable {
@@ -89,6 +88,17 @@ public final class Job implements Serializable, Cloneable {
 	}
 
 	// **Tests for business rules**
+	/**
+	 * Checks to see if this job begins on or after the specified date OR if it 
+	 * ends on or after the specified date.
+	 * 
+	 * 
+	 */
+   public boolean isFutureJob(GregorianCalendar theDateToday) {
+        return JobCoordinator.getDifferenceInDays(theDateToday, this.getStartDate()) >= 0 ||
+                    JobCoordinator.getDifferenceInDays(theDateToday, this.getEndDate()) >= 0;
+    }
+	   
 	/**
 	 * Checks to see if there is still space available for volunteers to be
 	 * added.

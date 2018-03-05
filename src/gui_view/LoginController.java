@@ -29,8 +29,8 @@ public class LoginController implements Initializable {
 
     private static final String SYSTEM_COORDINATOR_NAME = "data/SystemCoordinator.ser";
     private static final String JOB_COORDINATOR_NAME = "data/JobCoordinator.ser";
-    private final SystemCoordinator mySystemCoordinator;
-    private final JobCoordinator myJobCoordinator;
+    private SystemCoordinator mySystemCoordinator;
+    private JobCoordinator myJobCoordinator;
 
     @FXML
     public AnchorPane rootPane;

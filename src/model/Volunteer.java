@@ -3,10 +3,8 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public final class Volunteer extends User implements Serializable {
     public static final int MINIMUM_DAYS_BEFORE_JOB_START = 3;
@@ -131,7 +129,8 @@ public final class Volunteer extends User implements Serializable {
             result = false;
         } else if (this.getClass() == theObject.getClass()) {
             Volunteer theOtherVol = (Volunteer) theObject;
-            result = super.equals(theObject);
+            result = super.equals(theObject) && 
+                            this.myCurrentDate == theOtherVol.myCurrentDate;
         }
         
         return result;

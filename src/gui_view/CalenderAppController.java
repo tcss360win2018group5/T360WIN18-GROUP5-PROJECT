@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -22,14 +25,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import model.Job;
 import model.JobCoordinator;
@@ -50,7 +50,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     private ParkManager parkManagerUser;
     private OfficeStaff officeStaffUser;
     private String userName;
-    private ArrayList<Job> listOfJobs;
     private int accessLevel;
 
     private Pane rightSideChild;
@@ -181,7 +180,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         volunteerInit();
         managerInit();
         officeInit();
-        listOfJobs = myJobCoordinator.getPendingJobs();
         if (accessLevel == 2) {
             observable_SystemJobs.addAll(myJobCoordinator.getSystemJobListing(volunteerUser));
             observable_UserJobs.addAll(volunteerUser.getCurrentJobs());
@@ -202,10 +200,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         tableviewListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromSystem = tableviewListOfJobs.getSelectionModel().getSelectedItem();
             if (selectedJobFromSystem != null) {
-//                System.out.println(selectedJobFromSystem.getJobTitle());
-//                System.out.println(selectedJobFromSystem);
             } else {
-//                System.out.println("NULL (System) Job selected - (probably all system jobs gone?).");
             }
         });
 
@@ -213,7 +208,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
             // Double Click
             tableviewListOfJobs.setOnMousePressed(e -> {
                 if (e.getClickCount() == 2 && selectedJobFromSystem != null) {
-//                    System.out.println("System Jobs Hi!");
                     updateJobSystemLabels();
                     rightJobSystemMenuAnimation();
                 }
@@ -230,18 +224,14 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         tableviewUserListOfJobs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedJobFromUser = tableviewUserListOfJobs.getSelectionModel().getSelectedItem();
             if (selectedJobFromUser != null) {
-//                System.out.println(selectedJobFromUser.getJobTitle());
-//                System.out.println(selectedJobFromUser);
                 updateJobUserLabels();
             } else {
-//                System.out.println("NULL selected (user) job - (probably unapplied all from all jobs in user?)");
             }
         });
 
         // Double Click
         tableviewUserListOfJobs.setOnMousePressed(e -> {
             if (e.getClickCount() == 2 && selectedJobFromUser != null) {
-//                System.out.println("User Jobs HI");
                 updateJobUserLabels();
                 rightJobUserMenuAnimation();
             }
@@ -249,11 +239,11 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
 
         // Set Top User Label
         String type = "";
-        if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL) {
+        if (mySystemCoordinator.getAccessLevel(userName) == SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL) {
             type = "an Office Staff user!";
-        } else if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.PARK_MANAGER_ACCESS_LEVEL) {
+        } else if (mySystemCoordinator.getAccessLevel(userName) == SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL) {
             type = "a Park Manager user!";
-        } else if (mySystemCoordinator.getAccessLevel(userName) == mySystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
+        } else if (mySystemCoordinator.getAccessLevel(userName) == SystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
             type = "a Volunteer user!";
         }
         topLabel_welcomeUser.setText("... | Welcome back to Urban Parks " + userName + "! You are " + type );
@@ -444,10 +434,12 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                     backgroundEnable();
                 });
                 volunteerUserJobController.submitButton.setOnAction(event -> {
-//                    System.out.println(volunteerUserJobController.getSelectedJob());
                     // Error check to unvolunteer from job.
-                    if (volunteerUser.canUnapplyFromJob(
-                            volunteerUserJobController.getSelectedJob()) != 0) {
+                    if (volunteerUser.canUnapplyFromJob(volunteerUserJobController.getSelectedJob()) != 0) {
+                        
+                        System.out.println(volunteerUser.canUnapplyFromJob(volunteerUserJobController.getSelectedJob()));
+                        System.out.println(volunteerUser.getCurrentJobs());
+                        System.out.println( ((Volunteer) mySystemCoordinator.getUser(userName)).getCurrentJobs());
                         volunteerUserJobController.playErrorMessage();
                     } else {
                         volunteerUserJobController.topErrorMessage.setText("");
@@ -937,6 +929,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     }
 
     private void updateJobLabels() {
+        updateSystem();
         if (accessLevel == 2) { // Vol
             updateJobs(SystemCoordinator.VOLUNTEER_ACCESS_LEVEL);
             leftLabel_upperTextLabel.setText("There is");
@@ -1022,6 +1015,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     }
 
     private void updateOfficeLabel() {
+        updateSystem();
         if (accessLevel == 0) {
             officeStaffChangeSystemConstController.currentMaxPendingJobs
                     .setText(String.valueOf(officeStaffUser.getMaxPendingJobs()));
@@ -1036,17 +1030,27 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     }
     
     private void updateJobs(int user) {
+        updateSystem();
         observable_SystemJobs.clear();
         observable_UserJobs.clear();
         if (user == SystemCoordinator.VOLUNTEER_ACCESS_LEVEL) {
+            volunteerInit();
             observable_UserJobs.addAll(myJobCoordinator.getUserJobListing(volunteerUser));
             observable_SystemJobs.addAll(myJobCoordinator.getSystemJobListing(volunteerUser));
         } else if (user == SystemCoordinator.PARK_MANAGER_ACCESS_LEVEL) {
+            managerInit();
             observable_UserJobs.addAll(myJobCoordinator.getUserJobListing(parkManagerUser));
             observable_SystemJobs.addAll(myJobCoordinator.getSystemJobListing(parkManagerUser));
+        } else {
+            officeInit();
         }
+        
     }
 
+    private void updateSystem() {
+        this.mySystemCoordinator = this.myJobCoordinator.getSystem();
+    }
+    
     private void backgroundEnable() {
         borderPane.setOpacity(1);
         borderPane.setDisable(false);

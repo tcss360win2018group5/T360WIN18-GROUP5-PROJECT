@@ -42,6 +42,11 @@ public class JobCoordinatorTest {
         
         anyOldValidJob = new Job("anyOldValidJob");
         anyParkManager = new ParkManager("anyOldPM");
+        
+        globalSystemCoordinator.addUser(globalVolunteerJane);
+        globalSystemCoordinator.addUser(globalParkManagerSam);
+        globalSystemCoordinator.addUser(globalOfficeStaffAlex);
+        globalSystemCoordinator.addUser(anyParkManager);
     }
 
     // Business Rule:
@@ -92,7 +97,7 @@ public class JobCoordinatorTest {
     
     // The specified job takes one fewer than the maximum number of days
     @Test
-    public final void canAddJob_JobOneLessThanMaxJobLength_ShouldBeTrue() {
+    public final void canSubmitJob_JobOneLessThanMaxJobLength_ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -113,7 +118,7 @@ public class JobCoordinatorTest {
     
     // The specified job takes the maximum number of days
     @Test
-    public final void canAddJob_JobMaxJobLength_ShouldBeTrue() {        
+    public final void canSubmitJob_JobMaxJobLength_ShouldBeTrue() {        
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -133,7 +138,7 @@ public class JobCoordinatorTest {
     
     // The specified job takes one more than the maximum number of days
     @Test
-    public final void canAddJob_JobOneMoreThanMaxJobLength_ShouldBeTrue() {
+    public final void canSubmitJob_JobOneMoreThanMaxJobLength_ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -154,12 +159,12 @@ public class JobCoordinatorTest {
 
     // Business Rule:
     // No job can be specified whose end date is more than the maximum number of
-    // days from the current date, default of 75
+    // days from the current date
 
     // The specified job ends one fewer than the maximum number of days from the
     // current date
     @Test
-    public final void canAddJob_JobEndsOneLessThanMaximumDays__ShouldBeTrue() {
+    public final void canSubmitJob_JobEndsOneLessThanMaximumDays__ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -179,7 +184,7 @@ public class JobCoordinatorTest {
 
     // The specified job ends the maximum number of days from the current date
     @Test
-    public final void canAddJob_JobEndsExactlyMaximumDaysAway__ShouldBeTrue() {
+    public final void canSubmitJob_JobEndsExactlyMaximumDaysAway__ShouldBeTrue() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -199,7 +204,7 @@ public class JobCoordinatorTest {
     // The specified job ends one more than the maximum number of days from the
     // current date
     @Test
-    public final void canAddJob_JobEndsOneMoreThanMaximumDays__ShouldBeFalse() {
+    public final void canSubmitJob_JobEndsOneMoreThanMaximumDays__ShouldBeFalse() {
         GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
 
         // create new calendar date to add to generic job
@@ -217,16 +222,111 @@ public class JobCoordinatorTest {
         assertFalse(globalJobCoordinator.canSubmitJob(jobOneMoreThanMaximumDaysAway) == 0);
     }
     
+    // Business Rule:
+    // Cannot unsubmit job less than minimum days away
+
+    // The specified job ends one fewer than the maximum number of days from the
+    // current date
+    @Test
+    public final void canUnsubmitJob_JobEndsOneLessThanMinimumDays__ShouldBeFalse() {
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
+
+        // create new calendar date to add to generic job
+        GregorianCalendar oneLessThanMinimumDaysAwayDate =
+                        (GregorianCalendar) currentDate.clone();
+        oneLessThanMinimumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
+                                           Volunteer.MINIMUM_DAYS_BEFORE_JOB_START - 1);
+
+        // specify generic job on that day
+        Job jobOneLessThanMinimumDaysAway = new Job("jobOneLessThanMinimumDaysAway");
+        jobOneLessThanMinimumDaysAway.setStartDate(oneLessThanMinimumDaysAwayDate);
+        jobOneLessThanMinimumDaysAway.setEndDate(oneLessThanMinimumDaysAwayDate);
+        globalJobCoordinator.submitJob(globalParkManagerSam, jobOneLessThanMinimumDaysAway);
+
+        // test
+        assertFalse(globalJobCoordinator.canUnsubmitJob(jobOneLessThanMinimumDaysAway) == 0);
+    }
+
+    // The specified job ends the maximum number of days from the current date
+    @Test
+    public final void canUnsubmitJob_JobEndsExactlyMinimumDaysAway__ShouldBeTrue() {
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
+
+        // create new calendar date to add to generic job
+        GregorianCalendar exactlyMinimumDaysAwayDate = (GregorianCalendar) currentDate.clone();
+        exactlyMinimumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
+                                       Volunteer.MINIMUM_DAYS_BEFORE_JOB_START);
+
+        // specify generic job on that day
+        Job jobExactlyMinimumDaysAway = new Job("jobExactlyMinimumDaysAway");
+        jobExactlyMinimumDaysAway.setStartDate(exactlyMinimumDaysAwayDate);
+        jobExactlyMinimumDaysAway.setEndDate(exactlyMinimumDaysAwayDate);
+        globalJobCoordinator.submitJob(globalParkManagerSam, jobExactlyMinimumDaysAway);
+        
+        // test
+        assertTrue(globalJobCoordinator.canUnsubmitJob(jobExactlyMinimumDaysAway) == 0);
+    }
+
+    // The specified job ends one more than the maximum number of days from the
+    // current date
+    @Test
+    public final void canUnsubmitJob_JobEndsOneMoreThanMinimumDays__ShouldBeTrue() {
+        GregorianCalendar currentDate = globalJobCoordinator.getCurrentDate();
+
+        // create new calendar date to add to generic job
+        GregorianCalendar oneMoreThanMinimumDaysAwayDate =
+                        (GregorianCalendar) currentDate.clone();
+        oneMoreThanMinimumDaysAwayDate.add(GregorianCalendar.DAY_OF_YEAR,
+                                           Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1);
+
+        // specify generic job on that day
+        Job jobOneMoreThanMinimumDaysAway = new Job("jobOneMoreThanMinimumDaysAway");
+        jobOneMoreThanMinimumDaysAway.setStartDate(oneMoreThanMinimumDaysAwayDate);
+        jobOneMoreThanMinimumDaysAway.setEndDate(oneMoreThanMinimumDaysAwayDate);
+        globalJobCoordinator.submitJob(globalParkManagerSam, jobOneMoreThanMinimumDaysAway);
+
+        // test;
+        assertTrue(globalJobCoordinator.canUnsubmitJob(jobOneMoreThanMinimumDaysAway) == 0);
+    }
     
     @Test
-    public final void getJobListing_NoJobsWithAnyUser_ShouldBeEmpty() {
+    public final void canUnsubmitJob_JobStartsToday_False() {
+        Job jobStartsToday = new Job("A Job");
+
+        jobStartsToday.setStartDate(globalJobCoordinator.getCurrentDate());
+        jobStartsToday.setEndDate(globalJobCoordinator.getCurrentDate());
+      
+        globalJobCoordinator.submitJob(globalParkManagerSam, jobStartsToday);
+    
+        assertFalse(globalJobCoordinator.canUnsubmitJob(jobStartsToday) == 0);
+        
+    }
+
+    @Test
+    public final void canUnapplyFromJob_MultiDayJobStartsPriorToToday_False() {        
+        Job multiDayJobStartsPriorToToday = new Job("A Job");
+        GregorianCalendar startDate = (GregorianCalendar) globalJobCoordinator.getCurrentDate().clone();
+        startDate.add(GregorianCalendar.DAY_OF_YEAR, -1);
+        GregorianCalendar endDate = (GregorianCalendar) globalJobCoordinator.getCurrentDate().clone();
+        endDate.add(GregorianCalendar.DAY_OF_YEAR, 2);
+        
+        multiDayJobStartsPriorToToday.setStartDate(startDate);
+        multiDayJobStartsPriorToToday.setEndDate(endDate);
+
+        globalJobCoordinator.submitJob(globalParkManagerSam, multiDayJobStartsPriorToToday);
+    
+        assertFalse(globalJobCoordinator.canUnsubmitJob(multiDayJobStartsPriorToToday) == 0);
+        
+    }
+    @Test
+    public final void getSystemJobListing_NoJobsWithAnyUser_ShouldBeEmpty() {
         assertTrue(globalJobCoordinator.getSystemJobListing(globalVolunteerJane).isEmpty());
         assertTrue(globalJobCoordinator.getSystemJobListing(globalParkManagerSam).isEmpty());
         assertTrue(globalJobCoordinator.getSystemJobListing(globalOfficeStaffAlex).isEmpty());
     }
     
     @Test
-    public final void getJobListing_OneFutureJobWithVolunteer_ShouldOnlyHaveFutureJob() {
+    public final void getSystemJobListing_OneFutureJobWithVolunteer_ShouldOnlyHaveFutureJob() {
         Job futureJob = new Job("Job in the Future");
         GregorianCalendar futureDate = new GregorianCalendar();
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
@@ -239,7 +339,7 @@ public class JobCoordinatorTest {
     }
     
     @Test
-    public final void getJobListing_OnePastJobWithVolunteer_ShouldBeEmpty() {
+    public final void getSystemJobListing_OnePastJobWithVolunteer_ShouldBeEmpty() {
         Job pastJob = new Job("Job in the Past");
         GregorianCalendar pastDate = new GregorianCalendar();
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
@@ -250,7 +350,7 @@ public class JobCoordinatorTest {
     }
     
     @Test
-    public final void getJobListing_OneFutureOnePastJobWithVolunteer_ShouldOnlyHaveFutureJob() {
+    public final void getSystemJobListing_OneFutureOnePastJobWithVolunteer_ShouldOnlyHaveFutureJob() {
         Job futureJob = new Job("Job in the Future");
         GregorianCalendar futureDate = new GregorianCalendar();
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
@@ -272,7 +372,7 @@ public class JobCoordinatorTest {
     }
 
     @Test
-    public final void getJobListing_OneFutureJobWithParkManager_ShouldOnlyHaveFutureJob() {
+    public final void getSystemJobListing_OneFutureJobWithParkManager_ShouldOnlyHaveFutureJob() {
         Job futureJob = new Job("Job in the Future");
         GregorianCalendar futureDate = new GregorianCalendar();
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
@@ -284,7 +384,7 @@ public class JobCoordinatorTest {
     }
     
     @Test
-    public final void getJobListing_OnePastJobWithParkManager_ShouldBeEmpty() {        
+    public final void getSystemJobListing_OnePastJobWithParkManager_ShouldBeEmpty() {        
         Job pastJob = new Job("Job in the Past");
         GregorianCalendar pastDate = new GregorianCalendar();
         pastDate.add(GregorianCalendar.DAY_OF_YEAR, -7);
@@ -296,7 +396,7 @@ public class JobCoordinatorTest {
     }
     
     @Test
-    public final void getJobListing_OneFutureOnePastJobWithParkManager_ShouldOnlyHaveFutureJob() {
+    public final void getSystemJobListing_OneFutureOnePastJobWithParkManager_ShouldOnlyHaveFutureJob() {
         Job futureJob = new Job("Job in the Future");
         GregorianCalendar futureDate = new GregorianCalendar();
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);
@@ -316,7 +416,7 @@ public class JobCoordinatorTest {
     }
     
     @Test
-    public final void getJobListing_OneFutureJobWithOfficeStaff_ShouldOnlyHaveFutureJob() {
+    public final void getSystemJobListing_OneFutureJobWithOfficeStaff_ShouldOnlyHaveFutureJob() {
         Job futureJob = new Job("Job in the Future");
         GregorianCalendar futureDate = new GregorianCalendar();
         futureDate.add(GregorianCalendar.DAY_OF_YEAR, 7);

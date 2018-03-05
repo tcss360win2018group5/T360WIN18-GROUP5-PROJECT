@@ -105,9 +105,9 @@ public class VolunteerTest {
     @Test
     public void canApplyToJob_VolunteerNoJobsYet_True() {
         Volunteer volunteer_no_jobs = new Volunteer("Volunteer With No Jobs");
-        volunteer_no_jobs.setCurrentDate(new GregorianCalendar(2018, 01, 00));
+        volunteer_no_jobs.setCurrentDate(new GregorianCalendar(2018, 1, 0));
         Job pointlessButValidJob = new Job("Pointless But Valid Job");
-        pointlessButValidJob.setStartDate(new GregorianCalendar(2018, 01, 02));
+        pointlessButValidJob.setStartDate(new GregorianCalendar(2018, 1, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START));
         assertTrue(volunteer_no_jobs.canApplyToJob(pointlessButValidJob) == 0);
     }
 
@@ -165,7 +165,7 @@ public class VolunteerTest {
     public final void canApplyToJob_MoreThanMinimumDaysAway_True() {
         Job jobMoreThanMinimumDaysAway = new Job("A Job");
         GregorianCalendar dateMoreThanMinimumDaysFromToday = (GregorianCalendar) today.clone();
-        dateMoreThanMinimumDaysFromToday.add(GregorianCalendar.DAY_OF_YEAR, 3);
+        dateMoreThanMinimumDaysFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1);
 
         jobMoreThanMinimumDaysAway.setStartDate(dateMoreThanMinimumDaysFromToday);
         jobMoreThanMinimumDaysAway.setEndDate(dateMoreThanMinimumDaysFromToday);
@@ -181,7 +181,7 @@ public class VolunteerTest {
         Job jobExactlyMinimumDaysAway = new Job("A Job");
         GregorianCalendar dateExactlyMinimumDaysAwayFromToday =
                         (GregorianCalendar) today.clone();
-        dateExactlyMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, 2);
+        dateExactlyMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START);
 
         jobExactlyMinimumDaysAway.setStartDate(dateExactlyMinimumDaysAwayFromToday);
         jobExactlyMinimumDaysAway.setEndDate(dateExactlyMinimumDaysAwayFromToday);
@@ -197,42 +197,92 @@ public class VolunteerTest {
         Job jobLessThanMinimumDaysAway = new Job("A Job");
         GregorianCalendar dateLessThanMinimumDaysAwayFromToday =
                         (GregorianCalendar) today.clone();
-        dateLessThanMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, 1);
+        dateLessThanMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START - 1);
 
         jobLessThanMinimumDaysAway.setStartDate(dateLessThanMinimumDaysAwayFromToday);
         jobLessThanMinimumDaysAway.setEndDate(dateLessThanMinimumDaysAwayFromToday);
 
         assertFalse(anyVolunteer.canApplyToJob(jobLessThanMinimumDaysAway) == 0);
     }
+    
+    /*
+     * Business Rule: A volunteer may unapply to a job only if the job begins at least a
+     * minimum number of calendar days after the current date
+     */
+    
+    @Test
+    public final void canUnapplyFromJob_MoreThanMinimumDaysAway_True() {
+        Job jobMoreThanMinimumDaysAway = new Job("A Job");
+        GregorianCalendar dateMoreThanMinimumDaysFromToday = (GregorianCalendar) today.clone();
+        dateMoreThanMinimumDaysFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START + 1);
 
-//    @Test
-//    public final void doesJobStartOnCurrentDay_JobStartsOnCurrentDay_True() {
-//        assertTrue(anyVolunteer.doesJobStartOnCurrentDay(job_today));
-//    }
-//
-//    @Test
-//    public final void doesMultiJobStartPriorToCurrentDay_JobStartsDayPrior_True() {
-//        assertTrue(anyVolunteer.doesMultiJobStartPriorToCurrentDay(job_starts_day_prior));
-//    }
-//
-//    @Test
-//    public final void doesJobStartMoreThanMinDay_JobisMoreThanMinDays_True() {
-//        assertTrue(anyVolunteer.doesJobStartMoreThanMinDay(job_starts_day_greater_than_min_days));
-//    }
-//
-//    @Test
-//    public final void doesJobStartMoreThanMinDay_JobisExactAtMinDays_True() {
-//        assertTrue(anyVolunteer.doesJobStartMoreThanMinDay(job_starts_day_at_min_days));
-//    }
-//
-//    @Test
-//    public final void unvolunteerJob_JobPassesAllTests_True() {
-//        anyVolunteer.applyToJob(job_starts_day_at_min_days);
-//        assertTrue(anyVolunteer.unvolunteerJob(job_starts_day_at_min_days) == 0);
-//    }
+        jobMoreThanMinimumDaysAway.setStartDate(dateMoreThanMinimumDaysFromToday);
+        jobMoreThanMinimumDaysAway.setEndDate(dateMoreThanMinimumDaysFromToday);
+        
+        anyVolunteer.applyToJob(jobMoreThanMinimumDaysAway);
+
+        assertTrue(anyVolunteer.canUnapplyFromJob(jobMoreThanMinimumDaysAway) == 0);
+    }
 
 
     @Test
-    public final void methodTesting() {
+    public final void canUnapplyFromJob_ExactlyMinimumDaysAway_True() {
+        Job jobExactlyMinimumDaysAway = new Job("A Job");
+        GregorianCalendar dateExactlyMinimumDaysAwayFromToday =
+                        (GregorianCalendar) today.clone();
+        dateExactlyMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START);
+
+        jobExactlyMinimumDaysAway.setStartDate(dateExactlyMinimumDaysAwayFromToday);
+        jobExactlyMinimumDaysAway.setEndDate(dateExactlyMinimumDaysAwayFromToday);
+
+        anyVolunteer.applyToJob(jobExactlyMinimumDaysAway);
+
+        assertTrue(anyVolunteer.canUnapplyFromJob(jobExactlyMinimumDaysAway) == 0);
+    }
+
+    @Test
+    public final void canUnapplyFromJob_LessThanMinimumDaysAwayFromToday_False() {
+        Job jobLessThanMinimumDaysAway = new Job("A Job");
+        GregorianCalendar dateLessThanMinimumDaysAwayFromToday =
+                        (GregorianCalendar) today.clone();
+        dateLessThanMinimumDaysAwayFromToday.add(GregorianCalendar.DAY_OF_YEAR, Volunteer.MINIMUM_DAYS_BEFORE_JOB_START - 1);
+
+        jobLessThanMinimumDaysAway.setStartDate(dateLessThanMinimumDaysAwayFromToday);
+        jobLessThanMinimumDaysAway.setEndDate(dateLessThanMinimumDaysAwayFromToday);
+
+        anyVolunteer.applyToJob(jobLessThanMinimumDaysAway);
+
+        assertFalse(anyVolunteer.canUnapplyFromJob(jobLessThanMinimumDaysAway) == 0);
+    }
+    
+    
+    @Test
+    public final void canUnapplyFromJob_StartsToday_False() {
+        Job jobStartsToday = new Job("A Job");
+
+        jobStartsToday.setStartDate(today);
+        jobStartsToday.setEndDate(today);
+      
+        anyVolunteer.applyToJob(jobStartsToday);
+    
+        assertFalse(anyVolunteer.canUnapplyFromJob(jobStartsToday) == 0);
+        
+    }
+
+    @Test
+    public final void canUnapplyFromJob_MultiDayJobStartsPriorToToday_False() {        
+        Job multiDayJobStartsPriorToToday = new Job("A Job");
+        GregorianCalendar startDate = (GregorianCalendar) today.clone();
+        startDate.add(GregorianCalendar.DAY_OF_YEAR, -1);
+        GregorianCalendar endDate = (GregorianCalendar) today.clone();
+        endDate.add(GregorianCalendar.DAY_OF_YEAR, 2);
+        
+        multiDayJobStartsPriorToToday.setStartDate(startDate);
+        multiDayJobStartsPriorToToday.setEndDate(endDate);
+      
+        anyVolunteer.applyToJob(multiDayJobStartsPriorToToday);
+    
+        assertFalse(anyVolunteer.canUnapplyFromJob(multiDayJobStartsPriorToToday) == 0);
+        
     }
 }

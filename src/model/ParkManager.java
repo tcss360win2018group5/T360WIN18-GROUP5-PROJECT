@@ -5,8 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Objects;
-//l.Calendar;
-import java.util.concurrent.TimeUnit;
 
 public final class ParkManager extends User implements Serializable {
 	private ArrayList<Job> myJobsCreated;
@@ -57,7 +55,7 @@ public final class ParkManager extends User implements Serializable {
 	public ArrayList<Job> getFutureSubmittedJobs() {
 		ArrayList<Job> futureJobs = new ArrayList<Job>();
 		for (Job aJob : mySubmittedJobs) {
-			if (isFutureJob(aJob))
+			if (aJob.isFutureJob(myCurrentDate))
 				futureJobs.add(aJob);
 		}
 		return futureJobs;
@@ -81,10 +79,6 @@ public final class ParkManager extends User implements Serializable {
 	
 	public boolean isJobInPast(Job theJob) {
 	    return theJob.getStartDate().before(myCurrentDate);
-	}
-
-	public boolean isFutureJob(Job theJob) {
-		return JobCoordinator.getDifferenceInDays(myCurrentDate, theJob.getStartDate()) >= Volunteer.MINIMUM_DAYS_BEFORE_JOB_START;
 	}
 
     @SuppressWarnings("unchecked")

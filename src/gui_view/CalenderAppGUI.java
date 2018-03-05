@@ -52,17 +52,4 @@ public class CalenderAppGUI extends AnchorPane {
         theStage.setX((screenSize.getWidth() - theStage.getWidth()) / 2);
         theStage.setY((screenSize.getHeight() - theStage.getHeight()) / 2);
     }
-
-
-    private void volunteerInit() {
-
-    }
-
-    private void managerInit() {
-
-    }
-
-    private void officeInit() {
-
-    }
 }

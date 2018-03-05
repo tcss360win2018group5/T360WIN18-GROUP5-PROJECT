@@ -313,11 +313,11 @@ public class RepopulateJobAndUser {
 
     private void generateJobsManyJobs() {
         ParkManager testPM = (ParkManager) mySystemCoordinator.getUser("test_pm");
-        GregorianCalendar seventhOfMarch = new GregorianCalendar(2018, 2, 7);
+        GregorianCalendar eighthOfMarch = new GregorianCalendar(2018, 2, 8);
         int numJobsInSystem = myJobCoordinator.getPendingJobs().size();
         for (int i = 0; i < myJobCoordinator.getCurrentMaximumJobs() - numJobsInSystem; i++) {
             Job newJob = new Job("generatedJob" + i);
-            GregorianCalendar newDate = (GregorianCalendar) seventhOfMarch.clone();
+            GregorianCalendar newDate = (GregorianCalendar) eighthOfMarch.clone();
             newDate.add(GregorianCalendar.DAY_OF_YEAR, i);
             newJob.setStartDate(newDate);
             newJob.setEndDate(newDate);

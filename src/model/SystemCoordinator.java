@@ -14,7 +14,7 @@ public final class SystemCoordinator implements Serializable {
     
     private final PropertyChangeSupport myPropertyChangeHandler;
     
-    private final ArrayList<User> myUsers;
+    private ArrayList<User> myUsers;
 
     public SystemCoordinator() {
         myPropertyChangeHandler = new PropertyChangeSupport(this);

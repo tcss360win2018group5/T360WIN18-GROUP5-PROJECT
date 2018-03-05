@@ -6,7 +6,6 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 public final class JobCoordinator implements Serializable {
     public static final int DEFAULT_MAXIMUM_JOBS = 10;
@@ -22,7 +21,7 @@ public final class JobCoordinator implements Serializable {
     /** The current list of pending jobs. */
     private final ArrayList<Job> myJobList;
     
-    private final SystemCoordinator mySystem;
+    private SystemCoordinator mySystem;
 
     /** The current date as a calendar. */
     private GregorianCalendar myCurrentDate;
@@ -73,6 +72,7 @@ public final class JobCoordinator implements Serializable {
         theParkManager.addCreatedJob(theJob);
         theParkManager.addSubmittedJob(theJob);
         myJobList.add(theJob);
+        mySystem.updateUserInformationOnExit(theParkManager);
         myPropertyChangeHandler.firePropertyChange(SystemEvents.SUBMIT_JOB.name(), 
                                                        null, null);
     }
@@ -94,7 +94,11 @@ public final class JobCoordinator implements Serializable {
         ParkManager theParkManager = (ParkManager) theUser;
         theParkManager.removeSubmittedJob(theSystemJob);
         myJobList.remove(theSystemJob);
-        theSystemJob.getCurrentVolunteers().stream().forEach(vol -> ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob));
+        theSystemJob.getCurrentVolunteers().stream().forEach(vol -> {
+            ((Volunteer) mySystem.getUser(vol.getUsername())).unapplyForJob(theSystemJob);
+            mySystem.updateUserInformationOnExit(vol);
+        });
+        mySystem.updateUserInformationOnExit(theParkManager);
         myPropertyChangeHandler.firePropertyChange(SystemEvents.UNSUBMIT_JOB.name(), 
                                                    null, null);
     }
@@ -115,10 +119,13 @@ public final class JobCoordinator implements Serializable {
         }
         
         Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
-        Volunteer theVolunteer = (Volunteer) theUser;
+        Volunteer theVolunteer = (Volunteer) mySystem.getUser(theUser.getUsername());
 
         theSystemJob.addVolunteer(theVolunteer);
         theVolunteer.applyToJob(theSystemJob);
+        mySystem.updateUserInformationOnExit(theVolunteer);
+        System.out.println("RIGHT AFTER APPLY IN COORDINATOR: " + theVolunteer.getCurrentJobs());
+        System.out.println("RIGHT AFTER APPLY IN COORDINATOR: " + ((Volunteer) mySystem.getUser(theUser.getUsername())).getCurrentJobs());
         myPropertyChangeHandler.firePropertyChange(SystemEvents.APPLY_JOB.name(), 
                                                        null, null);
     }
@@ -133,16 +140,14 @@ public final class JobCoordinator implements Serializable {
         }        
 
         Job theSystemJob = myJobList.stream().filter(job -> job.equals(theJob)).findFirst().get();
-        Volunteer theVolunteer = (Volunteer) theUser;
-        if (theVolunteer.canUnapplyFromJob(theSystemJob) == 0) {
-            theSystemJob.removeVolunteer(theVolunteer);
-            theVolunteer.unapplyForJob(theSystemJob);
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.UNAPPLY_JOB.name(), 
-                                                       null, null);
-        } else {
-            myPropertyChangeHandler.firePropertyChange(SystemEvents.ERROR.name(), 
-                                                       null, null);
-        }
+        Volunteer theVolunteer = (Volunteer) mySystem.getUser(theUser.getUsername());
+
+        System.out.println("RIGHT IN UNAPPLY IN COORDINATOR: " + theVolunteer.getCurrentJobs());
+        theSystemJob.removeVolunteer(theVolunteer);
+        theVolunteer.unapplyForJob(theSystemJob);
+        mySystem.updateUserInformationOnExit(theVolunteer);
+        myPropertyChangeHandler.firePropertyChange(SystemEvents.UNAPPLY_JOB.name(), 
+                                                   null, null);
     }
 
     // queries
@@ -172,17 +177,18 @@ public final class JobCoordinator implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getSystemJobListing(User theUser) {
+        User theSystemUser = mySystem.getUser(theUser.getUsername());
         ArrayList<Job> theModifiedList = new ArrayList<Job>();
         if (theUser instanceof Volunteer) {
-            Volunteer theVolunteer = (Volunteer) theUser;
+            Volunteer theVolunteer = (Volunteer) theSystemUser;
             for (Job aJob : this.myJobList) {
-                if (theVolunteer.canApplyToJob(aJob) == 0 &&
-                                aJob.canAcceptVolunteers()) {
+                if (theVolunteer.canApplyToJob(aJob) == 0 
+                                && aJob.canAcceptVolunteers()) {
                     theModifiedList.add(aJob);
                 }
             }
         } else if (theUser instanceof ParkManager) {
-            ParkManager thePM = (ParkManager) theUser;
+            ParkManager thePM = (ParkManager) theSystemUser;
             for (Job aJob : this.myJobList) {
                 if (!thePM.isJobInPast(aJob)) {
                     theModifiedList.add(aJob);
@@ -213,23 +219,26 @@ public final class JobCoordinator implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public ArrayList<Job> getUserJobListing(User theUser) {
+        User theSystemUser = mySystem.getUser(theUser.getUsername());
         ArrayList<Job> theModifiedList = new ArrayList<Job>();
         if (theUser instanceof Volunteer) {
-            Volunteer theVolunteer = (Volunteer) theUser;
+            Volunteer theVolunteer = (Volunteer) theSystemUser;
             for (Job aJob : this.myJobList) {
-                if (aJob.getCurrentVolunteers().contains(theVolunteer)) {
+                if (aJob.getCurrentVolunteers().contains(theVolunteer) 
+                                && aJob.isFutureJob(myCurrentDate)) {
                     theModifiedList.add(aJob);
                 }
             }
         } else if (theUser instanceof ParkManager) {
-            ParkManager thePM = (ParkManager) theUser;
+            ParkManager thePM = (ParkManager) theSystemUser;
             for (Job aJob : this.myJobList) {
-                if (thePM.getSubmittedJobs().contains(aJob)) {
+                if (thePM.getSubmittedJobs().contains(aJob) 
+                                && aJob.isFutureJob(myCurrentDate)) {
                     theModifiedList.add(aJob);
                 }
             }
         } else if (theUser instanceof OfficeStaff) {
-            OfficeStaff theStaff = (OfficeStaff) theUser;
+            OfficeStaff theStaff = (OfficeStaff) theSystemUser;
             for (Job aJob : this.myJobList) {
                 if (!theStaff.getStartDate().after(aJob.getStartDate()) &&
                                 !theStaff.getEndDate().before(aJob.getStartDate())) {
@@ -239,6 +248,10 @@ public final class JobCoordinator implements Serializable {
         }
         
         return (ArrayList<Job>) theModifiedList.clone();
+    }
+    
+    public SystemCoordinator getSystem() {
+        return mySystem;
     }
     
     public GregorianCalendar getCurrentDate() {
@@ -262,7 +275,7 @@ public final class JobCoordinator implements Serializable {
         if (myJobList.contains(theJob)) {
             // warning, job already exists
             returnInt = 1;
-        } else if (theJob.getJobLength() >= JobCoordinator.MAXIMUM_JOB_LENGTH) {
+        } else if (theJob.getJobLength() > JobCoordinator.MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
             returnInt = 2;
         } else if (daysFromToday(theJob.getStartDate()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {
