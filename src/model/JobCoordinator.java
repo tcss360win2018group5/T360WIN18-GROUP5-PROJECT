@@ -262,7 +262,7 @@ public final class JobCoordinator implements Serializable {
         if (myJobList.contains(theJob)) {
             // warning, job already exists
             returnInt = 1;
-        } else if (theJob.getJobLength() > JobCoordinator.MAXIMUM_JOB_LENGTH) {
+        } else if (theJob.getJobLength() >= JobCoordinator.MAXIMUM_JOB_LENGTH) {
             // warning, job exceeds maximum job length
             returnInt = 2;
         } else if (daysFromToday(theJob.getStartDate()) > JobCoordinator.MAXIMUM_DAYS_AWAY_TO_POST_JOB) {

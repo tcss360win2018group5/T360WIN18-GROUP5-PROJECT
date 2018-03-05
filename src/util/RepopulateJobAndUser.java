@@ -225,7 +225,7 @@ public class RepopulateJobAndUser {
                 5);
     }
 
-    public void createJob_03042018_conflict(String theJobTitle) {
+    public void createJob_03142018_conflict(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
                 "02/14/2018",
@@ -242,16 +242,16 @@ public class RepopulateJobAndUser {
                 5);
     }
     
-    public void createJob_03052018_conflict(String theJobTitle) {
+    public void createJob_04012018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "02/16/2018",
-                "02/18/2018",
+                "02/09/2018",
+                "02/09/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Babs McGee",
                 "555-555-8011",
                 "babs@gmail.com",
-                "Lincoln Park Volunteer Work Party",
+                "Downtown Seattle Clean Up",
                 "Join us for a restoration work party at Lincoln Park",
                 "Work",
                 "Work Party",
@@ -259,22 +259,42 @@ public class RepopulateJobAndUser {
                 5);
     }
     
-    public void createJob_03032018_conflict(String theJobTitle) {
+    public void createJob_03282018(String theJobTitle) {
         // (MM/DD/YYYY)
         submitJobs(theJobTitle,
-                "02/28/2018",
-                "02/28/2018",
+                "02/08/2018",
+                "02/09/2018",
                 "8011 Fauntleroy Way, Seattle, WA, 98136",
                 "Big Tuna",
                 "555-555-8011",
                 "tuna@gmail.com",
-                "Lincoln Park Volunteer Work Party",
+                "Save the Tuna",
                 "Join us for a restoration work party at Lincoln Park",
                 "Work",
                 "Work Party",
                 "easy",
                 5);
     }
+    
+    public void createJob_03252018(String theJobTitle) {
+        // (MM/DD/YYYY)
+        submitJobs(theJobTitle,
+                "02/09/2018",
+                "02/10/2018",
+                "8011 Fauntleroy Way, Seattle, WA, 98136",
+                "Sharon Baker",
+                "555-555-8011",
+                "shar@gmail.com",
+                "Restore Tacoma",
+                "Join us for a restoration work party at Lincoln Park",
+                "Work",
+                "Work Party",
+                "easy",
+                5);
+    }
+
+
+
 
     public static void main(String[]args) {
         RepopulateJobAndUser re = new RepopulateJobAndUser();
@@ -283,8 +303,10 @@ public class RepopulateJobAndUser {
         re.createUserLogin("test_staff", 0);
         re.createJob_03022018("Test Job 1");
         re.createJob_03032018("Test Job 2");
-        re.createJob_03032018_conflict("Test Job 3");
-        re.generateJobsManyJobs();
+        re.createJob_03142018_conflict("Test Job 3");
+        re.createJob_04012018("Test Job 4");
+        re.createJob_03282018("Test Job 5");
+        re.createJob_03252018("Test Job 6");
         re.saveSystem();
     }
 
