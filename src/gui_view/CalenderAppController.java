@@ -653,6 +653,7 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                             officeStaffChangeSystemConstController.bottomErrorMessage
                                     .setText("");
                             officeStaffUser.setMaxPendingJobs(maxPendingJobs[0]);
+                            myJobCoordinator.setMaximumJobsInSystem(officeStaffUser, officeStaffUser.getMaxPendingJobs());
 
                             if (startDate[0] != null) {
                                 officeStaffUser.setStartDate(startDate[0]);
@@ -661,7 +662,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
                                 officeStaffUser.setEndDate(endDate[0]);
                             }
 
-                            jobConfirmationAnimation("System Changes Accepted!");
                             updateOfficeLabel();
                             updateJobLabels();
                             rightMenuAnimation();
@@ -812,7 +812,6 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
     private void volunteerInit() {
         if (accessLevel == 2) {
             volunteerUser = (Volunteer) mySystemCoordinator.getUser(userName);
-            System.out.println(volunteerUser.getCurrentJobs() + "\n");
         }
     }
 
@@ -1045,9 +1044,9 @@ public class CalenderAppController implements Initializable, PropertyChangeListe
         } else if (eventName == SystemEvents.SUBMIT_JOB.name()) {
             jobConfirmationAnimation("Added Job!");
         } else if (eventName == SystemEvents.UNSUBMIT_JOB.name()) {
-            mySystemCoordinator.getUsers().stream().filter(user -> user instanceof Volunteer)
-            .forEach(vol -> System.out.println( ((Volunteer) vol).getCurrentJobs() ));
             jobConfirmationAnimation("Removed Job!");
+        } else if (eventName == SystemEvents.MAX_JOBS_CHANGE.name()) {
+            jobConfirmationAnimation("System Changes Accepted!");
         }
     }
 

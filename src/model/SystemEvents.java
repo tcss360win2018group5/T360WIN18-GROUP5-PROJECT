@@ -5,5 +5,6 @@ public enum SystemEvents {
     UNSUBMIT_JOB,
     APPLY_JOB,
     UNAPPLY_JOB,
-    SIGNIN;
+    SIGNIN,
+    MAX_JOBS_CHANGE;
 }

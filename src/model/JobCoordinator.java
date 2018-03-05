@@ -9,12 +9,14 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 public final class JobCoordinator implements Serializable {
-    public static final int MAXIMUM_JOBS = 20;
+    public static final int DEFAULT_MAXIMUM_JOBS = 20;
     public static final int MAXIMUM_JOB_LENGTH = 3;
     public static final int MAXIMUM_DAYS_AWAY_TO_POST_JOB = 75;
     
     /** To allow listening of updates via observer design pattern. */
     private final PropertyChangeSupport myPropertyChangeHandler;
+    
+    private int myCurrentMaximumJobs;
     
     /** The current list of pending jobs. */
     private final ArrayList<Job> myJobList;
@@ -28,9 +30,10 @@ public final class JobCoordinator implements Serializable {
      * Creates a new instance with empty job lists and the current date.
      */
     public JobCoordinator(SystemCoordinator theSystem) {
-        myPropertyChangeHandler = new PropertyChangeSupport(this);
-        myJobList = new ArrayList<Job>();
-        myCurrentDate = new GregorianCalendar();
+        this.myCurrentMaximumJobs = DEFAULT_MAXIMUM_JOBS;
+        this.myPropertyChangeHandler = new PropertyChangeSupport(this);
+        this.myJobList = new ArrayList<Job>();
+        this.myCurrentDate = new GregorianCalendar();
         this.mySystem = theSystem;
     }
     
@@ -41,6 +44,18 @@ public final class JobCoordinator implements Serializable {
     
     
     /* mutators */
+    
+    public void setMaximumJobsInSystem(final User theUser, final int theMax) {
+        if (theUser.getAccessLevel() != SystemCoordinator.OFFICE_STAFF_ACCESS_LEVEL 
+                        || !(theUser instanceof OfficeStaff)) {
+            throw new IllegalArgumentException();
+        }
+        
+        this.myCurrentMaximumJobs = theMax;
+        myPropertyChangeHandler.firePropertyChange(SystemEvents.MAX_JOBS_CHANGE.name(), 
+                                                   null, null);
+    }
+    
     /**
      * Submits a job to the system.
      * 
@@ -54,8 +69,7 @@ public final class JobCoordinator implements Serializable {
         }
         
         ParkManager theParkManager = (ParkManager) theUser;
-        System.out.println("TRY TO SUBMIT: " + theJob + "\nTHE USER JOBS: " + theParkManager.getSubmittedJobs() + "\nCAN?" + canSubmitJob(theJob));
-        if (canSubmitJob(theJob) == 0) {
+        if (this.hasSpaceToAddJobs() && canSubmitJob(theJob) == 0) {
             theParkManager.addCreatedJob(theJob);
             theParkManager.addSubmittedJob(theJob);
             myJobList.add(theJob);
@@ -130,6 +144,11 @@ public final class JobCoordinator implements Serializable {
     }
 
     // queries
+    public int getCurrentMaximumJobs() {
+        return this.myCurrentMaximumJobs;
+    }
+    
+    
     public ArrayList<Job> getPendingJobs() {
         return myJobList;
     }
@@ -208,7 +227,13 @@ public final class JobCoordinator implements Serializable {
                 }
             }
         } else if (theUser instanceof OfficeStaff) {
-            theModifiedList.addAll(this.myJobList);
+            OfficeStaff theStaff = (OfficeStaff) theUser;
+            for (Job aJob : this.myJobList) {
+                if (!theStaff.getStartDate().after(aJob.getStartDate()) &&
+                                !theStaff.getEndDate().before(aJob.getStartDate())) {
+                    theModifiedList.add(aJob);
+                }
+            }
         }
         
         return (ArrayList<Job>) theModifiedList.clone();
@@ -221,7 +246,7 @@ public final class JobCoordinator implements Serializable {
     // testers
 
     public boolean hasSpaceToAddJobs() {
-        return myJobList.size() < JobCoordinator.MAXIMUM_JOBS;
+        return myJobList.size() < this.myCurrentMaximumJobs;
     }
 
     /**
